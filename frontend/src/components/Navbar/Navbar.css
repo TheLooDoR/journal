@@ -1,0 +1,53 @@
+.Navbar {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    background: #1D3B55;
+    padding: 30px 30px;
+    font-family: Roboto, sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+
+}
+
+.Links {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.Link img{
+    padding: 0 10px;
+    float:left;
+}
+
+.Link {
+    padding: 0px 10px;
+    border-right: 1px solid white;
+}
+
+.Link:last-child {
+    border:none;
+}
+.Link:last-child p {
+    color: white;
+    margin-bottom: 0;
+}
+
+.Link a {
+    color: white;
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+.Link a:hover {
+    color: white;
+    text-decoration: none;
+}
+
+.Navbar .Logo {
+    display: flex;
+    align-items: center;
+}
