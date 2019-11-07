@@ -3,7 +3,9 @@ const bodyParser = require('body-parser');
 const cors = require('cors')
 const morgan = require('morgan')
 const passport = require('passport');
+
 const userRoutes = require('./routes/user')
+const groupRoutes = require('./routes/group')
 
 const app = express();
 app.use(passport.initialize());
@@ -31,6 +33,7 @@ app.get('/', function(req, res) {
 const PORT = process.env.PORT || 5000;
 
 app.use('/api/users', userRoutes);
+app.use('/api/groups', groupRoutes)
 
 app.listen(PORT, () => {
     console.log(`Server is running on PORT ${PORT}`);

@@ -6,7 +6,7 @@ import { logoutUser } from '../../actions/authentication';
 import { withRouter } from 'react-router-dom';
 import { NavLink } from 'react-router-dom'
 
-import classes from './Navbar.css'
+import './Navbar.css'
 import logo from './assets/logo.png'
 import groupLogo from './assets/group.png'
 import disciplineLogo from './assets/discipline.png'
@@ -16,7 +16,7 @@ import rating from './assets/rating.png'
 import menu from './assets/menu.png'
 
 const authLinks = [
-    {to: '#', label: 'Группа', logo: groupLogo, exact: false},
+    {to: '/groups', label: 'Группы', logo: groupLogo, exact: false},
     {to: '#', label: 'Дисциплина', logo: disciplineLogo, exact: false},
     {to: '#', label: 'Вид занятия', logo: typeLogo, exact: false},
     {to: '#', label: 'Новое занятие', logo: newTask, exact: false},
@@ -29,9 +29,8 @@ class Navbar extends Component {
     renderAuthLinks() {
         return authLinks.map((link, index) => {
             return (
-                <div className={'Link'}>
+                <div className={'Link'} key={index}>
                     <NavLink
-                        key={index}
                         to={link.to}
                         exact={link.exact}
                     >
@@ -56,9 +55,9 @@ class Navbar extends Component {
                 {this.renderAuthLinks()}
                 <div className={'Link'}>
                     <p>{ user.email }</p>
-                    <a href="#" className="" onClick={this.onLogout.bind(this)}>
+                    <button className="logout-btn" onClick={this.onLogout.bind(this)}>
                         Выйти
-                    </a>
+                    </button>
                 </div>
             </>
         )

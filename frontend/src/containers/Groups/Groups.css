@@ -1,0 +1,41 @@
+.group_wrap {
+    display: flex;
+    justify-content: center;
+    font-family: Roboto, sans-serif;
+    flex-wrap: wrap;
+}
+
+.group, .add-button {
+    box-sizing: border-box;
+    width: 250px;
+    height: 75px;
+}
+
+.group {
+    padding: 25px 100px;
+    background: #1B71BB;
+    color: #fff;
+    margin: 15px 10px;
+}
+
+.group:hover {
+    background: #15568e;
+    cursor: pointer;
+}
+
+.add-button {
+    color: #fff;
+    margin: 15px 10px;
+    background: #1D3B55;
+    border: none;
+}
+
+.add-button:hover {
+    background: #2a557b;
+}
+
+.add-input {
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid #1D3B55;
+}

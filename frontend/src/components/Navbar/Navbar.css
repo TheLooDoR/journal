@@ -30,6 +30,9 @@
 
 .Link:last-child {
     border:none;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
 }
 .Link:last-child p {
     color: white;
@@ -50,4 +53,11 @@
 .Navbar .Logo {
     display: flex;
     align-items: center;
+}
+
+.logout-btn {
+    border: none;
+    background-color: transparent;
+    color: white;
+    font-weight: bold;
 }
