@@ -1,10 +1,14 @@
 import React from 'react'
 import axios from 'axios';
+import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu'
 
 import './Groups.css'
 import ModalWindow from "../../components/ModalWindow/ModalWindow";
 
 
+const ADD_ACTION = 'ADD'
+const UPDATE_ACTION = 'UPDATE'
+const DELETE_ACTION = 'DELETE'
 
 class Groups extends React.Component {
 
@@ -14,12 +18,22 @@ class Groups extends React.Component {
         this.state = {
             groups: [],
             name: '',
+            itemId: '',
+            currentModal: '',
             showModal: false
         }
     }
 
     componentDidMount() {
         this.getGroups()
+    }
+    //------------->State change<-------------
+
+    setCurrentModal(value) {
+        this.setState({
+            currentModal: value
+        })
+        this.setShowModal()
     }
 
     setShowModal() {
@@ -29,7 +43,23 @@ class Groups extends React.Component {
         })
     }
 
-//------------->BackEnd queries<-------------
+    setStateId = (e, data, target) => {
+        this.setState({
+            itemId: data.target.childNodes[0].innerText
+        })
+        if (data.action === UPDATE_ACTION) {
+            this.setCurrentModal(UPDATE_ACTION)
+            this.setState({
+                name: this.state.groups.find(element => element.id === +data.target.childNodes[0].innerText).name
+            })
+        } else if (data.action === DELETE_ACTION) {
+            this.setCurrentModal(DELETE_ACTION)
+        }
+    }
+
+    //------------->State change<-------------
+
+    //------------->BackEnd queries<-------------
     getGroups() {
         axios.get('api/groups/')
             .then(res => {
@@ -51,91 +81,166 @@ class Groups extends React.Component {
             })
     }
 
+    updateGroup(id, name) {
+        axios.patch(`api/groups/${id}`, {name})
+            .then(res => {
+                this.getGroups()
+            })
+            .catch(err => {
+                console.log(err.message)
+            })
+    }
 
-//------------->HANDLERS<-------------
+    deleteGroup(id) {
+        axios.delete(`api/groups/${id}`)
+            .then(res => {
+                this.getGroups()
+            })
+            .catch(err => {
+                console.log(err.message)
+            })
+    }
+
+
+    //------------->HANDLERS<-------------
     handleInputChange = (e) => {
         this.setState({
             [e.target.name]: e.target.value
         })
     }
 
-    addHandler = (e) => {
+    submitHandler = (e) => {
         e.preventDefault()
-
-        this.addGroup(this.state.name)
-        this.setShowModal()
+        switch (this.state.currentModal) {
+            case ADD_ACTION:
+                this.addGroup(this.state.name)
+                this.setShowModal()
+                break
+            case UPDATE_ACTION:
+                this.updateGroup(this.state.itemId, this.state.name)
+                this.setShowModal()
+                break
+            case DELETE_ACTION:
+                this.deleteGroup(this.state.itemId)
+                this.setShowModal()
+                break
+            default:
+                break
+        }
     }
-    //------>HANDLERS<-------
 
+    //------>RENDERS<-------
 
     renderGroups() {
         return this.state.groups.map((group, index) => {
             return (
-                <div className={'group'} key={ index }>
-                    {group.name}
-                </div>
+                    <ContextMenuTrigger
+                        id='contextmenu-id'
+                        name={group.name}
+                        holdToDisplay={0}
+                        key={ group.id }
+                    >
+                        <div className={'group'} >
+                            <p id={'element-id'} style={{display: 'none'}}>{group.id}</p>
+                            {group.name}
+                        </div>
+                    </ContextMenuTrigger>
             )
         })
     }
 
+    renderModalHeading() {
+        switch (this.state.currentModal) {
+            case ADD_ACTION:
+                return 'Добавить объект'
+            case UPDATE_ACTION:
+                return 'Изменить объект'
+            case DELETE_ACTION:
+                return 'Удалить объект'
+            default:
+                return 'Заголовок'
+        }
+    }
+
     renderForm() {
+        switch (this.state.currentModal) {
+            case ADD_ACTION:
+                return (
+                    <form>
+                        <input
+                            className={'add-input'}
+                            placeholder={'Название'}
+                            type="text"
+                            name={'name'}
+                            onChange={ this.handleInputChange }
+                            value={this.state.name}
+                        />
+                    </form>
+                )
+            case UPDATE_ACTION:
+                return (
+                    <form>
+                        <input
+                            className={'add-input'}
+                            placeholder={'Название'}
+                            type="text"
+                            name={'name'}
+                            onChange={ this.handleInputChange }
+                            value={this.state.name}
+                        />
+                    </form>
+                )
+            case DELETE_ACTION:
+                return (
+                    <form>
+                        <div>
+                            <h4>Вы уверенны что хотите удалить выбранный объект?</h4>
+                        </div>
+                    </form>
+                )
+            default:
+                return (
+                    <div>ERROR</div>
+                )
+        }
+    }
+
+    renderModal() {
         return (
-            <form>
-                <input
-                    className={'add-input'}
-                    placeholder={'Название'}
-                    type="text"
-                    name={'name'}
-                    onChange={ this.handleInputChange }
-                    value={this.state.name}
-                />
-            </form>
+            <ModalWindow
+                show={this.state.showModal}
+                onHide={() => this.setShowModal()}
+                onSubmit={ this.submitHandler }
+                heading={ this.renderModalHeading() }
+                body = { this.renderForm() }
+                     />
         )
     }
 
+
     render() {
-        console.log(this.state)
         return (
             <div className={'container'}>
                 <div className={'group_wrap'}>
                     <button type='button' className='add-button' data-toggle='modal' data-target= '#exampleModalCenter'
-                    onClick={() => this.setShowModal()}>
+                    onClick={() => this.setCurrentModal('ADD')}>
                         Добавить
                     </button>
                     {this.renderGroups()}
-                </div>
-                <ModalWindow
-                    show={this.state.showModal}
-                    onHide={() => this.setShowModal()}
-                    onAdd={ this.addHandler }
-                    heading={ 'Добавление нового вида занятий' }
-                    body = { this.renderForm() }
-                />
-            </div>
 
+                    <ContextMenu id='contextmenu-id'>
+                        <MenuItem data={{action: UPDATE_ACTION}} onClick={ this.setStateId }>
+                            Изменить
+                        </MenuItem>
+                        <MenuItem data={{action: DELETE_ACTION}} onClick={ this.setStateId }>
+                            Удалить
+                        </MenuItem>
+                    </ContextMenu>
+                </div>
+                {this.renderModal()}
+            </div>
         )
     }
 }
 
 export default Groups
-
-// <div className='modal fade' id='exampleModalCenter' tabIndex='-1' role='dialog'
-// aria-labelledby='exampleModalCenterTitle' aria-hidden='true'>
-//     <div className='modal-dialog modal-dialog-centered' role='document'>
-//     <div className='modal-content'>
-//     <div className='modal-header'>
-//     <h5 className='modal-title' id='exampleModalLongTitle'>Modal title</h5>
-// <button type='button' className='close' data-dismiss='modal' aria-label='Close'>
-//     <span aria-hidden='true'>&times;</span>
-// </button>
-// </div>
-// <div className='modal-body'>
-//     ...
-// </div>
-// <div className='modal-footer'>
-//     <button type='button' className='btn btn-secondary' data-dismiss='modal'>Close</button>
-// <button type='button' className='btn btn-primary'>Save changes</button>
-// </div>
-// </div>
-// </div>
-// </div>

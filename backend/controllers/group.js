@@ -23,3 +23,28 @@ module.exports.create = async (req, res) => {
         console.log(e.message)
     }
 }
+
+module.exports.update = async (req, res) => {
+    try {
+        const group = await Group.update(
+            {name: req.body.name},
+            {where: { id: req.params.id }}
+        )
+        res.status(200).json({
+            message: 'Обновление умпешно'
+        })
+    } catch (e) {
+        console.log(e.message)
+    }
+}
+
+module.exports.remove = async (req, res) => {
+    try {
+        await Group.destroy({ where: { id: req.params.id } })
+        res.status(200).json({
+            message: 'Группа была удалена'
+        })
+    } catch (e) {
+        console.log(e.message)
+    }
+}

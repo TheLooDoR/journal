@@ -26,7 +26,7 @@ function ModalWindow(props) {
                     <button className='btn modal-btn' onClick={props.onHide}>Закрыть</button>
                 </div>
                 <div className="btn-wrap">
-                    <button className='btn modal-btn' onClick={props.onAdd}>OK</button>
+                    <button className='btn modal-btn' onClick={props.onSubmit}>OK</button>
                 </div>
             </Modal.Footer>
         </Modal>
