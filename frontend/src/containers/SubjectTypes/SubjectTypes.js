@@ -2,18 +2,18 @@ import React from 'react'
 import axios from 'axios';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu'
 
-import './Groups.css'
+import './SubjectTypes.css'
 import ModalWindow from "../../components/ModalWindow/ModalWindow";
 import {ADD_ACTION, UPDATE_ACTION, DELETE_ACTION} from '../../actions/types'
 import Loader from "../../components/UI/Loader/Loader";
 
-class Groups extends React.Component {
+class SubjectTypes extends React.Component {
 
     constructor(props) {
         super(props)
 
         this.state = {
-            groups: [],
+            subjectTypes: [],
             name: '',
             itemId: '',
             currentModal: '',
@@ -23,7 +23,7 @@ class Groups extends React.Component {
     }
 
     componentDidMount() {
-        this.getGroups()
+        this.getSubjectTypes()
     }
     //------------->State change<-------------
 
@@ -48,7 +48,7 @@ class Groups extends React.Component {
         if (data.action === UPDATE_ACTION) {
             this.setCurrentModal(UPDATE_ACTION)
             this.setState({
-                name: this.state.groups.find(element => element.id === +data.target.childNodes[0].innerText).name
+                name: this.state.subjectTypes.find(element => element.id === +data.target.childNodes[0].innerText).name
             })
         } else if (data.action === DELETE_ACTION) {
             this.setCurrentModal(DELETE_ACTION)
@@ -58,42 +58,42 @@ class Groups extends React.Component {
     //------------->State change<-------------
 
     //------------->BackEnd queries<-------------
-    getGroups() {
-        axios.get('api/groups/')
+    getSubjectTypes() {
+        axios.get('api/subject-types/')
             .then(res => {
                 this.setState({
-                    groups: res.data.groups,
+                    subjectTypes: res.data.subjectTypes,
                     loading: false
                 })
             })
     }
 
-    addGroup(name) {
-        axios.post('api/groups', {name})
+    addSubjectType(name) {
+        axios.post('api/subject-types/', {name})
             .then(res => {
-                let groups = [...this.state.groups]
-                groups.push(res.data)
+                let subjectTypes = [...this.state.subjectTypes]
+                subjectTypes.push(res.data)
                 this.setState({
-                    groups: groups,
+                    subjectTypes: subjectTypes,
                     name: ''
                 })
             })
     }
 
-    updateGroup(id, name) {
-        axios.patch(`api/groups/${id}`, {name})
+    updateSubjectType(id, name) {
+        axios.patch(`api/subject-types/${id}`, {name})
             .then(res => {
-                this.getGroups()
+                this.getSubjectTypes()
             })
             .catch(err => {
                 console.log(err.message)
             })
     }
 
-    deleteGroup(id) {
-        axios.delete(`api/groups/${id}`)
+    deleteSubjectType(id) {
+        axios.delete(`api/subject-types/${id}`)
             .then(res => {
-                this.getGroups()
+                this.getSubjectTypes()
             })
             .catch(err => {
                 console.log(err.message)
@@ -112,15 +112,15 @@ class Groups extends React.Component {
         e.preventDefault()
         switch (this.state.currentModal) {
             case ADD_ACTION:
-                this.addGroup(this.state.name)
+                this.addSubjectType(this.state.name)
                 this.setShowModal()
                 break
             case UPDATE_ACTION:
-                this.updateGroup(this.state.itemId, this.state.name)
+                this.updateSubjectType(this.state.itemId, this.state.name)
                 this.setShowModal()
                 break
             case DELETE_ACTION:
-                this.deleteGroup(this.state.itemId)
+                this.deleteSubjectType(this.state.itemId)
                 this.setShowModal()
                 break
             default:
@@ -130,20 +130,20 @@ class Groups extends React.Component {
 
     //------>RENDERS<-------
 
-    renderGroups() {
-        return this.state.groups.map((group, index) => {
+    renderSubjectTypes() {
+        return this.state.subjectTypes.map(subjectType => {
             return (
-                    <ContextMenuTrigger
-                        id='contextmenu-id'
-                        name={group.name}
-                        holdToDisplay={0}
-                        key={ group.id }
-                    >
-                        <div className={'group'} >
-                            <p id={'element-id'} style={{display: 'none'}}>{group.id}</p>
-                            {group.name}
-                        </div>
-                    </ContextMenuTrigger>
+                <ContextMenuTrigger
+                    id='contextmenu-id'
+                    name={subjectType.name}
+                    holdToDisplay={0}
+                    key={ subjectType.id }
+                >
+                    <div className={'subject-type'} >
+                        <p id={'element-id'} style={{display: 'none'}}>{subjectType.id}</p>
+                        {subjectType.name}
+                    </div>
+                </ContextMenuTrigger>
             )
         })
     }
@@ -216,19 +216,19 @@ class Groups extends React.Component {
         )
     }
 
-    render() {
 
+    render() {
         return (
             <div className={'container'}>
                 {
                     this.state.loading
                         ? <Loader/>
-                        :  <div className={'group_wrap'}>
+                        : <div className={'subject-types_wrap'}>
                             <button type='button' className='add-button' data-toggle='modal' data-target= '#exampleModalCenter'
                                     onClick={() => this.setCurrentModal('ADD')}>
                                 Добавить
                             </button>
-                            {this.renderGroups()}
+                            {this.renderSubjectTypes()}
 
                             <ContextMenu id='contextmenu-id'>
                                 <MenuItem data={{action: UPDATE_ACTION}} onClick={ this.setStateId }>
@@ -242,10 +242,9 @@ class Groups extends React.Component {
                         </div>
                 }
 
-
             </div>
         )
     }
 }
 
-export default Groups
+export default SubjectTypes

@@ -1,11 +1,11 @@
 const db = require('../db/database')
-const Group = require('../models/Group')
+const SubjectType = require('../models/SubjectType')
 
 module.exports.getAll = async (req, res) => {
     try {
-        const groups = await Group.findAll()
+        const subjectTypes = await SubjectType.findAll()
         res.status(200).json({
-            groups
+            subjectTypes
         })
     } catch (e) {
         console.log(e.message)
@@ -14,10 +14,10 @@ module.exports.getAll = async (req, res) => {
 
 module.exports.create = async (req, res) => {
     try {
-        const group = {
+        const subjectType = {
             name: req.body.name
         }
-        await Group.create(group)
+        await SubjectType.create(subjectType)
             .then(result => res.status(201).json(result))
     } catch (e) {
         console.log(e.message)
@@ -26,12 +26,12 @@ module.exports.create = async (req, res) => {
 
 module.exports.update = async (req, res) => {
     try {
-        await Group.update(
+        await SubjectType.update(
             {name: req.body.name},
             {where: { id: req.params.id }}
         )
         res.status(200).json({
-            message: 'Обновление умпешно'
+            message: 'Обновление уcпешно'
         })
     } catch (e) {
         console.log(e.message)
@@ -40,9 +40,9 @@ module.exports.update = async (req, res) => {
 
 module.exports.remove = async (req, res) => {
     try {
-        await Group.destroy({ where: { id: req.params.id } })
+        await SubjectType.destroy({ where: { id: req.params.id } })
         res.status(200).json({
-            message: 'Группа была удалена'
+            message: 'Дисциалина была удалена'
         })
     } catch (e) {
         console.log(e.message)

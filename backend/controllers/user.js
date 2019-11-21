@@ -64,7 +64,7 @@ module.exports.login = async (req, res) => {
                 name: candidate.name,
                 surname: candidate.surname,
                 patronymic: candidate.patronymic
-            }, 'secret', {expiresIn: 60 * 60})
+            }, 'secret', {expiresIn: 12 * (60 * 60)})
 
             res.status(200).json({
                 success: true,

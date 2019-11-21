@@ -17,8 +17,8 @@ import menu from './assets/menu.png'
 
 const authLinks = [
     {to: '/groups', label: 'Группы', logo: groupLogo, exact: false},
-    {to: '#', label: 'Дисциплина', logo: disciplineLogo, exact: false},
-    {to: '#', label: 'Вид занятия', logo: typeLogo, exact: false},
+    {to: '/subjects', label: 'Дисциплины', logo: disciplineLogo, exact: false},
+    {to: '/subject-types', label: 'Вид занятия', logo: typeLogo, exact: false},
     {to: '#', label: 'Новое занятие', logo: newTask, exact: false},
     {to: '#', label: 'Рейтинг', logo: rating, exact: false},
     {to: '#', label: '', logo: menu, exact: false}
@@ -76,7 +76,10 @@ class Navbar extends Component {
             <React.Fragment >
                 <nav className={'Navbar'}>
                     <div className={'Logo'}>
-                        <img src={logo} alt=""/>
+                        <Link to={'/'}>
+                            <img src={logo} alt=""/>
+                        </Link>
+
                     </div>
                     <div className={'Links'}>
                         {isAuthenticated ? authLinks: guestLinks}

@@ -2,14 +2,14 @@
 @import '../../commonStyles/context-menu.css';
 @import "../../commonStyles/input.css";
 
-.group_wrap {
+.subject_wrap {
     display: flex;
     justify-content: center;
     font-family: Roboto, sans-serif;
     flex-wrap: wrap;
 }
 
-.group {
+.subject {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -22,8 +22,7 @@
     min-height: 75px;
 }
 
-.group:hover {
+.subject:hover {
     background: #15568e;
     cursor: pointer;
 }
-

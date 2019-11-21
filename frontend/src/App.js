@@ -13,6 +13,8 @@ import Login from './containers/Login/Login';
 import Home from './containers/Home/Home';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute'
 import Groups from './containers/Groups/Groups'
+import Subjects from './containers/Subjects/Subjects'
+import SubjectTypes from './containers/SubjectTypes/SubjectTypes'
 
 import TestHome from "./containers/TestHome/TestHome";
 
@@ -39,8 +41,10 @@ class App extends Component {
             <div>
                 <Navbar />
                 <Route exact path="/" component={ PrivateRoute(Home) } />
-                <Route exact path="/testHome" component={ PrivateRoute(TestHome) } />
+                <Route exact path="/testHome" component={ PrivateRoute(TestHome, true) } />
                 <Route path="/groups" component={ PrivateRoute(Groups) } />
+                <Route path="/subjects" component={ PrivateRoute(Subjects) } />
+                <Route path="/subject-types" component={ PrivateRoute(SubjectTypes) } />
                 <div className="container">
                     <Route exact path="/register" component={ Register } />
                     <Route exact path="/login" component={ Login } />
