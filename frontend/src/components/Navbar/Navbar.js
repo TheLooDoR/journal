@@ -72,22 +72,23 @@ class Navbar extends Component {
             </>
         )
         return(
+            <header>
+                <section className={'header'} >
+                    <nav className={'Navbar'}>
+                        <div className={'Logo'}>
+                            <Link to={'/'}>
+                                <img src={logo} alt=""/>
+                            </Link>
 
-            <React.Fragment >
-                <nav className={'Navbar'}>
-                    <div className={'Logo'}>
-                        <Link to={'/'}>
-                            <img src={logo} alt=""/>
-                        </Link>
-
-                    </div>
-                    <div className={'Links'}>
-                        {isAuthenticated ? authLinks: guestLinks}
-                    </div>
+                        </div>
+                        <div className={'Links'}>
+                            {isAuthenticated ? authLinks: guestLinks}
+                        </div>
 
 
-                </nav>
-            </React.Fragment>
+                    </nav>
+                </section>
+            </header>
             //<nav className="navbar navbar-expand-lg navbar-light bg-light">
                // <Link className="navbar-brand" to="/">Redux Node Auth</Link>
                 //<Link className="navbar-brand" to="/testHome">Test home</Link>

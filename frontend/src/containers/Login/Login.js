@@ -54,11 +54,14 @@ class Login extends Component {
     render() {
         const { errors } = this.state;
         return(
-            <div className="container form-container" style={{ marginTop: '150px', width: '600px'}}>
+            <div className="container form-container" >
                 <h2 className={'form-header'}>Авторизация</h2>
                 <form className={'login-form'} onSubmit={ this.handleSubmit }>
                     <div className="form-group">
-                        <label htmlFor="email">Почтовый адрес*</label>
+                        <div className="form-label">
+                            <label htmlFor="email">Почтовый адрес*</label>
+                        </div>
+
                         <input
                             type="email"
                             placeholder="Email"

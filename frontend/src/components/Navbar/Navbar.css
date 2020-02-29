@@ -1,8 +1,7 @@
 .Navbar {
-    position: relative;
-    width: 100%;
     display: flex;
     justify-content: space-between;
+    flex-flow: row wrap;
     background: #1D3B55;
     padding: 30px 30px;
     font-family: Roboto, sans-serif;

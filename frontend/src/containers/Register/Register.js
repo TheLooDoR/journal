@@ -64,14 +64,14 @@ class Register extends Component {
     render() {
         const { errors } = this.state;
         return(
-            <div className="container form-container" style={{ marginTop: '100px', width: '600px'}}>
+            <div className="container form-container" >
                 <h2 className={'form-header'}>Регистрация</h2>
                 <form className={'register-form'} onSubmit={ this.handleSubmit }>
                     <div className="form-group">
                         <label htmlFor="name">Имя*</label>
                         <input
                             type="text"
-                            placeholder="Name"
+                            placeholder="Имя"
                             className={classnames('form-input ', {
                                 'invalid': errors.email
                             })}
@@ -85,7 +85,7 @@ class Register extends Component {
                         <label htmlFor="surname">Фамилия*</label>
                         <input
                             type="text"
-                            placeholder="Surname"
+                            placeholder="Фамилия"
                             className={classnames('form-input ', {
                                 'invalid': errors.email
                             })}
@@ -99,7 +99,7 @@ class Register extends Component {
                         <label htmlFor="patronomyc">Отчество*</label>
                         <input
                             type="text"
-                            placeholder="Patronomyc"
+                            placeholder="Отчество"
                             className={classnames('form-input ', {
                                 'invalid': errors.email
                             })}
@@ -110,7 +110,7 @@ class Register extends Component {
                         {errors.patronymic && (<div className="feedback">{errors.patronymic}</div>)}
                     </div>
                     <div className="form-group">
-                        <label htmlFor="email">Почтовый адрес*</label>
+                        <label htmlFor="Email">Почтовый адрес*</label>
                         <input
                             type="email"
                             placeholder="Email"
@@ -124,7 +124,7 @@ class Register extends Component {
                         {errors.email && (<div className="feedback">{errors.email}</div>)}
                     </div>
                     <div className="form-group">
-                        <label htmlFor="password">Пароль*</label>
+                        <label htmlFor="Пароль">Пароль*</label>
                         <input
                             type="password"
                             placeholder="Password"
@@ -138,7 +138,7 @@ class Register extends Component {
                         {errors.password && (<div className="feedback">{errors.password}</div>)}
                     </div>
                     <div className="form-group">
-                        <label htmlFor="password_confirm">Подтвердить пароль*</label>
+                        <label htmlFor="Подтвердить пароль">Подтвердить пароль*</label>
                         <input
                             type="password"
                             placeholder="Confirm Password"
