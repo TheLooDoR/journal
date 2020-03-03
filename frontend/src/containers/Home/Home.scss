@@ -1,3 +1,50 @@
 .Home {
+  padding: 20px;
+  font-family: Roboto, sans-serif;
+  &__categories {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+  }
+  &__groups {
+    select {
+      padding: 12px 75px 15px 15px;
+    }
+  }
+  &__subject-types {
+    select {
+      padding: 12px 190px 15px 15px;
+    }
+  }
+  &__subjects {
+    select {
+      padding: 12px 120px 15px 15px;
+    }
+  }
+  &__btn {
+    padding: 12px 80px;
+  }
+}
 
+.filter-select {
+  border-radius: 10px;
+  border-color: #2B9CFF;
+  border-width: 1px;
+  border-style: solid;
+  opacity: 0.8;
+  -webkit-appearance: none;
+  &__wrap {
+    position: relative;
+    &:before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 18px;
+      transform: translateY(-50%);
+      background: url('../../assets/select-arrow.png') no-repeat center center;
+      width: 13px;
+      height: 13px;
+      z-index: 1;
+    }
+  }
 }
