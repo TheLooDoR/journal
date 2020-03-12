@@ -18,7 +18,7 @@ import SubjectTypes from './containers/SubjectTypes/SubjectTypes'
 
 import TestHome from "./containers/TestHome/TestHome";
 
-
+import './App.scss'
 
 
 

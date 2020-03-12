@@ -9,6 +9,8 @@ const MainButton = props => {
         <button
             onClick={props.onClick}
             className={cls.join(' ')}
+            disabled={props.disabled}
+            type={props.type}
         >
             {props.children}
         </button>

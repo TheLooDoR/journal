@@ -2,22 +2,23 @@ const Sequelize = require('sequelize')
 const db = require('../db/database')
 const Journal = require('../models/Journal')
 
-const Subject = db.define('subject', {
+const Date = db.define('date', {
     id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
     },
-    name: {
-        type: Sequelize.TEXT,
+    date: {
         allowNull: false,
-        unique: true
+        type: Sequelize.DATEONLY
+    },
+    time: {
+        type: Sequelize.TIME
     }
 })
 
+Journal.hasMany(Date, {foreignKey: 'id', sourceKey: 'date_id'})
+Date.belongsTo(Journal, {foreignKey: 'id', targetKey: 'date_id'})
 
-Journal.hasMany(Subject, {foreignKey: 'id', sourceKey: 'subject_id'})
-Subject.belongsTo(Journal, {foreignKey: 'id', targetKey: 'subject_id'})
-
-module.exports = Subject
+module.exports = Date

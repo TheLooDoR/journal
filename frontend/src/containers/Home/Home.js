@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
-import './Home.scss'
 import Loader from "../../components/UI/Loader/Loader";
 import {connect} from "react-redux";
 import {
     getGroupsData,
     getSubjectsData,
-    getSubjectTypesData,
-    setCurrentGroup,
-    setCurrentSubject,
-    setCurrentSubjectType, setJournalData
+    getSubjectTypesData, setJournalData,
+    setJournalParameters
 } from "../../actions";
 import MainButton from '../../components/UI/MainButton/MainButton'
+import Journal from "../../components/Journal/Journal";
+import './Home.scss'
 
 class Home extends Component {
 
@@ -18,13 +17,13 @@ class Home extends Component {
         super(props);
         this.state = {
             journalData: {
-                group: '1',
-                subjectType: '1',
-                subject: '1'
-            }
+                group: {},
+                subjectType: {},
+                subject: {}
+            },
+            showModal: false
         }
     }
-
 
     componentDidMount() {
         const { dispatch } = this.props
@@ -34,23 +33,50 @@ class Home extends Component {
     }
 
     changeHandler (e) {
-        let journalData = this.state.journalData
-        journalData[e.target.name] = e.target.value
-        this.setState({
-            journalData
-        })
-        // this.setState({
-        //    [e.target.name]: e.target.value
-        // })
+        if (e.target.value !== 'DEFAULT') {
+            let journalData = this.state.journalData
+            journalData[e.target.name] = JSON.parse(e.target.value)
+            this.setState({
+                journalData
+            })
+        }
     }
 
     clickHandler = () => {
         const { dispatch } = this.props
-        dispatch(setJournalData(this.state.journalData))
+        const { user } = this.props
+        dispatch(setJournalParameters(this.state.journalData))
+        dispatch(setJournalData(this.state.journalData, user.userId))
+        this.setShowModal()
+    }
+
+    setShowModal() {
+        this.setState({
+            showModal: !this.state.showModal
+        })
+    }
+
+    renderModal() {
+        const { group, subjectType, subject } = this.props.journalParameters
+         return (
+            <Journal
+                show={this.state.showModal}
+                onHide={() => this.setShowModal()}
+                group={group}
+                subjectType={subjectType}
+                subject={subject}
+                journalData={this.props.journalData}
+                journalDate={this.props.journalDate}
+                journalStudents={this.props.journalStudents}
+                errors={this.props.errors}
+                isLoading={this.props.isLoading}
+            />
+        )
     }
 
     render() {
         const {entities} = this.props
+        const {journalData} = this.state
         if (!entities.subjectTypes || !entities.groups || !entities.subjects) {
             return (<Loader/>)
         }
@@ -61,12 +87,13 @@ class Home extends Component {
                         <select
                             className='filter-select'
                             name="group"
-                            value={this.state.journalData.group}
                             onChange={(e) => this.changeHandler(e)}
+                            defaultValue={'DEFAULT'}
                         >
+                            <option disabled value='DEFAULT'>Группа</option>
                             {entities.groups.map((el) => {
                                 return (
-                                    <option key={el.id} value={el.id}>{el.name}</option>
+                                    <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
                                 )
                             })}
                         </select>
@@ -75,12 +102,13 @@ class Home extends Component {
                         <select
                             className='filter-select'
                             name='subjectType'
-                            value={this.state.journalData.subjectType}
                             onChange={(e) => this.changeHandler(e)}
+                            defaultValue={'DEFAULT'}
                         >
+                            <option disabled value='DEFAULT'>Дисциалина</option>
                             {entities.subjectTypes.map((el) => {
                                 return (
-                                    <option key={el.id} value={el.id}>{el.name}</option>
+                                    <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
                                 )
                             })}
                         </select>
@@ -89,12 +117,13 @@ class Home extends Component {
                         <select
                             className='filter-select'
                             name='subject'
-                            value={this.state.journalData.subject}
                             onChange={(e) => this.changeHandler(e)}
+                            defaultValue={'DEFAULT'}
                         >
+                            <option disabled value='DEFAULT'>Вид занятия</option>
                             {entities.subjects.map((el) => {
                                 return (
-                                    <option key={el.id} value={el.id}>{el.name}</option>
+                                    <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
                                 )
                             })}
                         </select>
@@ -102,10 +131,12 @@ class Home extends Component {
                     <MainButton
                         className='Home__btn'
                         onClick={this.clickHandler}
+                        disabled={Object.entries(journalData.group).length === 0 || Object.entries(journalData.subjectType).length === 0 || Object.entries(journalData.subject).length === 0}
                     >
                         Найти
                     </MainButton>
                 </div>
+                {this.renderModal()}
             </div>
         );
     }
@@ -113,7 +144,14 @@ class Home extends Component {
 
 function mapStateToProps(state) {
     return {
-        entities: state.entities
+        entities: state.entities,
+        journalParameters: state.journal.journalParameters,
+        journalData: state.journal.journalData,
+        journalDate: state.journal.journalDate,
+        journalStudents: state.journal.journalStudents,
+        user: state.auth.user,
+        errors: state.errors,
+        isLoading: state.journal.isLoading
     }
 }
 
