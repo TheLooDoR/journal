@@ -40,7 +40,7 @@ const Journal = db.define('journal', {
         type: Sequelize.TEXT
     },
     score: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
     },
     date_id: {
         type: Sequelize.INTEGER,

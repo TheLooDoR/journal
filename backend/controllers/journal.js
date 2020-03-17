@@ -105,3 +105,29 @@ module.exports.getData = async (req, res) => {
         console.log(e.message)
     }
 }
+
+module.exports.updateStudentData = async (req, res) => {
+    try {
+        const studentData = await Journal.update({
+                present: req.body.present,
+                note: req.body.note,
+                score: req.body.score,
+                valid_miss: req.body.valid_miss
+            },
+            {
+                where : {
+                    user_id: req.body.user_id,
+                    date_id: req.body.date_id,
+                    subject_id: req.body.subject_id,
+                    student_id: req.body.student_id,
+                    type_id: req.body.type_id
+                }
+            }
+        )
+        res.status(200).json({
+            studentData
+        })
+    } catch (e) {
+        console.log(e.message)
+    }
+}

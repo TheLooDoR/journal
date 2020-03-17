@@ -1,7 +1,12 @@
 import {
     SET_JOURNAL_PARAMETERS,
     SET_JOURNAL_DATA,
-    GET_ERRORS, REQUEST_JOURNAL_DATA, REQUEST_JOURNAL_DATA_FINISHED, SET_JOURNAL_DATE, SET_JOURNAL_STUDENTS,
+    GET_ERRORS,
+    REQUEST_JOURNAL_DATA,
+    REQUEST_JOURNAL_DATA_FINISHED,
+    SET_JOURNAL_DATE,
+    SET_JOURNAL_STUDENTS,
+    UPDATE_STUDENT_DATA,
 } from "./types";
 import Axios from "axios";
 
@@ -47,11 +52,11 @@ const requestJournalDataFinished = () => {
     }
 }
 
-export const setJournalData = (journalParameters, userId) => dispatch => {
-    const group_id = journalParameters.group.id
-    const user_id = userId
-    const subject_id = journalParameters.subject.id
-    const type_id = journalParameters.subjectType.id
+export const setJournalData = (journalParameters) => dispatch => {
+    const group_id = journalParameters.group_id
+    const user_id = journalParameters.user_id
+    const subject_id = journalParameters.subject_id
+    const type_id = journalParameters.type_id
     dispatch(requestJournalData())
     Axios.post('api/journal', { group_id, user_id, subject_id, type_id })
         .then(res => {
@@ -68,5 +73,17 @@ export const setJournalData = (journalParameters, userId) => dispatch => {
                 type: GET_ERRORS,
                 payload: err.response.data
             })
+        })
+}
+
+
+
+export const updateStudentData = (studentData) => {
+    Axios.post('api/journal/update-student-data', studentData)
+        .then(res => {
+            console.log('UPDATED')
+        })
+        .catch(err => {
+            console.log(err.message)
         })
 }

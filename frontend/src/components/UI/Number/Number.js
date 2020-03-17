@@ -18,6 +18,7 @@ const Number = props => {
             downHandler={downHandler}
             onChange={props.onChange}
             value={props.value}
+            name={props.name}
         />
     )
 }

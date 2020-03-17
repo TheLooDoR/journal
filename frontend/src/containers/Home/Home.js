@@ -45,8 +45,15 @@ class Home extends Component {
     clickHandler = () => {
         const { dispatch } = this.props
         const { user } = this.props
+        const {journalData} = this.state
         dispatch(setJournalParameters(this.state.journalData))
-        dispatch(setJournalData(this.state.journalData, user.userId))
+        const journalParameters = {
+            group_id: journalData.group.id,
+            subject_id: journalData.subject.id,
+            type_id: journalData.subjectType.id,
+            user_id: user.userId
+        }
+        dispatch(setJournalData(journalParameters))
         this.setShowModal()
     }
 

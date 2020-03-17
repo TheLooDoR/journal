@@ -3,15 +3,45 @@ import Modal from "react-responsive-modal";
 import Number from "../UI/Number/Number";
 import Radio from "../UI/Radio/Radio";
 import MainButton from "../UI/MainButton/MainButton";
+import {connect} from "react-redux";
+import {setJournalData, updateStudentData} from "../../actions";
 
 import './PresentModal.scss'
+
 
 class PresentModal extends Component{
 
     constructor(props) {
         super(props)
         this.state = {
-            grade: null
+            grade: null,
+            note: '',
+            miss: ''
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const { student } = this.props
+        if (prevProps !== this.props) {
+            let presentValue = ''
+            switch (true) {
+                case student.present:
+                    presentValue = 'is-present'
+                    break
+                case !student.present && student.valid_miss:
+                    presentValue = 'valid-miss'
+                    break
+                case !student.present && !student.valid_miss:
+                    presentValue = 'miss'
+                    break
+                default:
+                    presentValue =  ''
+            }
+            this.setState({
+                grade: student.score,
+                note: student.note,
+                miss: presentValue
+            })
         }
     }
 
@@ -21,16 +51,89 @@ class PresentModal extends Component{
         })
     }
 
+    changeHandler(e) {
+        this.setState({
+            [e.target.name]: e.target.value
+        })
+    }
+
+    submitHandler(e) {
+        e.preventDefault()
+        const { student, dispatch } = this.props
+        let present, valid_miss
+        //convert state values to DB values
+        switch (this.state.miss) {
+            case 'is-present':
+                present = true
+                valid_miss = false
+                break
+            case 'valid-miss':
+                present = false
+                valid_miss = true
+                break
+            case 'miss':
+                present = false
+                valid_miss = false
+                break
+            default:
+                break
+        }
+        //update data
+        const studentData = {
+            user_id: student.user_id,
+            subject_id: student.subject_id,
+            student_id: student.student_id,
+            type_id: student.type_id,
+            date_id: student.date_id,
+            note: this.state.note,
+            score: this.state.grade,
+            present,
+            valid_miss
+        }
+        updateStudentData(studentData)
+        //update redux store after post
+        const journalParameters = {
+            group_id: this.props.journalParameters.group.id,
+            user_id: studentData.user_id,
+            subject_id: studentData.subject_id,
+            type_id: studentData.type_id
+        }
+        dispatch(setJournalData(journalParameters))
+        //close modal window
+        this.props.onHide(this.props.student)
+    }
+
     render() {
+        const { student } = this.props
+        //check if student is not null
+        if (Object.keys(student).length === 0 && student.constructor === Object) {
+            return null
+        }
         return (
             <Modal onClose={this.props.onHide} open={this.props.show} modalId={'present-modal'}>
-                <form className="PresentModal">
+                <form className="PresentModal" onSubmit={e => this.submitHandler(e)}>
                     <div className="PresentModal__title">
                         <div className="PresentModal__date-wrap">
-                            Число: <span className="PresentModal__date">01.09.2019</span>
+                            Число:
+                            <span className="PresentModal__date">
+                                {this.props.journalDate.map(el => {
+                                    if (el.id === student.date_id) {
+                                        return (` ${el.date}`)
+                                    }
+                                    return null
+                                })}
+                            </span>
                         </div>
                         <div className="PresentModal__student-wrap">
-                            Студент: <span className="PresentModal__student">Абрамов Егор</span>
+                            Студент:
+                            <span className="PresentModal__student">
+                                {this.props.journalStudents.map(el => {
+                                    if (el.id === student.student_id) {
+                                        return (` ${el.surname} ${el.name.substr(0, 1)}. ${el.patronymic.substr(0, 1)}.`)
+                                    }
+                                    return null
+                                })}
+                            </span>
                         </div>
                     </div>
                     <h4 className="PresentModal__grades-title">Успеваемость</h4>
@@ -47,8 +150,14 @@ class PresentModal extends Component{
                                 />
                             </div>
                             <div className="grades__comment-wrap">
-                                <label className='grades__comment-title' htmlFor="input-comment">Комментарий</label>
-                                <textarea className='grades__comment-value custom-textarea' name='input-comment' rows={3}/>
+                                <label className='grades__comment-title' htmlFor="note">Комментарий</label>
+                                <textarea
+                                    className='grades__comment-value custom-textarea'
+                                    name='note'
+                                    rows={3}
+                                    value={this.state.note}
+                                    onChange={event => this.changeHandler(event)}
+                                />
                             </div>
                         </div>
                         <table className="grades__marks">
@@ -106,19 +215,40 @@ class PresentModal extends Component{
                     <h4 className="PresentModal__attendance-title">Посещаемость</h4>
                     <div className="PresentModal__attendance">
                         <Radio
-                            name='input-miss'
-                            label='Отсутствует по уважительной причине'
+                            value='is-present'
+                            label='Присутствует'
+                            checked={this.state.miss === 'is-present'}
+                            onChange={e => this.changeHandler(e)}
+                            name='miss'
                         />
                         <Radio
-                            name='input-miss'
+                            value='valid-miss'
+                            label='Отсутствует по уважительной причине'
+                            checked={this.state.miss === 'valid-miss'}
+                            onChange={e => this.changeHandler(e)}
+                            name='miss'
+                        />
+                        <Radio
+                            value='miss'
                             label='Отсутствует без уважительной причины'
+                            checked={this.state.miss === 'miss'}
+                            onChange={e => this.changeHandler(e)}
+                            name='miss'
                         />
                     </div>
-                    <MainButton className='PresentModal__btn' type='submit'>Сохранить</MainButton>
+                    <MainButton className='PresentModal__btn' type='submit' >Сохранить</MainButton>
                 </form>
             </Modal>
         )
     }
 }
 
-export default PresentModal
+function mapStateToProps(state) {
+    return {
+        journalStudents: state.journal.journalStudents,
+        journalDate: state.journal.journalDate,
+        journalParameters: state.journal.journalParameters
+    }
+}
+
+export default connect(mapStateToProps)(PresentModal)

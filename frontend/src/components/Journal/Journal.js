@@ -10,13 +10,15 @@ class Journal extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            showModal: false
+            showModal: false,
+            currentStudent: {}
         }
     }
 
-    hideHandler = () => {
+    hideHandler = (student) => {
         this.setState({
-            showModal: !this.state.showModal
+            showModal: !this.state.showModal,
+            currentStudent: student
         })
     }
 
@@ -74,7 +76,7 @@ class Journal extends Component {
                                         <td
                                             id={`date-${el.date_id}-student-${el.student_id}`}
                                             key={index}
-                                            onDoubleClick={this.hideHandler}
+                                            onDoubleClick={() => this.hideHandler(el)}
                                             className='journal-content__presents'
                                         >
                                             {el.present ? el.score ? el.score : '' : 'н'}
@@ -122,10 +124,10 @@ class Journal extends Component {
                                 {this.renderTableBody()}
                             </Table>
                         </div>
-                        <button onClick={this.hideHandler}>Open second modal</button>
                         <PresentModal
                             show={this.state.showModal}
                             onHide={this.hideHandler}
+                            student = {this.state.currentStudent}
                         />
                     </div>
                 }
