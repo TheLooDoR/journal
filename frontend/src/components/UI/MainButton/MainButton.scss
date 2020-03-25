@@ -7,4 +7,9 @@
   text-transform: uppercase;
   border: none;
   font-weight: bold;
+  &:disabled {
+    color: #212529;
+    background: #e2e6ea;
+    cursor: not-allowed;
+  }
 }

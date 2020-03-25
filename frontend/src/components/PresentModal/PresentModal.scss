@@ -1,0 +1,115 @@
+.PresentModal {
+  font-size: 18px;
+  display: flex;
+  flex-flow: column;
+  &__title {
+    display: flex;
+  }
+  &__date-wrap {
+    font-weight: 500;
+  }
+  &__date {
+    font-weight: bold;
+    color: #8823FF;
+  }
+  &__student-wrap {
+    margin-left: 30px;
+    font-weight: 500;
+  }
+  &__student {
+    font-weight: bold;
+    color: #8823FF;
+  }
+  &__grades-title {
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 21px;
+    color: #1D3B55;
+    margin-top: 15px;
+  }
+  &__attendance-title {
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 21px;
+    color: #1D3B55;
+    margin-top: 15px;
+  }
+  &__attendance {
+    margin-bottom: 20px;
+  }
+  &__btn {
+    padding: 12px 60px;
+    text-align: center;
+    align-self: center;
+  }
+}
+
+.grades {
+  display: flex;
+  flex-flow: row;
+  justify-content: space-between;
+  font-weight: 500;
+  border: 1px solid #2B9CFF;
+  border-radius: 10px;
+  padding-left: 15px;
+  &__inputs {
+    display: flex;
+    flex-flow: column;
+  }
+  &__marks {
+    max-width: 345px;
+    text-align: center;
+    vertical-align: middle;
+    th {
+      font-size: 12px;
+      border: 1px solid #2B9CFF;
+      border-top: none;
+      border-right: none;
+      font-weight: 500;
+    }
+    td {
+      font-size: 10px;
+      border: 1px solid #2B9CFF;
+      border-right: none;
+      font-weight: 500;
+    }
+  }
+  &__grade-wrap {
+    padding: 23px 0 30px 0;
+  }
+  &__comment-wrap {
+    display: flex;
+    flex-flow: column;
+    align-items: flex-start;
+    margin-bottom: 40px;
+  }
+  &__grade-title {
+    display: inline-block;
+  }
+  &__grade-value {
+    margin-left: 10px;
+  }
+  &__comment-title {
+
+  }
+  &__comment-value {
+
+  }
+}
+
+.custom-textarea {
+  border: 1px solid #8823FF;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  line-height: 31px;
+  padding: 8px;
+  resize: none;
+  max-width: 250px;
+  &:focus {
+    outline: none;
+  }
+}
+
+#present-modal {
+  max-width: 800px;
+}

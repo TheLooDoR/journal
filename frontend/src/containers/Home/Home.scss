@@ -31,8 +31,8 @@
   border-color: #2B9CFF;
   border-width: 1px;
   border-style: solid;
-  opacity: 0.8;
   -webkit-appearance: none;
+  outline: none;
   &__wrap {
     position: relative;
     &:before {
@@ -44,7 +44,7 @@
       background: url('../../assets/select-arrow.png') no-repeat center center;
       width: 13px;
       height: 13px;
-      z-index: 1;
+      pointer-events: none;
     }
   }
 }
