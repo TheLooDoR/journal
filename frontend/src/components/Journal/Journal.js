@@ -1,9 +1,17 @@
 import React, {Component} from 'react'
 import Modal from 'react-responsive-modal';
 import Table from 'react-bootstrap/Table'
-import './Journal.scss'
 import Loader from "../UI/Loader/Loader";
 import PresentModal from "../PresentModal/PresentModal";
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import MainButton from "../UI/MainButton/MainButton";
+import {addTaskByDate} from "../../actions";
+import {connect} from 'react-redux'
+import isEmpty from "../../common-js/isEmpty";
+import formatDate from "../../common-js/formatDate";
+
+import './Journal.scss'
 
 class Journal extends Component {
 
@@ -11,6 +19,8 @@ class Journal extends Component {
         super(props)
         this.state = {
             showModal: false,
+            showDateModal: false,
+            date: new Date(),
             currentStudent: {}
         }
     }
@@ -22,28 +32,82 @@ class Journal extends Component {
         })
     }
 
+    hideDateHandler() {
+        this.setState({
+            showDateModal: !this.state.showDateModal
+        })
+    }
+
+    dateChangeHandler = date => {
+        this.setState({
+            date
+        })
+    }
+
+    addTaskHandler(e) {
+        e.preventDefault()
+        const {dispatch, user, subject, subjectType, group} = this.props
+        const taskData = {
+            date: this.state.date,
+            user_id: user.userId,
+            subject_id: subject.id,
+            type_id: subjectType.id,
+            group_id: group.id
+        }
+        dispatch(addTaskByDate(taskData))
+        this.hideDateHandler()
+    }
+
+    calculateTotalGrades(grades) {
+        let sum = 0
+        for (let i = 0; i < grades.length; i++) {
+            sum += grades[i]
+        }
+        return sum / grades.length
+    }
+
     renderTableHead() {
         return (
             <thead>
                 <tr className='journal-content__title'>
-                    <th rowSpan={2} style={{fontSize: '24px'}}>№</th>
-                    <th rowSpan={2} style={{fontSize: '24px'}}>ФИО</th>
-                    <th colSpan={this.props.journalDate.length}>Дата</th>
-                    <th rowSpan={2}>Всего пропусков</th>
-                    <th rowSpan={2}>Пропусков по ув.причине</th>
-                    <th rowSpan={2} style={{fontSize: '24px'}}>Итоговые оценки</th>
-                </tr>
-                <tr className='journal-content__title'>
+                    <th height={98}  style={{top: 56, borderBottom: 'none'}} className='fixed-row number-row'>№</th>
+                    <th height={98} style={{top: 56, borderBottom: 'none'}} className='fixed-row name-row'>ФИО</th>
                     {
                         this.props.journalDate.map(el => {
                             return (
-                                <th id={`date ${el.id}`} key={el.id}>{el.date}</th>
+                                <th height={97} id={`date ${el.id}`} key={el.id}>{formatDate(el.date)}</th>
                             )
                         })
                     }
-                    {/*<th>01.09</th>*/}
-                    {/*<th>01.09</th>*/}
-                    {/*<th>01.09</th>*/}
+                    <th
+                        height={98}
+                        onClick={() => this.hideDateHandler()}
+                        style={{top: 56, borderBottom: 'none'}}
+                        className='fixed-row add-row'
+                    >
+                        <div className="journal-content__add-btn">Добавить</div>
+                    </th>
+                    <th
+                        height={98}
+                        style={{top: 56, borderBottom: 'none'}}
+                        className='fixed-row miss-row'
+                    >
+                        Всего пропусков
+                    </th>
+                    <th
+                        height={98}
+                        style={{top: 56, borderBottom: 'none'}}
+                        className='fixed-row valid-miss-row'
+                    >
+                        Пропусков по ув.причине
+                    </th>
+                    <th
+                        height={98}
+                        style={{top: 56, borderBottom: 'none'}}
+                        className='fixed-row total-grades-row'
+                    >
+                        Итоговые оценки
+                    </th>
                 </tr>
             </thead>
         )
@@ -52,24 +116,38 @@ class Journal extends Component {
     renderTableBody () {
         let missAmount = 0
         let validMissAmount = 0
+        let grades = []
         return (
             <tbody>
             {
                 this.props.journalStudents.sort((a, b) => a.number_list - b.number_list).map(student => {
                     missAmount = 0
                     validMissAmount = 0
+                    grades = []
                     return (
                         <tr key={student.id}>
-                            <td>{student.number_list}</td>
-                            <td>{`${student.surname} ${student.name.substr(0, 1)}. ${student.patronymic.substr(0, 1)}.`}</td>
+                            {/*Number list */}
+                            <td className='fixed-row number-row'>{student.number_list}</td>
+                            {/*Student Name*/}
+                            <td
+                                className='fixed-row name-row'
+                                style={{minWidth: 200}}
+                            >
+                                {`${student.surname} ${student.name.substr(0, 1)}. ${student.patronymic.substr(0, 1)}.`}
+                            </td>
                             {this.props.journalData.map((el, index) => {
                                 if (el.student_id === student.id) {
+                                    console.log(el)
                                     //Counting miss amount
                                     if (!el.present) {
                                         missAmount++
                                         if (el.valid_miss) {
                                             validMissAmount++
                                         }
+                                    }
+                                    //Adding grades to grades array
+                                    if (el.score !== null) {
+                                        grades.push(el.score)
                                     }
                                     //return if students is missing
                                     return (
@@ -85,12 +163,19 @@ class Journal extends Component {
                                 }
                                 return null
                             })}
+                            {console.log(grades)}
+                            {/*empty column for add btn*/}
+                            <td className='journal-content__add fixed-row add-row'/>
                             {/*miss amount*/}
-                            <td id={`amount-${student.id}`}>{missAmount}</td>
+                            <td id={`amount-${student.id}`} className='fixed-row miss-row'>{missAmount}</td>
                             {/*valid miss amount*/}
-                            <td id={`valid-miss-amount${student.id}`}>{validMissAmount}</td>
+                            <td id={`valid-miss-amount${student.id}`} className='fixed-row valid-miss-row'>{validMissAmount}</td>
                             {/*total grades*/}
-                            <td> </td>
+                            <td
+                                className='journal-content__total-grades fixed-row total-grades-row'
+                            >
+                                {grades.length === 0 ? '': Math.round(this.calculateTotalGrades(grades))}
+                            </td>
                         </tr>
                     )
                 })
@@ -100,40 +185,75 @@ class Journal extends Component {
     }
 
     render() {
-        const {group, subjectType, subject, errors, journalData} = this.props
+        const {group, subjectType, subject, errors, journalData, journalDate} = this.props
         if (!group || !subjectType || !subject) {
             return null
         }
-        if (this.props.isLoading) {
-            return (
-                <Loader/>
-            )
+        //Adaptive table slider
+        let ml = 247, mr = 464
+        if (journalDate.length === 2) {
+            ml += 3
+            mr += 3
+        } else if ((journalDate.length >= 3) && journalDate.length < 6) {
+            ml += 4
+            mr += 4
+        } else if (journalDate.length >= 6) {
+            mr += 4
+            ml += 4
         }
         return (
-            <Modal onClose={this.props.onHide} open={this.props.show} modalId='journal-modal'>
-                {Object.keys(journalData).length === 0 && journalData.constructor === Object ?
-                    <h2>{errors.search}</h2>
-                    :
-                    <div className="Journal">
-                        <div className="Journal__title">
-                            {group.name}/{subjectType.name}/{subject.name}
+            <Modal
+                onClose={this.props.onHide}
+                open={this.props.show}
+                modalId={isEmpty(journalData) ? 'journal-modal-error' : 'journal-modal'}
+                center
+                animationDuration={250}
+            >
+                {this.props.isLoading ? <Loader/> :
+                    isEmpty(journalData) ?
+                        <div className='search-error'>
+                            <h2 >{errors.search}</h2>
+                            <MainButton className='search-error__btn' onClick={() => this.hideDateHandler()}>Создать журнал</MainButton>
                         </div>
-                        <div className="Journal__content journal-content">
-                            <Table bordered className='journal-content__table'>
-                                {this.renderTableHead()}
-                                {this.renderTableBody()}
-                            </Table>
+                        :
+                        <div className="Journal">
+                            <div className="Journal__title">
+                                {group.name}/{subjectType.name}/{subject.name}
+                            </div>
+                            <div className="Journal__content journal-content" style={{marginLeft: ml, marginRight: mr}}>
+                                <Table bordered className='journal-content__table'>
+                                    {this.renderTableHead()}
+                                    {this.renderTableBody()}
+                                </Table>
+                            </div>
+                            <PresentModal
+                                show={this.state.showModal}
+                                onHide={this.hideHandler}
+                                student = {this.state.currentStudent}
+                                center={true}
+                            />
                         </div>
-                        <PresentModal
-                            show={this.state.showModal}
-                            onHide={this.hideHandler}
-                            student = {this.state.currentStudent}
-                        />
-                    </div>
                 }
+                <Modal onClose={() => this.hideDateHandler()} open={this.state.showDateModal} modalId='date-modal' center>
+                    <form className="journal-add-form" onSubmit={e => this.addTaskHandler(e)}>
+                        <Calendar
+                            onChange={this.dateChangeHandler}
+                            value={this.state.date}
+                            locale='ru'
+                            formatLongDate={(date) => formatDate(date)}
+                        />
+                        <MainButton className='journal-add-form__btn' type='submit'>Добавить</MainButton>
+                    </form>
+                </Modal>
             </Modal>
         )
     }
 }
 
-export default Journal
+function mapStateToProps(state) {
+    return {
+        user: state.auth.user
+    }
+}
+
+export default connect(mapStateToProps)(Journal)

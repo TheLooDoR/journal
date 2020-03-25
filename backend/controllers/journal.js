@@ -20,7 +20,7 @@ module.exports.getData = async (req, res) => {
             students_id.push(studentsGroup[i].id)
         }
 
-        //Students seatch by journal
+        //Students search by journal
         const studentFromJournal = await Journal.findAll({
             attributes: ['student_id'],
             group: ['student_id'],
@@ -128,6 +128,54 @@ module.exports.updateStudentData = async (req, res) => {
             studentData
         })
     } catch (e) {
+        console.log(e.message)
+    }
+}
+
+module.exports.addTaskByDate = async (req, res) => {
+    try {
+        const errors = {}
+        const date = await Date.findOrCreate({
+            where: {
+                date: req.body.date
+            },
+            defaults: {
+                date: req.body.date,
+                time: null
+            }
+        }).catch(e => {
+            errors.date = 'Неправильная дата'
+            res.status(401).json(errors)
+        })
+        const studentsGroup = await Students.findAll({
+            where: {
+                group_id: req.body.group_id
+            }
+        })
+        studentsGroup.map(async el => {
+            try {
+                await Journal.create({
+                    user_id: req.body.user_id,
+                    subject_id: req.body.subject_id,
+                    student_id: el.id,
+                    present: true,
+                    note: '',
+                    score: null,
+                    date_id: date[0].id,
+                    type_id: req.body.type_id,
+                    valid_miss: false
+                }).catch(e => {
+                    errors.task = 'Ошибка добавления'
+                    res.status(401).json(errors)
+                })
+            } catch (e) {
+                console.log(e.message)
+            }
+
+        })
+        res.status(201).json('Добавление успешно')
+    } catch (e) {
+
         console.log(e.message)
     }
 }

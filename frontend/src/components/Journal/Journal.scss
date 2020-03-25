@@ -1,4 +1,5 @@
 .Journal {
+  position: relative;
   &__title {
     text-align: center;
     margin-bottom: 20px;
@@ -8,28 +9,146 @@
   }
 }
 
+.fixed-row {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.number-row {
+  left: 0;
+  width: 55px;
+}
+.name-row {
+  left: 54px;
+  width: 200px;
+  background: white;
+}
+.add-row {
+  right: 367px;
+  width: 105px;
+  background: white;
+}
+.miss-row {
+  right: 248px;
+  width: 120px;
+}
+.valid-miss-row {
+  right: 129px;
+  width: 120px;
+}
+.total-grades-row {
+  right: 0;
+  width: 130px;
+}
+
 .journal-content {
   text-align: center;
+
+  overflow-x:scroll;
+  overflow-y:visible;
+  &::-webkit-scrollbar {
+    height: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, #2B9CFF 0%, #9610FF 100%);
+    border-radius: 10px;
+  }
   &__table {
     color: #1D3B55;
   }
   &__title {
   }
   &__presents {
+    height: 49px;
     &:hover {
       background: rgba(136, 35, 255, .1);
       cursor: default;
     }
   }
+  &__add {
+    height: 50px;
+  }
+  &__add-btn {
+    padding: 5px;
+    background-color: #d4edda;
+    color: #155724;
+    border-radius: 5px;
+    &:hover {
+      color: #1a9133;
+      cursor: pointer;
+    }
+  }
+  &__total-grades {
+    height: 50px;
+  }
+}
+
+.search-error {
+  text-align: center;
+  &__btn {
+    padding: 15px 50px;
+    margin: 15px 0 10px 0;
+  }
+}
+
+.journal-add-form {
+  display: flex;
+  flex-flow: column;
+  padding: 20px 0;
+  &__btn {
+    align-self: center;
+    padding: 12px 60px;
+    margin-top: 25px;
+  }
+}
+
+#date-modal {
+  max-width: 450px;
 }
 
 #journal-modal {
   max-width: 1350px;
 }
 
+#present-modal {
+}
+
+#journal-modal-error {
+
+}
+
+.react-calendar {
+  margin: auto;
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  border: 1px solid #8823FF;
+  border-radius: 8px;
+  &__navigation {
+    button:enabled {
+      &:hover, &:focus {
+        background: rgba(43, 156, 255, .8);
+        opacity: 0.8;
+      }
+    }
+    &__prev2-button {
+      border-radius: 8px 0 0 0;
+    }
+    &__next2-button {
+      border-radius: 0 8px 0 0;
+    }
+  }
+}
+
 .styles_modal__gNwvD {
   border-radius: 20px;
   width: 100%;
+}
+
+.styles_closeIcon__1QwbI {
+  fill: #2B9CFF;
 }
 
 .table thead th {
@@ -38,6 +157,15 @@
 
 .table-bordered td, .table-bordered th {
   border: 1px solid #2B9CFF;
+}
+
+.table-bordered td.journal-content__add {
+  border-top: none;
+  border-bottom: none;
+}
+
+.table-bordered tr:last-child td.journal-content__add {
+  border-bottom: 1px solid #2B9CFF;
 }
 
 .table thead th {

@@ -6,7 +6,6 @@ import setAuthToken from './setAuthToken';
 import { setCurrentUser, logoutUser } from './actions/authentication';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { withRouter } from 'react-router-dom';
-
 import Navbar from './components/Navbar/Navbar';
 import Register from './containers/Register/Register';
 import Login from './containers/Login/Login';

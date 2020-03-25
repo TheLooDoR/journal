@@ -5,8 +5,7 @@ import {
     REQUEST_JOURNAL_DATA,
     REQUEST_JOURNAL_DATA_FINISHED,
     SET_JOURNAL_DATE,
-    SET_JOURNAL_STUDENTS,
-    UPDATE_STUDENT_DATA,
+    SET_JOURNAL_STUDENTS
 } from "./types";
 import Axios from "axios";
 
@@ -80,10 +79,23 @@ export const setJournalData = (journalParameters) => dispatch => {
 
 export const updateStudentData = (studentData) => {
     Axios.post('api/journal/update-student-data', studentData)
-        .then(res => {
+        .then(() => {
             console.log('UPDATED')
         })
         .catch(err => {
             console.log(err.message)
         })
+}
+
+export const addTaskByDate = taskData => dispatch => {
+    const {user_id, subject_id, type_id, group_id} = taskData
+    const journalParameters = {
+        user_id,
+        subject_id,
+        type_id,
+        group_id
+    }
+    Axios.post('api/journal/create-task-by-date', taskData)
+        .then(() => dispatch(setJournalData(journalParameters)))
+        .catch(err => console.log(err.message))
 }

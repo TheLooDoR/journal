@@ -19,6 +19,7 @@ const Number = props => {
             onChange={props.onChange}
             value={props.value}
             name={props.name}
+            disabled={props.disabled}
         />
     )
 }

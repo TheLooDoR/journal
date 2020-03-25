@@ -7,6 +7,8 @@ import {connect} from "react-redux";
 import {setJournalData, updateStudentData} from "../../actions";
 
 import './PresentModal.scss'
+import isEmpty from "../../common-js/isEmpty";
+import formatDate from "../../common-js/formatDate";
 
 
 class PresentModal extends Component{
@@ -106,11 +108,11 @@ class PresentModal extends Component{
     render() {
         const { student } = this.props
         //check if student is not null
-        if (Object.keys(student).length === 0 && student.constructor === Object) {
+        if (isEmpty(student)) {
             return null
         }
         return (
-            <Modal onClose={this.props.onHide} open={this.props.show} modalId={'present-modal'}>
+            <Modal onClose={this.props.onHide} open={this.props.show} modalId={'present-modal'} center={this.props.center}>
                 <form className="PresentModal" onSubmit={e => this.submitHandler(e)}>
                     <div className="PresentModal__title">
                         <div className="PresentModal__date-wrap">
@@ -118,7 +120,7 @@ class PresentModal extends Component{
                             <span className="PresentModal__date">
                                 {this.props.journalDate.map(el => {
                                     if (el.id === student.date_id) {
-                                        return (` ${el.date}`)
+                                        return (` ${formatDate(el.date)}`)
                                     }
                                     return null
                                 })}
@@ -147,6 +149,7 @@ class PresentModal extends Component{
                                     max={100}
                                     onChange={this.gradeChangeHandler}
                                     value={this.state.grade}
+                                    disabled={this.state.miss !== 'is-present'}
                                 />
                             </div>
                             <div className="grades__comment-wrap">

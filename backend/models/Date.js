@@ -11,7 +11,10 @@ const Date = db.define('date', {
     },
     date: {
         allowNull: false,
-        type: Sequelize.DATEONLY
+        type: Sequelize.DATEONLY,
+        validate: {
+            isDate: true
+        }
     },
     time: {
         type: Sequelize.TIME
