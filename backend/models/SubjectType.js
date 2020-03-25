@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize')
 const db = require('../db/database')
+const Journal = require('../models/Journal')
 
 const SubjectType = db.define('subject_type', {
     id: {
@@ -14,5 +15,8 @@ const SubjectType = db.define('subject_type', {
         unique: true
     }
 })
+
+Journal.hasMany(SubjectType, {foreignKey: 'id', sourceKey: 'type_id'})
+SubjectType.belongsTo(Journal, {foreignKey: 'id', targetKey: 'type_id'})
 
 module.exports = SubjectType

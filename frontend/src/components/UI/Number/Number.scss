@@ -1,0 +1,24 @@
+.CustomNumber {
+  border-radius: 10px;
+  border: 1px solid #8823FF;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 21px;
+  max-width: 125px;
+  height: 30px;
+  position: relative;
+  input {
+    border-radius: 10px;
+    color: #8823FF;
+    font-weight: bold;
+  }
+}
+
+.rc-input-number-handler-wrap {
+  border: none;
+  position: absolute;
+  right: 15px;
+  span {
+    border: none;
+  }
+}

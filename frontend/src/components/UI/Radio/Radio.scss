@@ -1,0 +1,37 @@
+.Radio {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1D3B55;
+  input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+  &__mark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: transparent;
+    border-radius: 5px;
+    border: 1px solid #8823FF;
+  }
+  &:hover {
+    input ~ .Radio__mark {
+      background-color: rgba(136, 35, 255, .3);
+    }
+  }
+  input:checked ~ .Radio__mark {
+    background-color: #8823FF;
+  }
+}
