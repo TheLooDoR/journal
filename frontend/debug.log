@@ -196,3 +196,5 @@
 [0325/115253.147:ERROR:crash_report_database_win.cc(469)] failed to stat report
 [0325/123112.921:ERROR:crash_report_database_win.cc(469)] failed to stat report
 [0325/123113.000:ERROR:crash_report_database_win.cc(469)] failed to stat report
+[0327/113606.486:ERROR:crash_report_database_win.cc(469)] failed to stat report
+[0327/113606.541:ERROR:crash_report_database_win.cc(469)] failed to stat report

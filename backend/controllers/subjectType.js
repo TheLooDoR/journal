@@ -3,7 +3,11 @@ const SubjectType = require('../models/SubjectType')
 
 module.exports.getAll = async (req, res) => {
     try {
-        const subjectTypes = await SubjectType.findAll()
+        const subjectTypes = await SubjectType.findAll({
+            order: [
+                ['name', 'ASC']
+            ]
+        })
         res.status(200).json({
             subjectTypes
         })

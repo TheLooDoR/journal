@@ -54,47 +54,50 @@ class Login extends Component {
     render() {
         const { errors } = this.state;
         return(
-            <div className="container form-container" >
-                <h2 className={'form-header'}>Авторизация</h2>
-                <form className={'login-form'} onSubmit={ this.handleSubmit }>
-                    <div className="form-group">
-                        <div className="form-label">
-                            <label htmlFor="email">Почтовый адрес*</label>
-                        </div>
 
-                        <input
-                            type="email"
-                            placeholder="Email"
-                            className={classnames('form-input ', {
-                                'invalid': errors.email
-                            })}
-                            name="email"
-                            onChange={ this.handleInputChange }
-                            value={ this.state.email }
-                        />
-                        {errors.email && (<div className="feedback">{errors.email}</div>)}
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="password">Почтовый адрес*</label>
-                        <input
-                            type="password"
-                            placeholder="Password"
-                            className={classnames('form-input', {
-                                'invalid': errors.password
-                            })}
-                            name="password"
-                            onChange={ this.handleInputChange }
-                            value={ this.state.password }
-                        />
-                        {errors.password && (<div className="feedback">{errors.password}</div>)}
-                    </div>
-                    <div className="form-group">
-                        <button type="submit" className="submit-btn">
-                            Войти
-                        </button>
-                    </div>
-                </form>
-            </div>
+                <div className="form-container" >
+                    <h2 className={'form-header'}>Авторизация</h2>
+                    <form className={'login-form'} onSubmit={ this.handleSubmit }>
+                        <div className="form-group">
+                            <div className="form-label">
+                                <label htmlFor="email">Почтовый адрес*</label>
+                            </div>
+
+                            <input
+                                type="email"
+                                placeholder="Email"
+                                className={classnames('form-input ', {
+                                    'invalid': errors.email
+                                })}
+                                name="email"
+                                onChange={ this.handleInputChange }
+                                value={ this.state.email }
+                            />
+                            {errors.email && (<div className="feedback">{errors.email}</div>)}
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="password">Почтовый адрес*</label>
+                            <input
+                                type="password"
+                                placeholder="Password"
+                                className={classnames('form-input', {
+                                    'invalid': errors.password
+                                })}
+                                name="password"
+                                onChange={ this.handleInputChange }
+                                value={ this.state.password }
+                            />
+                            {errors.password && (<div className="feedback">{errors.password}</div>)}
+                        </div>
+                        <div className="form-group">
+                            <button type="submit" className="submit-btn">
+                                Войти
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+
         )
     }
 }

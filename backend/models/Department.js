@@ -1,8 +1,7 @@
 const Sequelize = require('sequelize')
 const db = require('../db/database')
-const Department = require('../models/Department')
 
-const Group = db.define('group', {
+const Department = db.define('department', {
     id: {
         allowNull: false,
         autoIncrement: true,
@@ -14,14 +13,10 @@ const Group = db.define('group', {
         allowNull: false,
         unique: true
     },
-    department_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'departments',
-            key: 'id'
-        }
+    full_name: {
+        type: Sequelize.TEXT,
+        unique: true
     }
 })
 
-module.exports = Group
+module.exports = Department

@@ -1,28 +1,57 @@
 .Home {
-  padding: 20px;
+  padding: 20px 0;
   font-family: Roboto, sans-serif;
   &__categories {
     display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
   }
-  &__groups {
-    select {
-      padding: 12px 75px 15px 15px;
-    }
+  select {
+    box-sizing: border-box;
+    height: 45px;
+    padding: 0 10px;
+    margin: 10px 0;
+
+    width: 100%;
   }
-  &__subject-types {
-    select {
-      padding: 12px 190px 15px 15px;
-    }
-  }
-  &__subjects {
-    select {
-      padding: 12px 120px 15px 15px;
-    }
-  }
+
   &__btn {
     padding: 12px 80px;
+    margin: 10px;
+  }
+  @media (min-width: 768px) {
+    select {
+      width: 323px;
+    }
+  }
+  @media (min-width: 1024px) {
+    &__categories {
+      flex-flow: row wrap;
+    }
+    &__departments {
+      select {
+        width: 222px;
+      }
+    }
+    &__groups {
+      select {
+        //padding: 12px 75px 15px 15px;
+        width: 135px;
+      }
+    }
+    &__subject-types {
+      select {
+        //padding: 12px 190px 15px 15px;
+        width: 222px;
+      }
+    }
+    &__subjects {
+      select {
+        //padding: 12px 120px 15px 15px;
+        width: 323px;
+      }
+    }
   }
 }
 
@@ -35,6 +64,8 @@
   outline: none;
   &__wrap {
     position: relative;
+
+    width: 100%;
     &:before {
       content: '';
       position: absolute;
@@ -45,6 +76,16 @@
       width: 13px;
       height: 13px;
       pointer-events: none;
+    }
+  }
+  @media (min-width: 768px) {
+    &__wrap {
+      width: initial;
+    }
+  }
+  @media (min-width: 1024px) {
+    &__wrap {
+      margin: 0 10px;
     }
   }
 }

@@ -71,7 +71,12 @@ module.exports.getData = async (req, res) => {
                 id: {
                     [Op.in]: studentsFromJournal_id
                 }
-            }
+            },
+            order: [
+                ['surname', 'ASC'],
+                ['name', 'ASC'],
+                ['patronymic', 'ASC']
+            ]
         })
         const journal = await Journal.findAll({
             where: {

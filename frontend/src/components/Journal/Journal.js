@@ -81,6 +81,13 @@ class Journal extends Component {
                     }
                     <th
                         height={98}
+                        style={{top: 56, borderBottom: 'none'}}
+                        className='fixed-row budget-row'
+                    >
+                        Б/К
+                    </th>
+                    <th
+                        height={98}
                         onClick={() => this.hideDateHandler()}
                         style={{top: 56, borderBottom: 'none'}}
                         className='fixed-row add-row'
@@ -120,14 +127,14 @@ class Journal extends Component {
         return (
             <tbody>
             {
-                this.props.journalStudents.sort((a, b) => a.number_list - b.number_list).map(student => {
+                this.props.journalStudents.map((student, index) => {
                     missAmount = 0
                     validMissAmount = 0
                     grades = []
                     return (
                         <tr key={student.id}>
                             {/*Number list */}
-                            <td className='fixed-row number-row'>{student.number_list}</td>
+                            <td className='fixed-row number-row'>{index + 1}</td>
                             {/*Student Name*/}
                             <td
                                 className='fixed-row name-row'
@@ -137,7 +144,6 @@ class Journal extends Component {
                             </td>
                             {this.props.journalData.map((el, index) => {
                                 if (el.student_id === student.id) {
-                                    console.log(el)
                                     //Counting miss amount
                                     if (!el.present) {
                                         missAmount++
@@ -163,7 +169,8 @@ class Journal extends Component {
                                 }
                                 return null
                             })}
-                            {console.log(grades)}
+                            {/*budget column*/}
+                            <td className='journal-content__budget fixed-row budget-row'>{student.budget ? 'Б': 'К'}</td>
                             {/*empty column for add btn*/}
                             <td className='journal-content__add fixed-row add-row'/>
                             {/*miss amount*/}
@@ -190,13 +197,13 @@ class Journal extends Component {
             return null
         }
         //Adaptive table slider
-        let ml = 247, mr = 464
+        let ml = 247, mr = 517
         if (journalDate.length === 2) {
             ml += 3
-            mr += 3
+            mr += 2
         } else if ((journalDate.length >= 3) && journalDate.length < 6) {
             ml += 4
-            mr += 4
+            mr += 3
         } else if (journalDate.length >= 6) {
             mr += 4
             ml += 4
@@ -212,7 +219,7 @@ class Journal extends Component {
                 {this.props.isLoading ? <Loader/> :
                     isEmpty(journalData) ?
                         <div className='search-error'>
-                            <h2 >{errors.search}</h2>
+                            <h2>{errors.search}</h2>
                             <MainButton className='search-error__btn' onClick={() => this.hideDateHandler()}>Создать журнал</MainButton>
                         </div>
                         :
