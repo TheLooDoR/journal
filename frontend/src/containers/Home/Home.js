@@ -44,7 +44,6 @@ class Home extends Component {
     changeHandler (e) {
         if (e.target.value !== 'DEFAULT') {
             let journalData = this.state.journalData
-            // journalData[e.target.name] = JSON.parse(e.target.value)
             this.setState({
                 journalData: {...journalData, [e.target.name]: JSON.parse(e.target.value)}
             })
