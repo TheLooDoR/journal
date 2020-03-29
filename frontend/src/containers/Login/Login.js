@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { loginUser } from '../../actions/authentication';
 import classnames from 'classnames';
 
-import './Login.css'
+import '../Register/Register.css'
 
 class Login extends Component {
 

@@ -68,10 +68,10 @@ export const setJournalData = (journalParameters) => dispatch => {
             dispatch(requestJournalData())
             dispatch(journalData({}))
             dispatch(requestJournalDataFinished())
-            // dispatch({
-            //     type: GET_ERRORS,
-            //     payload: err.response.data
-            // })
+            dispatch({
+                type: GET_ERRORS,
+                payload: err.response.data
+            })
         })
 }
 

@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import Modal from 'react-responsive-modal';
 import Table from 'react-bootstrap/Table'
+import {DropdownButton} from "react-bootstrap";
 import Loader from "../UI/Loader/Loader";
 import PresentModal from "../PresentModal/PresentModal";
 import Calendar from 'react-calendar';
@@ -10,8 +11,10 @@ import {addTaskByDate} from "../../actions";
 import {connect} from 'react-redux'
 import isEmpty from "../../common-js/isEmpty";
 import formatDate from "../../common-js/formatDate";
+import dropdownIcon from './assets/dropdown-icon.png'
 
 import './Journal.scss'
+import {Dropdown} from "react-bootstrap";
 
 class Journal extends Component {
 
@@ -253,6 +256,16 @@ class Journal extends Component {
                         <div className="Journal">
                             <div className="Journal__title">
                                 {group.name}/{subjectType.name}/{subject.name}
+                                <DropdownButton
+                                    title={<img src={dropdownIcon} alt="More"/>}
+                                    className='Journal__dropdown'
+                                    alignRight
+                                    id='journal-dropdown-btn'
+                                    onSelect={(e) => console.log(e)}
+                                >
+                                    <Dropdown.Item eventKey={'score'}>Статистика успеваемости студентов</Dropdown.Item>
+                                    <Dropdown.Item eventKey={'attendance'}>Статистика посещаемости студентов</Dropdown.Item>
+                                </DropdownButton>
                             </div>
                             <div ref={this.tableRef} className="Journal__content journal-content" style={{marginLeft: ml, marginRight: mr}} onScroll={this.scrollHandler}>
                                 <Table bordered className='journal-content__table'>

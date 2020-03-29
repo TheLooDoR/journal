@@ -1,9 +1,7 @@
 .form-container {
     border-radius: 20px;
-    height: 100%;
     color: white;
-    font-family: Roboto, sans-serif;
-    background: #1D3B55 url('./assets/report.png') no-repeat 80px 20px;
+    background: url('./assets/report.png') no-repeat 80px 20px, linear-gradient(89.73deg, #2B9CFF 0.14%, #9610FF 99.83%);
     max-width: 600px;
     margin: 100px auto;
     display: flex;
@@ -14,20 +12,11 @@
 }
 
 .form-header {
-    display: flex;
-    justify-content: center;
     padding: 50px 0;
     font-weight: 500;
     font-size: 35px;
 }
 
-.login-form {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    align-items: center;
-
-}
 
 .form-group {
     display: flex;
@@ -78,17 +67,19 @@
 }
 
 .submit-btn {
-    margin: 50px 0;
+    box-sizing: border-box;
+    height: 55px;
+    margin: 36px 0;
     text-transform: uppercase;
-    width: 270px;
-    padding: 12px 0px;
-    border-radius: 50px;
+    width: 300px;
+    padding: 12px 0;
     border: none;
-    background: linear-gradient(180deg, #53A2FC -61.96%, #0051AD 131.52%);
-    color: white;
-    font-weight: 500;
-    font-size: 18px;
-    line-height: 21px;
+    background: #40FFFF;
+    border-radius: 10px;
+    color: #6352FF;
+    font-weight: bold;
+    font-size: 19px;
+    line-height: 22px;
     align-self: center;
 }
 
