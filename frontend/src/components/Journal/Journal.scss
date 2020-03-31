@@ -7,7 +7,47 @@
     font-weight: 500;
     font-size: 24px;
   }
+  &__dropdown {
+    right: 40px;
+    float: right;
+    button {
+      background: transparent;
+      transition: none;
+      padding: 0;
+      border: none;
+      &:hover {
+        background: transparent;
+        border: none;
+      }
+      &:after {
+        display: none;
+      }
+    }
+  }
+  .btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active, .show>.btn-primary.dropdown-toggle {
+    color: transparent;
+    border: none;
+    background: transparent;
+  }
+  .dropdown-menu {
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(43, 156, 255, 0.25);
+    border: none;
+    a {
+      color: #1D3B55;
+      font-size: 14px;
+      border-bottom: 1px solid #2B9CFF;
+      text-align: center;
+      &:active {
+        background: rgba(43, 156, 255, .8);
+      }
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
 }
+
 
 .fixed-row {
   position: absolute;
@@ -25,7 +65,7 @@
   background: white;
 }
 .add-row {
-  right: 367px;
+  right: 419px;
   width: 105px;
   background: white;
 }
@@ -40,6 +80,10 @@
 .total-grades-row {
   right: 0;
   width: 130px;
+}
+.budget-row {
+  right: 367px;
+  width: 53px;
 }
 
 .journal-content {

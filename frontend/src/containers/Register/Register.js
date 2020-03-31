@@ -64,7 +64,7 @@ class Register extends Component {
     render() {
         const { errors } = this.state;
         return(
-            <div className="container form-container" >
+            <div className="form-container" >
                 <h2 className={'form-header'}>Регистрация</h2>
                 <form className={'register-form'} onSubmit={ this.handleSubmit }>
                     <div className="form-group">
