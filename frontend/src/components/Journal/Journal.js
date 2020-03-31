@@ -12,9 +12,9 @@ import {connect} from 'react-redux'
 import isEmpty from "../../common-js/isEmpty";
 import formatDate from "../../common-js/formatDate";
 import dropdownIcon from './assets/dropdown-icon.png'
+import {Dropdown} from "react-bootstrap";
 
 import './Journal.scss'
-import {Dropdown} from "react-bootstrap";
 
 class Journal extends Component {
 
