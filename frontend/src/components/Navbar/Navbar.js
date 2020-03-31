@@ -71,7 +71,7 @@ class Navbar extends Component {
                 </div>
             </>
         )
-        return(
+        return (
             <header>
                 <section className={'header'} >
                     <nav className={'Navbar'}>
@@ -89,13 +89,6 @@ class Navbar extends Component {
                     </nav>
                 </section>
             </header>
-            //<nav className="navbar navbar-expand-lg navbar-light bg-light">
-               // <Link className="navbar-brand" to="/">Redux Node Auth</Link>
-                //<Link className="navbar-brand" to="/testHome">Test home</Link>
-                //<div className="collapse navbar-collapse" id="navbarSupportedContent">
-                  //  {isAuthenticated ? authLinks : guestLinks}
-                //</div>
-            //</nav>
         )
     }
 }

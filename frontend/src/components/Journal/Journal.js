@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import Modal from 'react-responsive-modal';
 import Table from 'react-bootstrap/Table'
+import {DropdownButton} from "react-bootstrap";
 import Loader from "../UI/Loader/Loader";
 import PresentModal from "../PresentModal/PresentModal";
 import Calendar from 'react-calendar';
@@ -10,8 +11,10 @@ import {addTaskByDate} from "../../actions";
 import {connect} from 'react-redux'
 import isEmpty from "../../common-js/isEmpty";
 import formatDate from "../../common-js/formatDate";
+import dropdownIcon from './assets/dropdown-icon.png'
 
 import './Journal.scss'
+import {Dropdown} from "react-bootstrap";
 
 class Journal extends Component {
 
@@ -21,18 +24,45 @@ class Journal extends Component {
             showModal: false,
             showDateModal: false,
             date: new Date(),
-            currentStudent: {}
+            currentStudent: {},
+            scrollValue: 0
         }
     }
 
-    hideHandler = (student) => {
+    tableRef = React.createRef()
+
+    //set scroll value
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const table = this.tableRef.current
+        if(table) {
+            table.scrollLeft = this.state.scrollValue
+        }
+    }
+
+    scrollHandler = () => {
+        const table = this.tableRef.current
+        if(table) {
+            this.setState({
+                scrollValue: table.scrollLeft
+            })
+        }
+    }
+
+    hideJournalModal = () => {
+        this.setState({
+            scrollValue: 0
+        })
+        this.props.onHide()
+    }
+
+    hidePresentModal = (student) => {
         this.setState({
             showModal: !this.state.showModal,
             currentStudent: student
         })
     }
 
-    hideDateHandler() {
+    hideDateModal() {
         this.setState({
             showDateModal: !this.state.showDateModal
         })
@@ -55,7 +85,7 @@ class Journal extends Component {
             group_id: group.id
         }
         dispatch(addTaskByDate(taskData))
-        this.hideDateHandler()
+        this.hideDateModal()
     }
 
     calculateTotalGrades(grades) {
@@ -81,7 +111,14 @@ class Journal extends Component {
                     }
                     <th
                         height={98}
-                        onClick={() => this.hideDateHandler()}
+                        style={{top: 56, borderBottom: 'none'}}
+                        className='fixed-row budget-row'
+                    >
+                        Б/К
+                    </th>
+                    <th
+                        height={98}
+                        onClick={() => this.hideDateModal()}
                         style={{top: 56, borderBottom: 'none'}}
                         className='fixed-row add-row'
                     >
@@ -120,14 +157,14 @@ class Journal extends Component {
         return (
             <tbody>
             {
-                this.props.journalStudents.sort((a, b) => a.number_list - b.number_list).map(student => {
+                this.props.journalStudents.map((student, index) => {
                     missAmount = 0
                     validMissAmount = 0
                     grades = []
                     return (
                         <tr key={student.id}>
                             {/*Number list */}
-                            <td className='fixed-row number-row'>{student.number_list}</td>
+                            <td className='fixed-row number-row'>{index + 1}</td>
                             {/*Student Name*/}
                             <td
                                 className='fixed-row name-row'
@@ -137,7 +174,6 @@ class Journal extends Component {
                             </td>
                             {this.props.journalData.map((el, index) => {
                                 if (el.student_id === student.id) {
-                                    console.log(el)
                                     //Counting miss amount
                                     if (!el.present) {
                                         missAmount++
@@ -154,7 +190,7 @@ class Journal extends Component {
                                         <td
                                             id={`date-${el.date_id}-student-${el.student_id}`}
                                             key={index}
-                                            onDoubleClick={() => this.hideHandler(el)}
+                                            onDoubleClick={() => this.hidePresentModal(el)}
                                             className='journal-content__presents'
                                         >
                                             {el.present ? el.score ? el.score : '' : 'н'}
@@ -163,7 +199,8 @@ class Journal extends Component {
                                 }
                                 return null
                             })}
-                            {console.log(grades)}
+                            {/*budget column*/}
+                            <td className='journal-content__budget fixed-row budget-row'>{student.budget ? 'Б': 'К'}</td>
                             {/*empty column for add btn*/}
                             <td className='journal-content__add fixed-row add-row'/>
                             {/*miss amount*/}
@@ -190,20 +227,20 @@ class Journal extends Component {
             return null
         }
         //Adaptive table slider
-        let ml = 247, mr = 464
+        let ml = 247, mr = 517
         if (journalDate.length === 2) {
             ml += 3
-            mr += 3
+            mr += 2
         } else if ((journalDate.length >= 3) && journalDate.length < 6) {
             ml += 4
-            mr += 4
+            mr += 3
         } else if (journalDate.length >= 6) {
             mr += 4
             ml += 4
         }
         return (
             <Modal
-                onClose={this.props.onHide}
+                onClose={this.hideJournalModal}
                 open={this.props.show}
                 modalId={isEmpty(journalData) ? 'journal-modal-error' : 'journal-modal'}
                 center
@@ -212,15 +249,25 @@ class Journal extends Component {
                 {this.props.isLoading ? <Loader/> :
                     isEmpty(journalData) ?
                         <div className='search-error'>
-                            <h2 >{errors.search}</h2>
-                            <MainButton className='search-error__btn' onClick={() => this.hideDateHandler()}>Создать журнал</MainButton>
+                            <h2>{errors.search}</h2>
+                            <MainButton className='search-error__btn' onClick={() => this.hideDateModal()}>Создать журнал</MainButton>
                         </div>
                         :
                         <div className="Journal">
                             <div className="Journal__title">
                                 {group.name}/{subjectType.name}/{subject.name}
+                                <DropdownButton
+                                    title={<img src={dropdownIcon} alt="More"/>}
+                                    className='Journal__dropdown'
+                                    alignRight
+                                    id='journal-dropdown-btn'
+                                    onSelect={(e) => console.log(e)}
+                                >
+                                    <Dropdown.Item eventKey={'score'}>Статистика успеваемости студентов</Dropdown.Item>
+                                    <Dropdown.Item eventKey={'attendance'}>Статистика посещаемости студентов</Dropdown.Item>
+                                </DropdownButton>
                             </div>
-                            <div className="Journal__content journal-content" style={{marginLeft: ml, marginRight: mr}}>
+                            <div ref={this.tableRef} className="Journal__content journal-content" style={{marginLeft: ml, marginRight: mr}} onScroll={this.scrollHandler}>
                                 <Table bordered className='journal-content__table'>
                                     {this.renderTableHead()}
                                     {this.renderTableBody()}
@@ -228,13 +275,14 @@ class Journal extends Component {
                             </div>
                             <PresentModal
                                 show={this.state.showModal}
-                                onHide={this.hideHandler}
+                                onHide={this.hidePresentModal}
                                 student = {this.state.currentStudent}
                                 center={true}
+                                scrollHandler={this.scrollHandler}
                             />
                         </div>
                 }
-                <Modal onClose={() => this.hideDateHandler()} open={this.state.showDateModal} modalId='date-modal' center>
+                <Modal onClose={() => this.hideDateModal()} open={this.state.showDateModal} modalId='date-modal' center>
                     <form className="journal-add-form" onSubmit={e => this.addTaskHandler(e)}>
                         <Calendar
                             onChange={this.dateChangeHandler}

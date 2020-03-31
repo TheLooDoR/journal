@@ -2,16 +2,14 @@
     display: flex;
     justify-content: space-between;
     flex-flow: row wrap;
-    background: #1D3B55;
-    padding: 30px 30px;
-    font-family: Roboto, sans-serif;
+    background: linear-gradient(90deg, #2B9CFF 0%, #9610FF 100%);
+    padding: 15px 20px;
     font-weight: bold;
     font-size: 16px;
-
 }
 
 .Links {
-    display: inline-flex;
+    display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
@@ -23,7 +21,7 @@
 }
 
 .Link {
-    padding: 0px 10px;
+    padding: 0 10px;
     border-right: 1px solid white;
 }
 

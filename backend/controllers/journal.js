@@ -1,7 +1,5 @@
 const Journal = require('../models/Journal')
 const Students = require('../models/Students')
-const Subject = require('../models/Subject')
-const SubjectType = require('../models/SubjectType')
 const Date = require('../models/Date')
 const { Op } = require("sequelize");
 
@@ -71,7 +69,12 @@ module.exports.getData = async (req, res) => {
                 id: {
                     [Op.in]: studentsFromJournal_id
                 }
-            }
+            },
+            order: [
+                ['surname', 'ASC'],
+                ['name', 'ASC'],
+                ['patronymic', 'ASC']
+            ]
         })
         const journal = await Journal.findAll({
             where: {
@@ -152,6 +155,59 @@ module.exports.addTaskByDate = async (req, res) => {
                 group_id: req.body.group_id
             }
         })
+
+        //get all students from group
+        let studentsGroup_ids = []
+        for(let i = 0; i < studentsGroup.length; i++) {
+            studentsGroup_ids.push(studentsGroup[i].id)
+        }
+        //get all students from journal
+        const studentsJournal = await Journal.findAll({
+            attributes: ['student_id'],
+            where: {
+                student_id: {
+                    [Op.in]: studentsGroup_ids
+                }
+            },
+            group: ['student_id']
+        })
+        let studentsJournal_ids = []
+        for(let i = 0; i < studentsJournal.length; i++) {
+            studentsJournal_ids.push(studentsJournal[i].student_id)
+        }
+        //check if all students consist
+        let checker = (arr, target) => target.every(v => arr.includes(v))
+        //if student which is not in the all tasks consists insert it
+        if (!checker(studentsJournal_ids, studentsGroup_ids)) {
+            //get all dates from journal
+            const journalDates = await Journal.findAll({
+                attributes: ['date_id'],
+                group: ['date_id']
+            })
+            //filter only students which doesnt consist in all tasks
+            const filtered_ids = studentsGroup_ids.filter(i => !studentsJournal_ids.includes(i))
+            //insert student in all existing tasks
+            journalDates.map(date => {
+                filtered_ids.map(async student_id => {
+                    try {
+                        await Journal.create({
+                            user_id: req.body.user_id,
+                            subject_id: req.body.subject_id,
+                            student_id: student_id,
+                            present: true,
+                            note: '',
+                            score: null,
+                            date_id: date.date_id,
+                            type_id: req.body.type_id,
+                            valid_miss: false
+                        })
+                    } catch (e) {
+                        console.log(e.message)
+                    }
+                })
+            })
+        }
+        //insert students in new task
         studentsGroup.map(async el => {
             try {
                 await Journal.create({
@@ -175,7 +231,6 @@ module.exports.addTaskByDate = async (req, res) => {
         })
         res.status(201).json('Добавление успешно')
     } catch (e) {
-
         console.log(e.message)
     }
 }

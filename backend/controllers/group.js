@@ -12,6 +12,24 @@ module.exports.getAll = async (req, res) => {
     }
 }
 
+module.exports.getByDepartment = async (req, res) => {
+    try {
+        const groups = await Group.findAll({
+            where: {
+                department_id: req.params.department_id
+            },
+            order: [
+                ['name', 'ASC']
+            ]
+        })
+        res.status(200).json({
+            groups
+        })
+    } catch (e) {
+        console.log(e.message)
+    }
+}
+
 module.exports.create = async (req, res) => {
     try {
         const group = {

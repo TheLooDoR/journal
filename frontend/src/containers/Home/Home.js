@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import Loader from "../../components/UI/Loader/Loader";
 import {connect} from "react-redux";
 import {
-    getGroupsData,
+    getDepartmentsData,
+    getGroupsDataByDepartment,
     getSubjectsData,
     getSubjectTypesData, setJournalData,
     setJournalParameters
@@ -17,6 +18,7 @@ class Home extends Component {
         super(props);
         this.state = {
             journalData: {
+                department: {},
                 group: {},
                 subjectType: {},
                 subject: {}
@@ -27,17 +29,23 @@ class Home extends Component {
 
     componentDidMount() {
         const { dispatch } = this.props
-        dispatch(getGroupsData())
+        dispatch(getDepartmentsData())
         dispatch(getSubjectTypesData())
         dispatch(getSubjectsData())
+    }
+
+    //get groups by department
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevState.journalData.department !== this.state.journalData.department) {
+            this.props.dispatch(getGroupsDataByDepartment(this.state.journalData.department.id))
+        }
     }
 
     changeHandler (e) {
         if (e.target.value !== 'DEFAULT') {
             let journalData = this.state.journalData
-            journalData[e.target.name] = JSON.parse(e.target.value)
             this.setState({
-                journalData
+                journalData: {...journalData, [e.target.name]: JSON.parse(e.target.value)}
             })
         }
     }
@@ -84,66 +92,85 @@ class Home extends Component {
     render() {
         const {entities} = this.props
         const {journalData} = this.state
-        if (!entities.subjectTypes || !entities.groups || !entities.subjects) {
+        if (!entities.subjectTypes || !entities.groups || !entities.subjects || !entities.departments) {
             return (<Loader/>)
         }
         return (
             <div className='Home'>
-                <div className="Home__categories">
-                    <div className="Home__groups filter-select__wrap">
-                        <select
-                            className='filter-select'
-                            name="group"
-                            onChange={(e) => this.changeHandler(e)}
-                            defaultValue={'DEFAULT'}
+                <div className="container">
+                    <div className="Home__categories">
+                        <div className="Home__departments filter-select__wrap">
+                            <select
+                                className='filter-select'
+                                name="department"
+                                onChange={(e) => this.changeHandler(e)}
+                                defaultValue={'DEFAULT'}
+                            >
+                                <option disabled value='DEFAULT'>Кафедра</option>
+                                {entities.departments.map((el) => {
+                                    return (
+                                        <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
+                                    )
+                                })}
+                            </select>
+                        </div>
+                        <div className="Home__groups filter-select__wrap">
+                            <select
+                                className='filter-select'
+                                name="group"
+                                onChange={(e) => this.changeHandler(e)}
+                                defaultValue={'DEFAULT'}
+                                disabled={entities.groups.length === 0}
+                            >
+                                <option disabled value='DEFAULT'>Группа</option>
+                                {entities.groups.map((el) => {
+                                    return (
+                                        <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
+                                    )
+                                })}
+                            </select>
+                        </div>
+                        <div className="Home__subjects filter-select__wrap">
+                            <select
+                                className='filter-select'
+                                name='subject'
+                                onChange={(e) => this.changeHandler(e)}
+                                defaultValue={'DEFAULT'}
+                            >
+                                <option disabled value='DEFAULT'>Дисциплина</option>
+                                {entities.subjects.map((el) => {
+                                    return (
+                                        <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
+                                    )
+                                })}
+                            </select>
+                        </div>
+                        <div className="Home__subject-types filter-select__wrap">
+                            <select
+                                className='filter-select'
+                                name='subjectType'
+                                onChange={(e) => this.changeHandler(e)}
+                                defaultValue={'DEFAULT'}
+                            >
+                                <option disabled value='DEFAULT'>Вид занятия</option>
+                                {entities.subjectTypes.map((el) => {
+                                    return (
+                                        <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
+                                    )
+                                })}
+                            </select>
+                        </div>
+                        <MainButton
+                            className='Home__btn'
+                            onClick={this.clickHandler}
+                            disabled={Object.entries(journalData.group).length === 0 || Object.entries(journalData.subjectType).length === 0 || Object.entries(journalData.subject).length === 0}
                         >
-                            <option disabled value='DEFAULT'>Группа</option>
-                            {entities.groups.map((el) => {
-                                return (
-                                    <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-                                )
-                            })}
-                        </select>
+                            Найти
+                        </MainButton>
                     </div>
-                    <div className="Home__subject-types filter-select__wrap">
-                        <select
-                            className='filter-select'
-                            name='subjectType'
-                            onChange={(e) => this.changeHandler(e)}
-                            defaultValue={'DEFAULT'}
-                        >
-                            <option disabled value='DEFAULT'>Дисциалина</option>
-                            {entities.subjectTypes.map((el) => {
-                                return (
-                                    <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-                                )
-                            })}
-                        </select>
-                    </div>
-                    <div className="Home__subjects filter-select__wrap">
-                        <select
-                            className='filter-select'
-                            name='subject'
-                            onChange={(e) => this.changeHandler(e)}
-                            defaultValue={'DEFAULT'}
-                        >
-                            <option disabled value='DEFAULT'>Вид занятия</option>
-                            {entities.subjects.map((el) => {
-                                return (
-                                    <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-                                )
-                            })}
-                        </select>
-                    </div>
-                    <MainButton
-                        className='Home__btn'
-                        onClick={this.clickHandler}
-                        disabled={Object.entries(journalData.group).length === 0 || Object.entries(journalData.subjectType).length === 0 || Object.entries(journalData.subject).length === 0}
-                    >
-                        Найти
-                    </MainButton>
+                    {this.renderModal()}
                 </div>
-                {this.renderModal()}
+
             </div>
         );
     }

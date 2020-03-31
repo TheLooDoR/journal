@@ -9,6 +9,7 @@ const groupRoutes = require('./routes/group')
 const subjectRoutes = require('./routes/subject')
 const subjectTypeRoutes = require('./routes/subjectType')
 const journalRoutes = require('./routes/journal')
+const departmentRoutes = require('./routes/department')
 
 const app = express();
 app.use(passport.initialize());
@@ -38,6 +39,7 @@ app.use('/api/groups', groupRoutes)
 app.use('/api/subjects', subjectRoutes)
 app.use('/api/subject-types', subjectTypeRoutes)
 app.use('/api/journal', journalRoutes)
+app.use('/api/departments', departmentRoutes)
 
 app.listen(PORT, () => {
     console.log(`Server is running on PORT ${PORT}`);

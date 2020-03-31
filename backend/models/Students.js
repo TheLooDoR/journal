@@ -17,10 +17,6 @@ const Students = db.define('student', {
             key: 'id'
         }
     },
-    number_list: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-    },
     surname: {
         type: Sequelize.TEXT,
         allowNull: false
@@ -31,6 +27,10 @@ const Students = db.define('student', {
     },
     patronymic: {
         type: Sequelize.TEXT,
+        allowNull: false
+    },
+    budget: {
+        type: Sequelize.BOOLEAN,
         allowNull: false
     }
 })

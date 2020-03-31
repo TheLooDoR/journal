@@ -103,6 +103,8 @@ class PresentModal extends Component{
         dispatch(setJournalData(journalParameters))
         //close modal window
         this.props.onHide(this.props.student)
+        //save scrollbar position
+        this.props.scrollHandler()
     }
 
     render() {

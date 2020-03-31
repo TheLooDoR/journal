@@ -1,5 +1,12 @@
 import axios from "axios";
-import {GET_GROUPS, GET_SUBJECT_TYPES, GET_SUBJECTS} from "./types";
+import {GET_DEPARTMENTS, GET_GROUPS, GET_SUBJECT_TYPES, GET_SUBJECTS} from "./types";
+
+const departmentsData = departmentsData => {
+    return {
+        type: GET_DEPARTMENTS,
+        payload: departmentsData
+    }
+}
 
 const groupsData = groupsData => {
     return {
@@ -22,9 +29,23 @@ const subjectsData = subjectsData => {
     }
 }
 
+export const getDepartmentsData = () => dispatch => {
+    axios.get('api/departments/')
+        .then(res => {
+            dispatch(departmentsData(res.data.departments))
+        })
+}
+
 export const getGroupsData = () => dispatch => {
     axios.get('api/groups/')
         .then((res) => {
+            dispatch(groupsData(res.data.groups))
+        })
+}
+
+export const getGroupsDataByDepartment = (department_id) => dispatch => {
+    axios.get(`api/groups/${department_id}`)
+        .then(res => {
             dispatch(groupsData(res.data.groups))
         })
 }
