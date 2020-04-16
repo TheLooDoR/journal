@@ -1,7 +1,9 @@
 const Journal = require('../models/Journal')
 const Students = require('../models/Students')
 const Date = require('../models/Date')
+const Time = require('../models/Time')
 const { Op } = require("sequelize");
+const Sequelize = require('sequelize')
 
 module.exports.getData = async (req, res) => {
     try {
@@ -36,10 +38,8 @@ module.exports.getData = async (req, res) => {
             studentsFromJournal_id.push(studentFromJournal[i].student_id)
         }
 
-        //Dates search by journal
-        const datesFromJournal = await Journal.findAll({
-            attributes: ['date_id'],
-            group: ['date_id'],
+        const dates = await Journal.findAll({
+            attributes: ['date_id', 'time_id', [Sequelize.literal('"times"."time"'), 'time'], [Sequelize.literal('"dates"."date"'), 'date']],
             where: {
                 user_id: req.body.user_id,
                 subject_id: req.body.subject_id,
@@ -47,20 +47,24 @@ module.exports.getData = async (req, res) => {
                 student_id: {
                     [Op.in]: students_id
                 }
-            }
-        })
-        let datesFromJournal_id = []
-        for(let i = 0; i < datesFromJournal.length; i++) {
-            datesFromJournal_id.push(datesFromJournal[i].date_id)
-        }
-
-        const dates = await Date.findAll({
-            where: {
-                id: {
-                    [Op.in]: datesFromJournal_id
-                }
             },
-            order: [[ 'date', 'ASC' ]]
+            group: ['date_id', 'time_id'],
+            include: [
+                {
+                    model: Time,
+                    attributes: [],
+                    required: true
+                },
+                {
+                    model: Date,
+                    attributes: [],
+                    required: true
+                }
+            ],
+            order: [
+                ['dates', 'date', 'ASC']
+            ],
+            raw: true
         })
 
         //Students
@@ -136,8 +140,9 @@ module.exports.updateStudentData = async (req, res) => {
 }
 
 module.exports.addTaskByDate = async (req, res) => {
+    const errors = {}
+    let message = ''
     try {
-        const errors = {}
         const date = await Date.findOrCreate({
             where: {
                 date: req.body.date
@@ -146,9 +151,6 @@ module.exports.addTaskByDate = async (req, res) => {
                 date: req.body.date,
                 time: null
             }
-        }).catch(e => {
-            errors.date = 'Неправильная дата'
-            res.status(401).json(errors)
         })
         const studentsGroup = await Students.findAll({
             where: {
@@ -175,6 +177,16 @@ module.exports.addTaskByDate = async (req, res) => {
         for(let i = 0; i < studentsJournal.length; i++) {
             studentsJournal_ids.push(studentsJournal[i].student_id)
         }
+
+        // await Journal.findAll({
+        //     where: {
+        //         student_id: {
+        //             [Op.in]: studentsGroup_ids
+        //         },
+        //         date_id: date
+        //     }
+        // })
+
         //check if all students consist
         let checker = (arr, target) => target.every(v => arr.includes(v))
         //if student which is not in the all tasks consists insert it
@@ -190,6 +202,21 @@ module.exports.addTaskByDate = async (req, res) => {
             journalDates.map(date => {
                 filtered_ids.map(async student_id => {
                     try {
+                        //find time of the current task
+                        const time_id = await Journal.findAll({
+                            attributes: ['time_id'],
+                            where: {
+                                student_id: {
+                                    [Op.in]: studentsJournal_ids
+                                },
+                                date_id: date.date_id,
+                                subject_id: req.body.subject_id,
+                                type_id: req.body.type_id
+                            },
+                            group: ['date_id'],
+                            raw: true
+                        })
+                        //insert missing student in past tasks
                         await Journal.create({
                             user_id: req.body.user_id,
                             subject_id: req.body.subject_id,
@@ -199,37 +226,60 @@ module.exports.addTaskByDate = async (req, res) => {
                             score: null,
                             date_id: date.date_id,
                             type_id: req.body.type_id,
-                            valid_miss: false
+                            valid_miss: false,
+                            time_id: time_id[0].time_id,
+                            corps_id: req.body.corps_id,
+                            hall: req.body.hall
                         })
                     } catch (e) {
-                        console.log(e.message)
+                        errors.journalCreate = e.message
                     }
                 })
             })
         }
-        //insert students in new task
-        studentsGroup.map(async el => {
-            try {
-                await Journal.create({
-                    user_id: req.body.user_id,
-                    subject_id: req.body.subject_id,
-                    student_id: el.id,
-                    present: true,
-                    note: '',
-                    score: null,
-                    date_id: date[0].id,
-                    type_id: req.body.type_id,
-                    valid_miss: false
-                }).catch(e => {
-                    errors.task = 'Ошибка добавления'
-                    res.status(401).json(errors)
-                })
-            } catch (e) {
-                console.log(e.message)
-            }
-
+        //get times with request date
+        const time_ids = await Journal.findAll({
+            attributes: ['time_id'],
+            where: {
+                student_id: {
+                    [Op.in]: studentsGroup_ids
+                },
+                date_id: date[0].id,
+            },
+            group: ['time_id']
         })
-        res.status(201).json('Добавление успешно')
+        let time_ids_array = []
+        for(let i = 0; i < time_ids.length; i++) {
+            time_ids_array.push(time_ids[i].time_id)
+        }
+        //if task with request time consists return error, else create task
+        if (time_ids_array.includes(req.body.time_id)) {
+            message = 'Данное время уже используется'
+        } else {
+            studentsGroup.map(async el => {
+                try {
+                    await Journal.create({
+                        user_id: req.body.user_id,
+                        subject_id: req.body.subject_id,
+                        student_id: el.id,
+                        present: true,
+                        note: '',
+                        score: null,
+                        date_id: date[0].id,
+                        type_id: req.body.type_id,
+                        valid_miss: false,
+                        time_id: req.body.time_id,
+                        corps_id: req.body.corps_id,
+                        hall: req.body.hall
+                    })
+                    message = 'Добавление успешно'
+                } catch (e) {
+                    errors.journalCreate = e.message
+                    console.log(e.message)
+                }
+            })
+        }
+        res.status(201).json(message)
     } catch (e) {
         console.log(e.message)
     }

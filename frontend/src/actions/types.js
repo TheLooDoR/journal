@@ -5,16 +5,24 @@ export const ADD_ACTION = 'ADD'
 export const UPDATE_ACTION = 'UPDATE'
 export const DELETE_ACTION = 'DELETE'
 
+//entities
 export const GET_GROUPS = 'GET_GROUPS'
 export const GET_SUBJECT_TYPES = 'GET_SUBJECT_TYPES'
 export const GET_SUBJECTS = 'GET_SUBJECTS'
 export const GET_DEPARTMENTS = 'GET_DEPARTMENTS'
+export const GET_TIME = 'GET_TIME'
+export const GET_CORPS = 'GET_CORP'
 
+//journal
 export const SET_JOURNAL_PARAMETERS = 'SET_JOURNAL_PARAMETERS'
 export const SET_JOURNAL_DATA = 'SET_JOURNAL_DATA'
 export const SET_JOURNAL_DATE = 'SET_JOURNAL_DATE'
 export const SET_JOURNAL_STUDENTS = 'SET_JOURNAL_STUDENTS'
 
+//journal loader
 export const REQUEST_JOURNAL_DATA = 'REQUEST_JOURNAL_DATA'
 export const REQUEST_JOURNAL_DATA_FINISHED = 'REQUEST_JOURNAL_DATA_FINISHED'
+
+//schedule
+export const GET_USER_SCHEDULE = 'GET_USER_SCHEDULE'
 

@@ -15,19 +15,31 @@
 
     width: 100%;
   }
-
   &__btn {
     padding: 12px 80px;
     margin: 10px;
   }
+  &__time-table-wrap {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+  }
+
   @media (min-width: 768px) {
     select {
       width: 323px;
     }
   }
   @media (min-width: 1024px) {
+    &__select {
+      &:first-child {
+        margin-left: 0;
+      }
+      margin: 0 10px;
+    }
     &__categories {
       flex-flow: row wrap;
+      justify-content: center;
     }
     &__departments {
       select {
@@ -36,56 +48,76 @@
     }
     &__groups {
       select {
-        //padding: 12px 75px 15px 15px;
         width: 135px;
       }
     }
     &__subject-types {
       select {
-        //padding: 12px 190px 15px 15px;
         width: 222px;
       }
     }
     &__subjects {
       select {
-        //padding: 12px 120px 15px 15px;
         width: 323px;
       }
     }
   }
-}
-
-.filter-select {
-  border-radius: 10px;
-  border-color: #2B9CFF;
-  border-width: 1px;
-  border-style: solid;
-  -webkit-appearance: none;
-  outline: none;
-  &__wrap {
-    position: relative;
-
-    width: 100%;
-    &:before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      right: 18px;
-      transform: translateY(-50%);
-      background: url('../../assets/select-arrow.png') no-repeat center center;
-      width: 13px;
-      height: 13px;
-      pointer-events: none;
+  @media (min-width: 1260px) {
+    &__categories {
+      justify-content: space-between;
     }
   }
-  @media (min-width: 768px) {
-    &__wrap {
-      width: initial;
+}
+
+.time-table {
+  color: #1D3B55;
+  border: 1px solid #2B9CFF;
+  border-radius: 10px;
+  margin-top: 20px;
+  padding: 10px 5px 20px 5px;
+  max-width: 640px;
+  &__title {
+    font-size: 20px;
+    font-weight: 500;
+    margin: 20px 0;
+  }
+  th, &__empty-row {
+    height: 63px;
+  }
+  th, td {
+    border: 1px solid #2B9CFF;
+    text-align: center;
+    padding: 5px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 21px;
+  }
+  table {
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border: 1px solid #2B9CFF;
+    overflow: hidden;
+  }
+  &__border {
+    border: 1px solid #2B9CFF;
+    border-radius: 10px;
+  }
+
+  @media (min-width: 480px) {
+    padding: 10px 40px 20px 40px;
+    th, td {
+      padding: 10px;
+    }
+  }
+  @media (min-width: 768px){
+    td, th {
+      font-size: 18px;
     }
   }
   @media (min-width: 1024px) {
-    &__wrap {
-      margin: 0 10px;
+    &:first-child {
+      margin-right: 10px;
     }
   }
 }

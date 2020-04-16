@@ -6,10 +6,13 @@ import {
     getGroupsDataByDepartment,
     getSubjectsData,
     getSubjectTypesData, setJournalData,
-    setJournalParameters
+    setJournalParameters,
+    getUserScheduleData
 } from "../../actions";
 import MainButton from '../../components/UI/MainButton/MainButton'
 import Journal from "../../components/Journal/Journal";
+import formatDate from "../../common-js/formatDate";
+import Select from "../../components/UI/Select/Select";
 import './Home.scss'
 
 class Home extends Component {
@@ -32,6 +35,7 @@ class Home extends Component {
         dispatch(getDepartmentsData())
         dispatch(getSubjectTypesData())
         dispatch(getSubjectsData())
+        dispatch(getUserScheduleData(this.props.user.userId))
     }
 
     //get groups by department
@@ -89,77 +93,90 @@ class Home extends Component {
         )
     }
 
+    selectOptions(entity) {
+        return entity.map((el) => {
+            return (
+                <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
+            )
+        })
+    }
+
     render() {
-        const {entities} = this.props
+        const {entities, schedule} = this.props
         const {journalData} = this.state
         if (!entities.subjectTypes || !entities.groups || !entities.subjects || !entities.departments) {
             return (<Loader/>)
+        }
+        //get dates for table titles
+        const todayDate = new Date()
+        let tomorrowDate = new Date()
+        tomorrowDate.setDate(new Date().getDate() + 1)
+        //empty rows if amount is less then 5
+        let emptyRows = {
+            today: [],
+            tomorrow: []
+        }
+        if (schedule.todaySchedule.length < 5) {
+            let missAmount = 5 - schedule.todaySchedule.length
+            for (let i = 0; i < missAmount; i++) {
+                emptyRows.today.push(
+                    <tr key={i}>
+                        <td className='time-table__empty-row'/>
+                        <td className='time-table__empty-row'/>
+                        <td className='time-table__empty-row'/>
+                        <td className='time-table__empty-row'/>
+                        <td className='time-table__empty-row'/>
+                    </tr>
+                )
+            }
+        }
+        if (schedule.tomorrowSchedule.length < 5) {
+            let missAmount = 5 - schedule.tomorrowSchedule.length
+            for (let i = 0; i < missAmount; i++) {
+                emptyRows.tomorrow.push(
+                    <tr key={i}>
+                        <td className='time-table__empty-row'/>
+                        <td className='time-table__empty-row'/>
+                        <td className='time-table__empty-row'/>
+                        <td className='time-table__empty-row'/>
+                        <td className='time-table__empty-row'/>
+                    </tr>
+                )
+            }
         }
         return (
             <div className='Home'>
                 <div className="container">
                     <div className="Home__categories">
-                        <div className="Home__departments filter-select__wrap">
-                            <select
-                                className='filter-select'
-                                name="department"
-                                onChange={(e) => this.changeHandler(e)}
-                                defaultValue={'DEFAULT'}
-                            >
-                                <option disabled value='DEFAULT'>Кафедра</option>
-                                {entities.departments.map((el) => {
-                                    return (
-                                        <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-                                    )
-                                })}
-                            </select>
-                        </div>
-                        <div className="Home__groups filter-select__wrap">
-                            <select
-                                className='filter-select'
-                                name="group"
-                                onChange={(e) => this.changeHandler(e)}
-                                defaultValue={'DEFAULT'}
-                                disabled={entities.groups.length === 0}
-                            >
-                                <option disabled value='DEFAULT'>Группа</option>
-                                {entities.groups.map((el) => {
-                                    return (
-                                        <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-                                    )
-                                })}
-                            </select>
-                        </div>
-                        <div className="Home__subjects filter-select__wrap">
-                            <select
-                                className='filter-select'
-                                name='subject'
-                                onChange={(e) => this.changeHandler(e)}
-                                defaultValue={'DEFAULT'}
-                            >
-                                <option disabled value='DEFAULT'>Дисциплина</option>
-                                {entities.subjects.map((el) => {
-                                    return (
-                                        <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-                                    )
-                                })}
-                            </select>
-                        </div>
-                        <div className="Home__subject-types filter-select__wrap">
-                            <select
-                                className='filter-select'
-                                name='subjectType'
-                                onChange={(e) => this.changeHandler(e)}
-                                defaultValue={'DEFAULT'}
-                            >
-                                <option disabled value='DEFAULT'>Вид занятия</option>
-                                {entities.subjectTypes.map((el) => {
-                                    return (
-                                        <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-                                    )
-                                })}
-                            </select>
-                        </div>
+                        <Select
+                            className='Home__departments Home__select'
+                            name='department'
+                            changeHandler={(e) => this.changeHandler(e)}
+                            defaultValue='Кафедра'
+                            options={this.selectOptions(entities.departments)}
+                        />
+                        <Select
+                            className='Home__groups Home__select'
+                            name='group'
+                            changeHandler={(e) => this.changeHandler(e)}
+                            defaultValue='Группа'
+                            disabled={entities.groups.length === 0}
+                            options={this.selectOptions(entities.groups)}
+                        />
+                        <Select
+                            className='Home__subjects Home__select'
+                            name='subject'
+                            changeHandler={(e) => this.changeHandler(e)}
+                            defaultValue='Дисциплина'
+                            options={this.selectOptions(entities.subjects)}
+                        />
+                        <Select
+                            className='Home__subject-types Home__select'
+                            name='subjectType'
+                            changeHandler={(e) => this.changeHandler(e)}
+                            defaultValue='Вид занятия'
+                            options={this.selectOptions(entities.subjectTypes)}
+                        />
                         <MainButton
                             className='Home__btn'
                             onClick={this.clickHandler}
@@ -168,9 +185,78 @@ class Home extends Component {
                             Найти
                         </MainButton>
                     </div>
+                    <div className="Home__time-table-wrap">
+                        <div className="Home__time-table time-table">
+                            <h2 className="time-table__title">Рассписание на сегодня ({formatDate(todayDate)})</h2>
+                            <div className="time-table__border">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Время</th>
+                                            <th>Группа</th>
+                                            <th>Дисциплина</th>
+                                            <th>Тип занятия</th>
+                                            <th>Аудит.</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            schedule.todaySchedule.map((el, index) => {
+                                                return (
+                                                    <tr key={index}>
+                                                        <td>{el.time}</td>
+                                                        <td>{el.group}</td>
+                                                        <td>{el.subject}</td>
+                                                        <td>{el.subject_type}</td>
+                                                        <td>{`${el.hall}, ${el.corp}`}</td>
+                                                    </tr>
+                                                )
+                                            })
+                                        }
+                                        {emptyRows.today.length === 0 ? null : emptyRows.today.map((el) => {
+                                            return el
+                                        })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div className="Home__time-table time-table">
+                            <h2 className="time-table__title">Рассписание на завтра ({formatDate(tomorrowDate)})</h2>
+                            <div className="time-table__border">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Время</th>
+                                            <th>Группа</th>
+                                            <th>Дисциплина</th>
+                                            <th>Тип занятия</th>
+                                            <th>Аудит.</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {
+                                        schedule.tomorrowSchedule.map((el, index) => {
+                                            return (
+                                                <tr key={index}>
+                                                    <td>{el.time}</td>
+                                                    <td>{el.group}</td>
+                                                    <td>{el.subject}</td>
+                                                    <td>{el.subject_type}</td>
+                                                    <td>{`${el.hall}, ${el.corp}`}</td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
+                                    {emptyRows.tomorrow.length === 0 ? null : emptyRows.tomorrow.map((el) => {
+                                        return el
+                                    })}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                     {this.renderModal()}
                 </div>
-
             </div>
         );
     }
@@ -185,7 +271,8 @@ function mapStateToProps(state) {
         journalStudents: state.journal.journalStudents,
         user: state.auth.user,
         errors: state.errors,
-        isLoading: state.journal.isLoading
+        isLoading: state.journal.isLoading,
+        schedule: state.schedule
     }
 }
 
