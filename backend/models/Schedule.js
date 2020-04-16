@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize')
 const db = require('../db/database')
 
-const Journal = db.define('journal', {
+const Schedule = db.define('schedule', {
     user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -20,33 +20,11 @@ const Journal = db.define('journal', {
         },
         primaryKey: true
     },
-    student_id: {
+    group_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-            model: 'students',
-            key: 'id'
-        },
-        primaryKey: true
-    },
-    present: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: true
-    },
-    valid_miss: {
-        type: Sequelize.BOOLEAN
-    },
-    note: {
-        type: Sequelize.TEXT
-    },
-    score: {
-        type: Sequelize.INTEGER
-    },
-    date_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'dates',
+            model: 'groups',
             key: 'id'
         },
         primaryKey: true
@@ -56,6 +34,15 @@ const Journal = db.define('journal', {
         allowNull: false,
         references: {
             model: 'types',
+            key: 'id'
+        },
+        primaryKey: true
+    },
+    week_day_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'week_days',
             key: 'id'
         },
         primaryKey: true
@@ -84,4 +71,4 @@ const Journal = db.define('journal', {
 })
 
 
-module.exports = Journal
+module.exports = Schedule

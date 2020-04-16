@@ -3,7 +3,7 @@ const db = require('../db/database')
 const Journal = require('../models/Journal')
 const Schedule = require('../models/Schedule')
 
-const SubjectType = db.define('subject_type', {
+const Corp = db.define('corp', {
     id: {
         allowNull: false,
         autoIncrement: true,
@@ -17,10 +17,10 @@ const SubjectType = db.define('subject_type', {
     }
 })
 
-Journal.hasMany(SubjectType, {foreignKey: 'id', sourceKey: 'type_id'})
-SubjectType.belongsTo(Journal, {foreignKey: 'id', targetKey: 'type_id'})
+Journal.hasMany(Corp, {foreignKey: 'id', sourceKey: 'corps_id'})
+Corp.belongsTo(Journal, {foreignKey: 'id', targetKey: 'corps_id'})
 
-Schedule.hasMany(SubjectType, {foreignKey: 'id', sourceKey: 'type_id'})
-SubjectType.belongsTo(Schedule, {foreignKey: 'id', targetKey: 'type_id'})
+Schedule.hasMany(Corp, {foreignKey: 'id', sourceKey: 'corps_id'})
+Corp.belongsTo(Schedule, {foreignKey: 'id', targetKey: 'corps_id'})
 
-module.exports = SubjectType
+module.exports = Corp

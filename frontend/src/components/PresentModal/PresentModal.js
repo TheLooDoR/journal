@@ -121,7 +121,7 @@ class PresentModal extends Component{
                             Число:
                             <span className="PresentModal__date">
                                 {this.props.journalDate.map(el => {
-                                    if (el.id === student.date_id) {
+                                    if (el.date_id === student.date_id) {
                                         return (` ${formatDate(el.date)}`)
                                     }
                                     return null
