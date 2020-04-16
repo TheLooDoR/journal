@@ -88,12 +88,15 @@ export const updateStudentData = (studentData) => {
 }
 
 export const addTaskByDate = taskData => dispatch => {
-    const {user_id, subject_id, type_id, group_id} = taskData
+    const {user_id, subject_id, type_id, group_id, time_id, corps_id, hall} = taskData
     const journalParameters = {
         user_id,
         subject_id,
         type_id,
-        group_id
+        group_id,
+        time_id,
+        corps_id,
+        hall
     }
     Axios.post('api/journal/create-task-by-date', taskData)
         .then(() => dispatch(setJournalData(journalParameters)))

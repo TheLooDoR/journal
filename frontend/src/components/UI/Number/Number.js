@@ -20,6 +20,7 @@ const Number = props => {
             value={props.value}
             name={props.name}
             disabled={props.disabled}
+            placeholder={props.placeholder}
         />
     )
 }

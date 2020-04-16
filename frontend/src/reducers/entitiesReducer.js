@@ -1,10 +1,12 @@
-import {GET_DEPARTMENTS, GET_GROUPS, GET_SUBJECT_TYPES, GET_SUBJECTS} from "../actions";
+import {GET_CORPS, GET_DEPARTMENTS, GET_GROUPS, GET_SUBJECT_TYPES, GET_SUBJECTS, GET_TIME} from "../actions";
 
 const initialState =  {
     departments: [],
     groups: [],
     subjectTypes: [],
-    subjects: []
+    subjects: [],
+    time: [],
+    corps: []
 }
 
 export default (state = initialState , action ) => {
@@ -28,6 +30,16 @@ export default (state = initialState , action ) => {
             return {
                 ...state,
                 departments: action.payload
+            }
+        case GET_TIME:
+            return {
+                ...state,
+                time: action.payload
+            }
+        case GET_CORPS:
+            return {
+                ...state,
+                corps: action.payload
             }
         default:
             return state

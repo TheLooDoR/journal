@@ -7,14 +7,16 @@ import PresentModal from "../PresentModal/PresentModal";
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import MainButton from "../UI/MainButton/MainButton";
-import {addTaskByDate} from "../../actions";
+import {addTaskByDate, getCorpsData, getTimeData} from "../../actions";
 import {connect} from 'react-redux'
 import isEmpty from "../../common-js/isEmpty";
 import formatDate from "../../common-js/formatDate";
 import dropdownIcon from './assets/dropdown-icon.png'
 import {Dropdown} from "react-bootstrap";
-
+import Number from "../UI/Number/Number";
 import './Journal.scss'
+import Select from "../UI/Select/Select";
+
 
 class Journal extends Component {
 
@@ -25,11 +27,22 @@ class Journal extends Component {
             showDateModal: false,
             date: new Date(),
             currentStudent: {},
-            scrollValue: 0
+            scrollValue: 0,
+            taskData: {
+                time: {},
+                corp: {},
+                hall: null
+            }
         }
     }
 
     tableRef = React.createRef()
+
+    componentDidMount() {
+        const { dispatch } = this.props
+        dispatch(getTimeData())
+        dispatch(getCorpsData())
+    }
 
     //set scroll value
     componentDidUpdate(prevProps, prevState, snapshot) {
@@ -37,6 +50,22 @@ class Journal extends Component {
         if(table) {
             table.scrollLeft = this.state.scrollValue
         }
+    }
+
+    changeHandler (e) {
+        if (e.target.value !== 'DEFAULT') {
+            let taskData = this.state.taskData
+            this.setState({
+                taskData: {...taskData, [e.target.name]: JSON.parse(e.target.value)}
+            })
+        }
+    }
+
+    hallChangeHandled = (e) => {
+        let taskData = this.state.taskData
+        this.setState({
+            taskData: {...taskData, hall: e}
+        })
     }
 
     scrollHandler = () => {
@@ -82,7 +111,10 @@ class Journal extends Component {
             user_id: user.userId,
             subject_id: subject.id,
             type_id: subjectType.id,
-            group_id: group.id
+            group_id: group.id,
+            time_id: this.state.taskData.time.id,
+            corps_id: this.state.taskData.corp.id,
+            hall: this.state.taskData.hall
         }
         dispatch(addTaskByDate(taskData))
         this.hideDateModal()
@@ -103,9 +135,9 @@ class Journal extends Component {
                     <th height={98}  style={{top: 56, borderBottom: 'none'}} className='fixed-row number-row'>№</th>
                     <th height={98} style={{top: 56, borderBottom: 'none'}} className='fixed-row name-row'>ФИО</th>
                     {
-                        this.props.journalDate.map(el => {
+                        this.props.journalDate.map((el, index) => {
                             return (
-                                <th height={97} id={`date ${el.id}`} key={el.id}>{formatDate(el.date)}</th>
+                                <th height={97} id={`date-${el.date_id} time-${el.time_id}`} key={`${el.date_id}-${el.time_id}`}>{formatDate(el.date)}</th>
                             )
                         })
                     }
@@ -222,7 +254,7 @@ class Journal extends Component {
     }
 
     render() {
-        const {group, subjectType, subject, errors, journalData, journalDate} = this.props
+        const {group, subjectType, subject, errors, journalData, journalDate, time, corps} = this.props
         if (!group || !subjectType || !subject) {
             return null
         }
@@ -290,6 +322,44 @@ class Journal extends Component {
                             locale='ru'
                             formatLongDate={(date) => formatDate(date)}
                         />
+                        <div className="journal-add-form__place-time">
+
+                            <Select
+                                className='journal-add-form__time'
+                                name='time'
+                                changeHandler={(e) => this.changeHandler(e)}
+                                defaultValue='Время'
+                                disabled={time.length === 0}
+                                options={time.map((el) => {
+                                    return (
+                                        <option key={el.id} value={JSON.stringify(el)}>{el.time}</option>
+                                    )
+                                })}
+                            />
+                            <Select
+                                className='journal-add-form__corp'
+                                name='corp'
+                                changeHandler={(e) => this.changeHandler(e)}
+                                defaultValue='Корпус'
+                                disabled={corps.length === 0}npm run dev
+                                options={corps.map((el) => {
+                                    return (
+                                        <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
+                                    )
+                                })}
+                            />
+
+                            <div className="journal-add-form__hall filter-select-warp">
+                                <Number
+                                    className='journal-add-form__number'
+                                    placeholder='Аудитория'
+                                    name='hall'
+                                    value={this.state.taskData.hall}
+                                    onChange={ e => this.hallChangeHandled(e) }
+                                />
+                            </div>
+
+                        </div>
                         <MainButton className='journal-add-form__btn' type='submit'>Добавить</MainButton>
                     </form>
                 </Modal>
@@ -300,7 +370,9 @@ class Journal extends Component {
 
 function mapStateToProps(state) {
     return {
-        user: state.auth.user
+        user: state.auth.user,
+        time: state.entities.time,
+        corps: state.entities.corps
     }
 }
 
