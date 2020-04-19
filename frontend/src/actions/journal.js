@@ -8,6 +8,7 @@ import {
     SET_JOURNAL_STUDENTS
 } from "./types";
 import Axios from "axios";
+import { store } from 'react-notifications-component';
 
 export const setJournalParameters = journalParameters => {
     return {
@@ -100,5 +101,21 @@ export const addTaskByDate = taskData => dispatch => {
     }
     Axios.post('api/journal/create-task-by-date', taskData)
         .then(() => dispatch(setJournalData(journalParameters)))
-        .catch(err => console.log(err.message))
+        .catch(err => {
+            store.addNotification({
+                title: 'Ошибка',
+                message: err.response.data,
+                type: "danger",
+                insert: "top",
+                container: "top-right",
+                animationIn: ["animated", "fadeIn"],
+                animationOut: ["animated", "fadeOut"],
+                dismiss: {
+                    duration: 10000,
+                    onScreen: true,
+                    pauseOnHover: true,
+                    showIcon: true
+                }
+            });
+        })
 }

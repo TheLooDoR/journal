@@ -1,14 +1,13 @@
 import React, {Component} from 'react'
-import Modal from "react-responsive-modal";
-import Number from "../UI/Number/Number";
-import Radio from "../UI/Radio/Radio";
-import MainButton from "../UI/MainButton/MainButton";
-import {connect} from "react-redux";
-import {setJournalData, updateStudentData} from "../../actions";
-
+import Modal from "react-responsive-modal"
+import Number from "../UI/Number/Number"
+import Radio from "../UI/Radio/Radio"
+import MainButton from "../UI/MainButton/MainButton"
+import {connect} from "react-redux"
+import {setJournalData, updateStudentData} from "../../actions"
+import isEmpty from "../../common-js/isEmpty"
+import formatDate from "../../common-js/formatDate"
 import './PresentModal.scss'
-import isEmpty from "../../common-js/isEmpty";
-import formatDate from "../../common-js/formatDate";
 
 
 class PresentModal extends Component{
@@ -57,6 +56,11 @@ class PresentModal extends Component{
         this.setState({
             [e.target.name]: e.target.value
         })
+        if (this.state.grade !== null && (this.state.miss === 'valid-miss' || 'miss')) {
+            this.setState({
+                grade: null
+            })
+        }
     }
 
     submitHandler(e) {
@@ -147,7 +151,7 @@ class PresentModal extends Component{
                                 <p className='grades__grade-title'>Оценка</p>
                                 <Number
                                     className='grades__grade-value'
-                                    min={60}
+                                    min={1}
                                     max={100}
                                     onChange={this.gradeChangeHandler}
                                     value={this.state.grade}
@@ -241,7 +245,7 @@ class PresentModal extends Component{
                             name='miss'
                         />
                     </div>
-                    <MainButton className='PresentModal__btn' type='submit' >Сохранить</MainButton>
+                    <MainButton className='PresentModal__btn' type='submit' disabled={typeof this.state.grade === 'string'}>Сохранить</MainButton>
                 </form>
             </Modal>
         )
