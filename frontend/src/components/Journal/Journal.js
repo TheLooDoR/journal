@@ -14,9 +14,10 @@ import formatDate from "../../common-js/formatDate";
 import dropdownIcon from './assets/dropdown-icon.png'
 import {Dropdown} from "react-bootstrap";
 import Number from "../UI/Number/Number";
-import './Journal.scss'
 import Select from "../UI/Select/Select";
-
+import AttendanceDoughnut from "../Statistic/AttendanceDoughnut/AttendanceDoughnut";
+import ScoreDoughnut from "../Statistic/ScoreDoughnut/ScoreDoughnut";
+import './Journal.scss'
 
 class Journal extends Component {
 
@@ -25,6 +26,8 @@ class Journal extends Component {
         this.state = {
             showModal: false,
             showDateModal: false,
+            showStatisticModal: false,
+            statisticType: null,
             date: new Date(),
             currentStudent: {},
             scrollValue: 0,
@@ -32,6 +35,14 @@ class Journal extends Component {
                 time: {},
                 corp: {},
                 hall: null
+            },
+            statisticData: {
+                totalMiss: null,
+                totalPresent: null,
+                unsatisfactory: null,
+                satisfactory: null,
+                good: null,
+                excellent: null
             }
         }
     }
@@ -93,7 +104,51 @@ class Journal extends Component {
 
     hideDateModal() {
         this.setState({
-            showDateModal: !this.state.showDateModal
+            showDateModal: !this.state.showDateModal,
+            taskData: {
+                time: {},
+                corp: {},
+                hall: null
+            }
+        })
+    }
+
+    hideStatisticModal(type) {
+        let totalMiss = 0, totalPresent = 0, unsatisfactory = 0, satisfactory = 0, good = 0, excellent = 0
+        const {journalStudents, journalData} = this.props
+        journalStudents.map(student => {
+            journalData.map(el => {
+                if (el.student_id === student.id) {
+                    el.present ? totalPresent++ : totalMiss++
+                    if (el.score) {
+                        if (el.score >= 0 && el.score <= 59) {
+                            unsatisfactory++
+                        } else if (el.score >= 60 && el.score <= 74) {
+                            satisfactory++
+                        } else if (el.score >= 75 && el.score <= 89) {
+                            good++
+                        } else {
+                            excellent++
+                        }
+                    }
+                }
+                return null
+            })
+            return null
+        })
+        let {statisticData} = this.state
+        this.setState({
+            showStatisticModal: !this.state.showStatisticModal,
+            statisticType: type,
+            statisticData: {
+                ...statisticData,
+                totalMiss,
+                totalPresent,
+                unsatisfactory,
+                satisfactory,
+                good,
+                excellent
+            }
         })
     }
 
@@ -135,7 +190,7 @@ class Journal extends Component {
                     <th height={98}  style={{top: 56, borderBottom: 'none'}} className='fixed-row number-row'>№</th>
                     <th height={98} style={{top: 56, borderBottom: 'none'}} className='fixed-row name-row'>ФИО</th>
                     {
-                        this.props.journalDate.map((el, index) => {
+                        this.props.journalDate.map(el => {
                             return (
                                 <th height={97} id={`date-${el.date_id} time-${el.time_id}`} key={`${el.date_id}-${el.time_id}`}>{formatDate(el.date)}</th>
                             )
@@ -217,7 +272,7 @@ class Journal extends Component {
                                     if (el.score !== null) {
                                         grades.push(el.score)
                                     }
-                                    //return if students is missing
+                                    //return if student is missing
                                     return (
                                         <td
                                             id={`date-${el.date_id}-student-${el.student_id}`}
@@ -253,8 +308,32 @@ class Journal extends Component {
         )
     }
 
+    renderStatistic () {
+        const {totalPresent, totalMiss, unsatisfactory, satisfactory, good, excellent} = this.state.statisticData
+        if (this.state.statisticType === 'score') {
+            return (
+                <div className="statistic-modal statistic-modal--score">
+                    <ScoreDoughnut
+                        marksAmmount={[unsatisfactory, satisfactory, good, excellent]}
+                    />
+                </div>
+            )
+        } else if (this.state.statisticType === 'attendance') {
+            return (
+                <div className="statistic-modal statistic-modal--attendance">
+                    <AttendanceDoughnut
+                        present={totalPresent}
+                        miss={totalMiss}
+                    />
+                </div>
+
+            )
+        }
+    }
+
     render() {
-        const {group, subjectType, subject, errors, journalData, journalDate, time, corps} = this.props
+        const {group, subjectType, subject, errors, journalData, journalDate, journalStudents, time, corps} = this.props
+        const {taskData} = this.state
         if (!group || !subjectType || !subject) {
             return null
         }
@@ -270,6 +349,8 @@ class Journal extends Component {
             mr += 4
             ml += 4
         }
+        let missAmount = 0
+        let validMissAmount = 0
         return (
             <Modal
                 onClose={this.hideJournalModal}
@@ -293,7 +374,7 @@ class Journal extends Component {
                                     className='Journal__dropdown'
                                     alignRight
                                     id='journal-dropdown-btn'
-                                    onSelect={(e) => console.log(e)}
+                                    onSelect={(e) => this.hideStatisticModal(e)}
                                 >
                                     <Dropdown.Item eventKey={'score'}>Статистика успеваемости студентов</Dropdown.Item>
                                     <Dropdown.Item eventKey={'attendance'}>Статистика посещаемости студентов</Dropdown.Item>
@@ -314,7 +395,7 @@ class Journal extends Component {
                             />
                         </div>
                 }
-                <Modal onClose={() => this.hideDateModal()} open={this.state.showDateModal} modalId='date-modal' center>
+                <Modal onClose={() => this.hideDateModal()} open={this.state.showDateModal} modalId='date-modal' center animationDuration={250}>
                     <form className="journal-add-form" onSubmit={e => this.addTaskHandler(e)}>
                         <Calendar
                             onChange={this.dateChangeHandler}
@@ -323,7 +404,6 @@ class Journal extends Component {
                             formatLongDate={(date) => formatDate(date)}
                         />
                         <div className="journal-add-form__place-time">
-
                             <Select
                                 className='journal-add-form__time'
                                 name='time'
@@ -348,7 +428,6 @@ class Journal extends Component {
                                     )
                                 })}
                             />
-
                             <div className="journal-add-form__hall filter-select-warp">
                                 <Number
                                     className='journal-add-form__number'
@@ -360,8 +439,69 @@ class Journal extends Component {
                             </div>
 
                         </div>
-                        <MainButton className='journal-add-form__btn' type='submit'>Добавить</MainButton>
+                        <MainButton
+                            className='journal-add-form__btn'
+                            type='submit'
+                            disabled={isEmpty(taskData.time) || isEmpty(taskData.corp) || !taskData.hall}
+                        >
+                            Добавить
+                        </MainButton>
                     </form>
+                </Modal>
+                <Modal onClose={() => this.hideStatisticModal()} open={this.state.showStatisticModal} modalId='statistic-modal' center animationDuration={250}>
+                    {this.state.statisticType ?
+                        <div className="statistic-modal__wrap Journal__statistic">
+                            <h3 className='statistic-modal__title'>
+                                {
+                                    `Статистика ${this.state.statisticType === 'attendance' ? 'посещаемости' : 'успеваемости'} 
+                                    группы с ${formatDate(journalDate[0].date)} по ${formatDate(journalDate[journalDate.length - 1].date)}`
+                                }
+                            </h3>
+                            {this.renderStatistic()}
+                            {this.state.statisticType === 'attendance' ?
+                                <table className='statistic-modal__table'>
+                                    <thead>
+                                        <tr>
+                                            <th>№</th>
+                                            <th>ФИО</th>
+                                            <th>Все</th>
+                                            <th>Уваж.</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {journalStudents.map((student, index) => {
+                                        missAmount = 0
+                                        validMissAmount = 0
+                                        return (
+                                            <tr key={index}>
+                                                <td>{index + 1}</td>
+                                                <td>
+                                                    {`${student.surname} ${student.name} ${student.patronymic}`}
+                                                </td>
+                                                {journalData.map((el, index) => {
+                                                    if (el.student_id === student.id) {
+                                                        //Counting miss amount
+                                                        if (!el.present) {
+                                                            missAmount++
+                                                            if (el.valid_miss) {
+                                                                validMissAmount++
+                                                            }
+                                                        }
+
+                                                    }
+                                                    return null
+                                                })}
+                                                <td>{missAmount}</td>
+                                                <td>{validMissAmount}</td>
+                                            </tr>
+                                        )
+                                    })}
+                                    </tbody>
+                                </table>
+                                : null
+                            }
+                        </div>
+                        : null}
                 </Modal>
             </Modal>
         )

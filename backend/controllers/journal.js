@@ -114,6 +114,9 @@ module.exports.getData = async (req, res) => {
 }
 
 module.exports.updateStudentData = async (req, res) => {
+    let error = {
+        message: null
+    }
     try {
         const studentData = await Journal.update({
                 present: req.body.present,
@@ -130,18 +133,26 @@ module.exports.updateStudentData = async (req, res) => {
                     type_id: req.body.type_id
                 }
             }
-        )
-        res.status(200).json({
-            studentData
+        ).catch(e => {
+            error.message = 'Ошибка обновления'
         })
+        if (error.message) {
+            res.status(400).json(error.message)
+        } else {
+            res.status(200).json({
+                studentData
+            })
+        }
+
     } catch (e) {
         console.log(e.message)
     }
 }
 
 module.exports.addTaskByDate = async (req, res) => {
-    const errors = {}
-    let message = ''
+    const error = {
+        message: null
+    }
     try {
         const date = await Date.findOrCreate({
             where: {
@@ -177,15 +188,6 @@ module.exports.addTaskByDate = async (req, res) => {
         for(let i = 0; i < studentsJournal.length; i++) {
             studentsJournal_ids.push(studentsJournal[i].student_id)
         }
-
-        // await Journal.findAll({
-        //     where: {
-        //         student_id: {
-        //             [Op.in]: studentsGroup_ids
-        //         },
-        //         date_id: date
-        //     }
-        // })
 
         //check if all students consist
         let checker = (arr, target) => target.every(v => arr.includes(v))
@@ -232,7 +234,7 @@ module.exports.addTaskByDate = async (req, res) => {
                             hall: req.body.hall
                         })
                     } catch (e) {
-                        errors.journalCreate = e.message
+                        console.log(e.message)
                     }
                 })
             })
@@ -254,7 +256,7 @@ module.exports.addTaskByDate = async (req, res) => {
         }
         //if task with request time consists return error, else create task
         if (time_ids_array.includes(req.body.time_id)) {
-            message = 'Данное время уже используется'
+            error.message = 'У группы не может быть несколько занятий одновременно. Попробуйте выбрать другое время.'
         } else {
             studentsGroup.map(async el => {
                 try {
@@ -272,14 +274,17 @@ module.exports.addTaskByDate = async (req, res) => {
                         corps_id: req.body.corps_id,
                         hall: req.body.hall
                     })
-                    message = 'Добавление успешно'
                 } catch (e) {
-                    errors.journalCreate = e.message
+                    error.message = 'Ошибка добавления'
                     console.log(e.message)
                 }
             })
         }
-        res.status(201).json(message)
+        if (error.message) {
+            res.status(400).json(error.message)
+        } else {
+            res.status(201).json('Добавление успешно')
+        }
     } catch (e) {
         console.log(e.message)
     }

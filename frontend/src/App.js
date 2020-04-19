@@ -14,6 +14,8 @@ import PrivateRoute from './components/PrivateRoute/PrivateRoute'
 import Groups from './containers/Groups/Groups'
 import Subjects from './containers/Subjects/Subjects'
 import SubjectTypes from './containers/SubjectTypes/SubjectTypes'
+import ReactNotification from 'react-notifications-component'
+import 'react-notifications-component/dist/theme.css'
 
 import TestHome from "./containers/TestHome/TestHome";
 
@@ -38,6 +40,7 @@ class App extends Component {
         }
         return (
             <div>
+                <ReactNotification />
                 <Navbar />
                 <Route exact path="/" component={ PrivateRoute(Home) } />
                 <Route exact path="/testHome" component={ PrivateRoute(TestHome, true) } />

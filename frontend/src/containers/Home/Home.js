@@ -13,6 +13,7 @@ import MainButton from '../../components/UI/MainButton/MainButton'
 import Journal from "../../components/Journal/Journal";
 import formatDate from "../../common-js/formatDate";
 import Select from "../../components/UI/Select/Select";
+import isEmpty from "../../common-js/isEmpty";
 import './Home.scss'
 
 class Home extends Component {
@@ -180,7 +181,7 @@ class Home extends Component {
                         <MainButton
                             className='Home__btn'
                             onClick={this.clickHandler}
-                            disabled={Object.entries(journalData.group).length === 0 || Object.entries(journalData.subjectType).length === 0 || Object.entries(journalData.subject).length === 0}
+                            disabled={isEmpty(journalData.group) || isEmpty(journalData.subjectType) || isEmpty(journalData.subject)}
                         >
                             Найти
                         </MainButton>
