@@ -64,7 +64,7 @@ class Journal extends Component {
     }
 
     changeHandler (e) {
-        if (e.target.value !== 'DEFAULT') {
+        if (e.target.value !== '') {
             let taskData = this.state.taskData
             this.setState({
                 taskData: {...taskData, [e.target.name]: JSON.parse(e.target.value)}

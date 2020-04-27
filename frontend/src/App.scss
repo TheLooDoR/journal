@@ -6,6 +6,13 @@ body {
 
 .App {
   text-align: center;
+  &__content-wrap {
+    display: flex;
+    height: 100%;
+  }
+  &__content {
+    margin: 75px auto 0 auto;
+  }
 }
 
 .App-logo {

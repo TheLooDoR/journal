@@ -1,9 +1,17 @@
 const db = require('../db/database')
 const Group = require('../models/Group')
+const Department = require('../models/Department')
 
 module.exports.getAll = async (req, res) => {
     try {
-        const groups = await Group.findAll()
+        const groups = await Group.findAll({
+            include: [
+                {
+                    model: Department,
+                    required: true
+                }
+            ]
+        })
         res.status(200).json({
             groups
         })

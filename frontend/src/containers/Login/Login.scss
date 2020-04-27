@@ -1,0 +1,27 @@
+.login-form {
+  width: 100%;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  .form-group {
+    width: 100%;
+  }
+}
+
+.forget-pass {
+  display: flex;
+  align-items: center;
+  position: relative;
+  a {
+    border-bottom: 1px solid #fff;
+    font-size: 14px;
+    line-height: 16px;
+    color: #fff;
+    &:hover {
+      transition: color .3s;
+      cursor: pointer;
+      color: #dcdcdc;
+      text-decoration: none;
+    }
+  }
+}

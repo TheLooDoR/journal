@@ -26,18 +26,3 @@ module.exports = passport => {
     )
 }
 
-// opts.jwtFromRequest = ExtractJWT.fromAuthHeaderAsBearerToken();
-// opts.secretOrKey = 'secret';
-//
-// module.exports = passport => {
-//     passport.use(new JWTStrategy(opts, (jwt_payload, done) => {
-//          User.findOne({where: {id: payload.userId}, attributes: ['email', 'id', 'admin']})
-//             .then(user => {
-//                 if(user) {
-//                     return done(null, user);
-//                 }
-//                 return done(null, false);
-//             })
-//             .catch(err => console.error(err));
-//     }));
-// }

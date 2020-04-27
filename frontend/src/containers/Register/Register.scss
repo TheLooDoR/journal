@@ -3,34 +3,40 @@
     color: white;
     background: url('./assets/report.png') no-repeat 80px 20px, linear-gradient(89.73deg, #2B9CFF 0.14%, #9610FF 99.83%);
     max-width: 600px;
-    margin: 100px auto;
+    width: 100%;
+    margin: 155px auto;
     display: flex;
-    flex-flow: column wrap;
+    flex-flow: column;
     justify-content: center;
     align-items: center;
-
+    padding: 60px;
 }
 
 .form-header {
-    padding: 50px 0;
     font-weight: 500;
     font-size: 35px;
+    margin-bottom: 24px;
 }
 
+.register-form {
+    display: flex;
+    flex-flow: column;
+}
 
 .form-group {
     display: flex;
     flex-flow: column wrap;
     justify-content: center;
     align-items: flex-start;
+    max-width: 450px;
 }
-
 
 .form-input {
     display: block;
     padding: 10px;
-    width: 450px;
-    max-width: 450px;
+    //width: 450px;
+    //max-width: 450px;
+    width: 100%;
     outline: none;
     border-radius: 10px;
     border: 1px solid #ccc;
@@ -51,7 +57,7 @@
 }
 
 .invalid {
-    border-color: #dc3545;
+    border-color: #dc3545 !important;
     padding-right: calc(1.5em + .75rem);
     background-image: url("./assets/cancel.png");
     background-repeat: no-repeat;
@@ -63,15 +69,23 @@
     width: 100%;
     margin-top: .25rem;
     font-size: 80%;
-    color: #dc3545
+    color: #dc3545;
+    &__confirm {
+        text-decoration: underline;
+        &:hover {
+            color: #fff;
+            cursor: pointer;
+        }
+    }
 }
 
 .submit-btn {
     box-sizing: border-box;
     height: 55px;
-    margin: 36px 0;
+    margin-top: 36px;
     text-transform: uppercase;
-    width: 300px;
+    width: 100%;
+    max-width: 300px;
     padding: 12px 0;
     border: none;
     background: #40FFFF;
@@ -81,20 +95,44 @@
     font-size: 19px;
     line-height: 22px;
     align-self: center;
+    &:hover {
+        background: #3de3e3;
+        transition: background-color .3s;
+    }
 }
 
-@media (max-width: 570px) {
-    .form-input {
-        width: 300px;
+.register-select {
+    width: 100%;
+    select {
+        border: 1px solid #ccc;
+        width: 100%;
+        height: 38px;
+        padding: 0 10px;
+        color: black;
+       option:not([selected]) {
+           color: black;
+       }
+        &:invalid {
+            color: gray;
+        }
     }
 }
 
 @media (max-width: 370px) {
+    .form-container {
+        padding: 30px;
+    }
+    .form-header {
+        font-size: 30px;
+    }
+    .form-group label {
+        font-size: 14px;
+    }
     .form-input {
-        width: 200px;
+        font-size: 12px;
     }
     .submit-btn {
-        width: 200px;
+        font-size: 16px;
     }
 }
 

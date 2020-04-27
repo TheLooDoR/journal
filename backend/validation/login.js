@@ -7,19 +7,19 @@ module.exports = function validateLoginInput(data) {
     data.password = !isEmpty(data.password) ? data.password : '';
 
     if(!Validator.isEmail(data.email)) {
-        errors.email = 'Email is invalid';
+        errors.email = 'Неправильный email';
     }
 
     if(Validator.isEmpty(data.email)) {
-        errors.email = 'Email is required';
+        errors.email = 'Введите email';
     }
 
-    if(!Validator.isLength(data.password, {min: 6, max: 30})) {
-        errors.password = 'Password must have 6 chars';
+    if(!Validator.isLength(data.password, {min: 6, max: 24})) {
+        errors.password = 'Пароль должен быть не меньше 6 символов и не больше 24 символов';
     }
 
     if(Validator.isEmpty(data.password)) {
-        errors.password = 'Password is required';
+        errors.password = 'Введите пароль';
     }
 
     return {

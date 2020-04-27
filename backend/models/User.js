@@ -26,12 +26,51 @@ const User = db.define('user', {
         unique: true
     },
     password: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false
+    },
+    department_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'departments',
+            key: 'id'
+        }
+    },
+    position_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'positions',
+            key: 'id'
+        }
+    },
+    role_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+            model: 'roles',
+            key: 'id'
+        }
+    },
+    phone_number: {
+        type: Sequelize.TEXT
     },
     admin: {
         type: Sequelize.BOOLEAN,
         allowNull: false
+    },
+    confirmed: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+    },
+    resetPasswordToken: {
+        type: Sequelize.TEXT,
+        defaultValue: null
+    },
+    resetPasswordExpires: {
+        type: Sequelize.DATE,
+        defaultValue: null
     }
 })
 
