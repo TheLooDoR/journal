@@ -1,4 +1,13 @@
-import {GET_CORPS, GET_DEPARTMENTS, GET_GROUPS, GET_SUBJECT_TYPES, GET_SUBJECTS, GET_TIME} from "../actions";
+import {
+    GET_CORPS,
+    GET_DEPARTMENTS,
+    GET_GROUPS,
+    GET_POSITIONS,
+    GET_ROLES,
+    GET_SUBJECT_TYPES,
+    GET_SUBJECTS,
+    GET_TIME
+} from "../actions";
 
 const initialState =  {
     departments: [],
@@ -6,7 +15,9 @@ const initialState =  {
     subjectTypes: [],
     subjects: [],
     time: [],
-    corps: []
+    corps: [],
+    roles: [],
+    positions: []
 }
 
 export default (state = initialState , action ) => {
@@ -40,6 +51,16 @@ export default (state = initialState , action ) => {
             return {
                 ...state,
                 corps: action.payload
+            }
+        case GET_ROLES:
+            return {
+                ...state,
+                roles: action.payload
+            }
+        case GET_POSITIONS:
+            return {
+                ...state,
+                positions: action.payload
             }
         default:
             return state

@@ -15,9 +15,6 @@ const Date = db.define('date', {
         validate: {
             isDate: true
         }
-    },
-    time: {
-        type: Sequelize.TIME
     }
 })
 

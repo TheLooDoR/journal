@@ -1,0 +1,13 @@
+.LeftMenu {
+  background: #9610FF;
+  width: 75px;
+  height: 100%;
+  position: fixed;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  margin-top: 75px;
+  &__link {
+    margin: 25px 0;
+  }
+}

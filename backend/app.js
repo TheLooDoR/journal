@@ -1,3 +1,4 @@
+const {CLIENT_ORIGIN, PORT}  = require('./config') ;
 const express = require('express')
 const bodyParser = require('body-parser');
 const cors = require('cors')
@@ -13,6 +14,8 @@ const departmentRoutes = require('./routes/department')
 const timeRoutes = require('./routes/time')
 const corpRoutes = require('./routes/corp')
 const scheduleRoutes = require('./routes/schedule')
+const roleRoutes = require('./routes/role')
+const positionRoutes = require('./routes/position')
 
 const app = express();
 app.use(passport.initialize());
@@ -31,11 +34,10 @@ app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use(cors())
+app.use(cors({
+    origin: CLIENT_ORIGIN
+}))
 
-
-
-const PORT = process.env.PORT || 5000;
 
 app.use('/api/users', userRoutes);
 app.use('/api/groups', groupRoutes)
@@ -46,6 +48,8 @@ app.use('/api/departments', departmentRoutes)
 app.use('/api/time', timeRoutes)
 app.use('/api/corps', corpRoutes)
 app.use('/api/schedule', scheduleRoutes)
+app.use('/api/roles', roleRoutes)
+app.use('/api/positions', positionRoutes)
 
 app.listen(PORT, () => {
     console.log(`Server is running on PORT ${PORT}`);

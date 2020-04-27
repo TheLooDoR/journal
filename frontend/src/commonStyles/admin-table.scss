@@ -1,0 +1,101 @@
+.admin-table {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  &__wrap {
+
+  }
+  table {
+    table-layout: fixed;
+    width: 100%;
+  }
+  th, td {
+    border: 1px solid #2B9CFF;
+  }
+  &__title {
+    text-align: center;
+    padding: 15px 0;
+    font-weight: 500;
+    font-size: 24px;
+  }
+  &__filter-table {
+    margin-right: 17px;
+    th {
+      border-bottom: none;
+    }
+  }
+  &__filter-col {
+    padding: 10px 20px;
+  }
+  &__filter-wrap {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+  }
+  &__filter-btn {
+    padding: 10px 50px;
+    margin-left: 15px;
+  }
+  &__head {
+    margin-right: 17px;
+    th {
+      text-align: center;
+      padding: 25px 0;
+    }
+  }
+  &__body {
+    overflow-y: scroll;
+    &::-webkit-scrollbar {
+      width: 17px;
+    }
+    &::-webkit-scrollbar-track {
+      box-shadow: inset 0 0 14px 14px transparent;
+      border: solid 4px transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: linear-gradient(0deg, #2B9CFF 0%, #9610FF 100%);;
+      background-clip: content-box;
+      border: 5px solid transparent;
+      border-radius: 10px;
+    }
+    tr {
+      &:first-child {
+        td {
+          border-top: none;
+        }
+      }
+      &:last-child {
+        td {
+          border-bottom: none;
+        }
+      }
+    }
+    td {
+      text-align: center;
+      padding: 10px 0;
+      word-break: break-word;
+    }
+  }
+  &__footer {
+    margin-right: 17px;
+    td {
+      height: 20px;
+    }
+  }
+  &__btn-cell {
+    width: 60px;
+  }
+  &__edit-btn {
+    border: none;
+    background: transparent;
+  }
+  &__delete-btn {
+    border: none;
+    background: transparent;
+  }
+  &__number {
+    width: 40px;
+  }
+}

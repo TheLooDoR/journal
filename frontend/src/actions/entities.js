@@ -1,5 +1,14 @@
 import axios from "axios";
-import {GET_CORPS, GET_DEPARTMENTS, GET_GROUPS, GET_SUBJECT_TYPES, GET_SUBJECTS, GET_TIME} from "./types";
+import {
+    GET_CORPS,
+    GET_DEPARTMENTS,
+    GET_GROUPS,
+    GET_POSITIONS,
+    GET_ROLES,
+    GET_SUBJECT_TYPES,
+    GET_SUBJECTS,
+    GET_TIME
+} from "./types";
 
 const departmentsData = departmentsData => {
     return {
@@ -40,6 +49,20 @@ const corpsData = corpsData => {
     return {
         type: GET_CORPS,
         payload: corpsData
+    }
+}
+
+const rolesData = rolesData => {
+    return {
+        type: GET_ROLES,
+        payload: rolesData
+    }
+}
+
+const positionsData = positionsData => {
+    return {
+        type: GET_POSITIONS,
+        payload: positionsData
     }
 }
 
@@ -86,5 +109,15 @@ export const getTimeData = () => dispatch => {
 export const getCorpsData = () => dispatch => {
     axios.get('api/corps/')
         .then(res => dispatch(corpsData(res.data.corps)))
+}
+
+export const getRolesData = () => dispatch => {
+    axios.get('api/roles/')
+        .then(res => dispatch(rolesData(res.data.roles)))
+}
+
+export const getPositionsData = () => dispatch => {
+    axios.get('api/positions/')
+        .then(res => dispatch(positionsData(res.data.positions)))
 }
 

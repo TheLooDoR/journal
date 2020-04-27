@@ -9,7 +9,7 @@ export default function (ComposedComponent, adminOnly=false) {
         returnAllowedComponent() {
             if (this.props.auth.isAuthenticated) {
                 if (adminOnly) {
-                    if (this.props.auth.user.admin === true) {
+                    if (this.props.auth.user.role === 'admin') {
                         return (<ComposedComponent  {...this.props}/>)
                     } else {
                         return (<Redirect to={'/'} />)

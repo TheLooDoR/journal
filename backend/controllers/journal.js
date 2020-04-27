@@ -48,7 +48,7 @@ module.exports.getData = async (req, res) => {
                     [Op.in]: students_id
                 }
             },
-            group: ['date_id', 'time_id'],
+            group: ['date_id', 'time_id', 'times.time', 'dates.date'],
             include: [
                 {
                     model: Time,

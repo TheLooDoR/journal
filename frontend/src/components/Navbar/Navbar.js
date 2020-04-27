@@ -5,31 +5,36 @@ import { connect } from 'react-redux';
 import { logoutUser } from '../../actions/authentication';
 import { withRouter } from 'react-router-dom';
 import { NavLink } from 'react-router-dom'
-
-import './Navbar.css'
-import logo from './assets/logo.png'
-import groupLogo from './assets/group.png'
-import disciplineLogo from './assets/discipline.png'
-import typeLogo from './assets/type.png'
-import newTask from './assets/paper.png'
-import rating from './assets/rating.png'
-import menu from './assets/menu.png'
+import logo from '../../assets/navbar/logo.png'
+import groupLogo from '../../assets/navbar/group.png'
+import disciplineLogo from '../../assets/navbar/discipline.png'
+import typeLogo from '../../assets/navbar/type.png'
+import newTask from '../../assets/navbar/paper.png'
+import rating from '../../assets/navbar/rating.png'
+import userLogo  from '../../assets/navbar/user.png'
+import withSizes from 'react-sizes'
+import { slide as Menu } from 'react-burger-menu'
+import './Navbar.scss'
 
 const authLinks = [
     {to: '/groups', label: 'Группы', logo: groupLogo, exact: false},
     {to: '/subjects', label: 'Дисциплины', logo: disciplineLogo, exact: false},
     {to: '/subject-types', label: 'Вид занятия', logo: typeLogo, exact: false},
     {to: '#', label: 'Новое занятие', logo: newTask, exact: false},
-    {to: '#', label: 'Рейтинг', logo: rating, exact: false},
-    {to: '#', label: '', logo: menu, exact: false}
+    {to: '#', label: 'Рейтинг', logo: rating, exact: false}
 ]
 
 class Navbar extends Component {
 
+    onLogout(e) {
+        e.preventDefault();
+        this.props.logoutUser(this.props.history);
+    }
+
     renderAuthLinks() {
         return authLinks.map((link, index) => {
             return (
-                <div className={'Link'} key={index}>
+                <div className={'Navbar__link'} key={index}>
                     <NavLink
                         to={link.to}
                         exact={link.exact}
@@ -38,54 +43,63 @@ class Navbar extends Component {
                         {link.label}
                     </NavLink>
                 </div>
-
             )
         })
     }
 
-    onLogout(e) {
-        e.preventDefault();
-        this.props.logoutUser(this.props.history);
-    }
-
     render() {
         const {isAuthenticated, user} = this.props.auth;
-        const authLinks = (
-            <>
-                {this.renderAuthLinks()}
-                <div className={'Link'}>
-                    <p>{ user.email }</p>
-                    <button className="logout-btn" onClick={this.onLogout.bind(this)}>
-                        Выйти
-                    </button>
-                </div>
-            </>
-        )
+        let authLinks = null
+        if (this.props.isDesktop) {
+            authLinks = (
+                <>
+                    {this.renderAuthLinks()}
+                    <div className={'Navbar__link'}>
+                        <img src={userLogo} alt=""/>
+                        <button className="Navbar__logout-btn" onClick={this.onLogout.bind(this)}>
+                            {user.name}
+                        </button>
+                    </div>
+                </>
+            )
+        }
+
         const guestLinks = (
             <>
-                <div className="Link">
-                    <Link className="nav-link" to="/register">Зарегестрироваться</Link>
+                <div className="Navbar__link">
+                    <Link className="Navbar__guest-link" to="/register">Зарегестрироваться</Link>
                 </div>
-                <div className="Link">
-                    <Link className="nav-link" to="/login">Войти</Link>
+                <div className="Navbar__link">
+                    <Link className="Navbar__guest-link" to="/login">Войти</Link>
                 </div>
             </>
         )
         return (
             <header>
                 <section className={'header'} >
+                    {this.props.isDesktop || !isAuthenticated || user.role === 'admin' ?  null :
+                        <Menu right>
+                            {this.renderAuthLinks()}
+                            <div className={'Navbar__link'}>
+                                <img src={userLogo} alt=""/>
+                                <button className="Navbar__logout-btn" onClick={this.onLogout.bind(this)}>
+                                    {user.name}
+                                </button>
+                            </div>
+                        </Menu>
+                    }
                     <nav className={'Navbar'}>
-                        <div className={'Logo'}>
+                        <div className={'Navbar__logo'}>
+                            {user.role === 'admin' ? <div className="Navbar__square"/> : null}
                             <Link to={'/'}>
                                 <img src={logo} alt=""/>
                             </Link>
-
                         </div>
-                        <div className={'Links'}>
-                            {isAuthenticated ? authLinks: guestLinks}
+                        <div className={'Navbar__links'}>
+                            {isAuthenticated
+                                ? authLinks
+                                : guestLinks}
                         </div>
-
-
                     </nav>
                 </section>
             </header>
@@ -104,4 +118,8 @@ const mapStateToProps = (state) => ({
     auth: state.auth
 })
 
-export default connect(mapStateToProps, { logoutUser })(withRouter(Navbar));
+const mapSizesToProps = ({ width }) => ({
+    isDesktop: width >= 1024
+})
+
+export default withSizes(mapSizesToProps)(connect(mapStateToProps, { logoutUser })(withRouter(Navbar)))
