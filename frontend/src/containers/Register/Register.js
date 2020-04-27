@@ -3,9 +3,10 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { registerUser } from '../../actions/authentication';
-import classnames from 'classnames';
-
-import './Register.css'
+import Select from "../../components/UI/Select/Select";
+import {getPositionsData, getDepartmentsData, setError} from "../../actions";
+import InputMask from 'react-input-mask';
+import './Register.scss'
 
 class Register extends Component {
 
@@ -18,10 +19,36 @@ class Register extends Component {
             email: '',
             password: '',
             password_confirm: '',
+            phone_number: '',
+            department: {},
+            position: {},
             errors: {}
         }
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    componentDidMount() {
+        this.props.getPositionsData()
+        this.props.getDepartmentsData()
+        if(this.props.auth.isAuthenticated) {
+            this.props.history.push('/');
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.auth.isAuthenticated) {
+            this.props.history.push('/')
+        }
+        if(nextProps.errors) {
+            this.setState({
+                errors: nextProps.errors
+            });
+        }
+    }
+
+    componentWillUnmount() {
+        this.props.setError({})
     }
 
     handleInputChange(e) {
@@ -36,45 +63,70 @@ class Register extends Component {
             name: this.state.name,
             surname: this.state.surname,
             patronymic: this.state.patronymic,
-            email: this.state.email,
+            email: this.state.email.toLowerCase(),
             password: this.state.password,
             password_confirm: this.state.password_confirm,
+            department_id: this.state.department.id,
+            position_id: this.state.position.id,
+            role_id: 3,
+            phone_number: this.state.phone_number,
             admin: false
         }
         this.props.registerUser(user, this.props.history);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if(nextProps.auth.isAuthenticated) {
-            this.props.history.push('/')
-        }
-        if(nextProps.errors) {
+    changeHandler (e) {
+        if (e.target.value !== '') {
+            if (e.target.name === 'phone_number') {
+                console.log('number')
+            }
             this.setState({
-                errors: nextProps.errors
-            });
+                [e.target.name]: JSON.parse(e.target.value)
+            })
         }
     }
 
-    componentDidMount() {
-        if(this.props.auth.isAuthenticated) {
-            this.props.history.push('/');
-        }
+    selectDepartmentOptions(entity) {
+        return entity.map((el) => {
+            return (
+                <option key={el.id} value={JSON.stringify(el)}>{el.full_name}</option>
+            )
+        })
+    }
+
+    selectPositionOptions(entity) {
+        return entity.map((el) => {
+            return (
+                <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
+            )
+        })
     }
 
     render() {
+        const { departments, positions } = this.props
         const { errors } = this.state;
         return(
             <div className="form-container" >
                 <h2 className={'form-header'}>Регистрация</h2>
                 <form className={'register-form'} onSubmit={ this.handleSubmit }>
                     <div className="form-group">
+                        <label htmlFor="Email">Почтовый адрес*</label>
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            className={`form-input ${errors.email ? 'invalid' : null}`}
+                            name="email"
+                            onChange={ this.handleInputChange }
+                            value={ this.state.email }
+                        />
+                        {errors.email && (<div className="feedback">{errors.email}</div>)}
+                    </div>
+                    <div className="form-group">
                         <label htmlFor="name">Имя*</label>
                         <input
                             type="text"
                             placeholder="Имя"
-                            className={classnames('form-input ', {
-                                'invalid': errors.email
-                            })}
+                            className={`form-input ${errors.name ? 'invalid' : null}`}
                             name="name"
                             onChange={ this.handleInputChange }
                             value={ this.state.name }
@@ -86,9 +138,7 @@ class Register extends Component {
                         <input
                             type="text"
                             placeholder="Фамилия"
-                            className={classnames('form-input ', {
-                                'invalid': errors.email
-                            })}
+                            className={`form-input ${errors.surname ? 'invalid' : null}`}
                             name="surname"
                             onChange={ this.handleInputChange }
                             value={ this.state.surname }
@@ -100,9 +150,7 @@ class Register extends Component {
                         <input
                             type="text"
                             placeholder="Отчество"
-                            className={classnames('form-input ', {
-                                'invalid': errors.email
-                            })}
+                            className={`form-input ${errors.patronymic ? 'invalid' : null}`}
                             name="patronymic"
                             onChange={ this.handleInputChange }
                             value={ this.state.patronymic }
@@ -110,27 +158,44 @@ class Register extends Component {
                         {errors.patronymic && (<div className="feedback">{errors.patronymic}</div>)}
                     </div>
                     <div className="form-group">
-                        <label htmlFor="Email">Почтовый адрес*</label>
-                        <input
-                            type="email"
-                            placeholder="Email"
-                            className={classnames('form-input ', {
-                                'invalid': errors.email
-                            })}
-                            name="email"
-                            onChange={ this.handleInputChange }
-                            value={ this.state.email }
+                        <label htmlFor="Position">Должность*</label>
+                        <Select
+                            className='register-select'
+                            name='position'
+                            defaultValue='Выберите должность'
+                            options={this.selectPositionOptions(positions)}
+                            changeHandler={(e) => this.changeHandler(e)}
                         />
-                        {errors.email && (<div className="feedback">{errors.email}</div>)}
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="Position">Кафедра*</label>
+                        <Select
+                            className='register-select'
+                            name='department'
+                            defaultValue='Выберите кафедру'
+                            options={this.selectDepartmentOptions(departments)}
+                            changeHandler={(e) => this.changeHandler(e)}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="name">Мобильный телефон*</label>
+                        <InputMask
+                            type="tel"
+                            placeholder="Мобильный телефон"
+                            className={`form-input ${errors.phone_number ? 'invalid' : null}`}
+                            name="phone_number"
+                            onChange={ this.handleInputChange }
+                            value={ this.state.phone_number }
+                            mask='+3\8 (999) 99 99 999'
+                        />
+                        {errors.phone_number && (<div className="feedback">{errors.name}</div>)}
                     </div>
                     <div className="form-group">
                         <label htmlFor="Пароль">Пароль*</label>
                         <input
                             type="password"
-                            placeholder="Password"
-                            className={classnames('form-input ', {
-                                'invalid': errors.email
-                            })}
+                            placeholder="Пароль"
+                            className={`form-input ${errors.password ? 'invalid' : null}`}
                             name="password"
                             onChange={ this.handleInputChange }
                             value={ this.state.password }
@@ -141,10 +206,8 @@ class Register extends Component {
                         <label htmlFor="Подтвердить пароль">Подтвердить пароль*</label>
                         <input
                             type="password"
-                            placeholder="Confirm Password"
-                            className={classnames('form-input ', {
-                                'invalid': errors.email
-                            })}
+                            placeholder="Подтвердить пароль"
+                            className={`form-input ${errors.password_confirm ? 'invalid' : null}`}
                             name="password_confirm"
                             onChange={ this.handleInputChange }
                             value={ this.state.password_confirm }
@@ -164,12 +227,17 @@ class Register extends Component {
 
 Register.propTypes = {
     registerUser: PropTypes.func.isRequired,
+    getPositionsData: PropTypes.func.isRequired,
+    getDepartmentsData: PropTypes.func.isRequired,
+    setError: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
     auth: state.auth,
+    departments: state.entities.departments,
+    positions: state.entities.positions,
     errors: state.errors
 });
 
-export default connect(mapStateToProps,{ registerUser })(withRouter(Register))
+export default connect(mapStateToProps,{ registerUser, getPositionsData, getDepartmentsData, setError})(withRouter(Register))

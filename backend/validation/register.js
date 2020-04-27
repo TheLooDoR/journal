@@ -9,55 +9,55 @@ module.exports = function validateRegisterInput(data) {
     data.password_confirm = !isEmpty(data.password_confirm) ? data.password_confirm : '';
 
     if(!Validator.isLength(data.name, { min: 2, max: 30 })) {
-        errors.name = 'Name must be between 2 to 30 chars';
+        errors.name = 'Имя должно иметь от 2 до 30 символов';
     }
 
     if(Validator.isEmpty(data.name)) {
-        errors.name = 'Name field is required';
+        errors.name = 'Введите имя';
     }
 
     if(!Validator.isLength(data.surname, { min: 2, max: 30 })) {
-        errors.surname = 'Surname must be between 2 to 30 chars';
+        errors.surname = 'Фамилия должна быть от 2 до 30 символов';
     }
 
     if(Validator.isEmpty(data.surname)) {
-        errors.surname = 'Surname field is required';
+        errors.surname = 'Введите фамилию';
     }
 
     if(!Validator.isLength(data.patronymic, { min: 2, max: 30 })) {
-        errors.patronymic = 'Patronymic must be between 2 to 30 chars';
+        errors.patronymic = 'Отчество должно быть от 2 до 30 символов';
     }
 
     if(Validator.isEmpty(data.patronymic)) {
-        errors.patronymic = 'Patronymic field is required';
+        errors.patronymic = 'Введите отчество';
     }
 
     if(!Validator.isEmail(data.email)) {
-        errors.email = 'Email is invalid';
+        errors.email = 'Неправильный email';
     }
 
     if(Validator.isEmpty(data.email)) {
-        errors.email = 'Email is required';
+        errors.email = 'Введите email';
     }
 
-    if(!Validator.isLength(data.password, {min: 6, max: 30})) {
-        errors.password = 'Password must have 6 chars';
+    if(!Validator.isLength(data.password, {min: 6, max: 24})) {
+        errors.password = 'Пароль должен быть не меньше 6 символов и не больше 24 символов';
     }
 
     if(Validator.isEmpty(data.password)) {
-        errors.password = 'Password is required';
+        errors.password = 'Введите пароль';
     }
 
-    if(!Validator.isLength(data.password_confirm, {min: 6, max: 30})) {
-        errors.password_confirm = 'Password must have 6 chars';
+    if(!Validator.isLength(data.password_confirm, {min: 6, max: 24})) {
+        errors.password_confirm = 'Пароль должен быть не меньше 6 символов и не больше 24 символов';
     }
 
     if(!Validator.equals(data.password, data.password_confirm)) {
-        errors.password_confirm = 'Password and Confirm Password must match';
+        errors.password_confirm = 'Пароли не совпадают';
     }
 
     if(Validator.isEmpty(data.password_confirm)) {
-        errors.password_confirm = 'Password is required';
+        errors.password_confirm = 'Подтвердите пароль';
     }
 
     return {

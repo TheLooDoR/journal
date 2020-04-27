@@ -1,0 +1,113 @@
+$scrollbarWidth: 8px;
+$scrollbarPadding: 2px;
+
+
+.Users {
+  padding: 10px;
+  color: #1D3B55;
+  &__table {
+    height: 85vh;
+    width: 100%;
+  }
+  &__search {
+    width: 500px;
+  }
+  &__users-table {
+    tr {
+      &:nth-child(odd) {
+        background: rgba(43, 156, 255, .1);
+      }
+      &:nth-child(even) {
+        background: rgba(150, 16, 255, .1);
+      }
+    }
+  }
+}
+
+.admin-update {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  color: #1D3B55;
+  &__title {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  &__inputs {
+    width: 80%;
+    margin: auto;
+  }
+  &__label {
+    margin: 0 0 0 10px;
+    font-weight: 500;
+    font-size: 16px;
+  }
+  &__input {
+    margin: 10px 0;
+    select {
+      width: 100%;
+      padding: 10px 15px;
+    }
+  }
+  &__submit {
+    padding: 15px 90px;
+    margin-top: 20px;
+  }
+}
+
+.update-input-text {
+  border: 1px solid #2B9CFF;
+  border-radius: 10px;
+  padding: 10px 15px;
+  width: 100%;
+  outline: none;
+}
+
+.admin-delete {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  color: #1D3B55;
+  &__text {
+    font-size: 26px;
+    font-weight: 500;
+
+    text-align: center;
+    span {
+      display: block;
+      font-style: italic;
+    }
+  }
+  &__buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  &__btn {
+    margin: 0 10px;
+    border: 1px solid transparent;
+    outline: none;
+    background: #fff;
+    font-weight: 500;
+    font-size: 26px;
+    border-radius: 10px;
+    padding: 10px 30px;
+    transition: border ease-in-out .3s;
+    &:focus {
+      outline: none;
+    }
+    &:hover {
+      border: 1px solid #2B9CFF;
+    }
+  }
+}
+
+#users-update-modal {
+  padding: 60px 0;
+}
+
+#users-delete-modal {
+  .styles_closeButton__20ID4 {
+    display: none;
+  }
+}

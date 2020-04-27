@@ -2,9 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { loginUser } from '../../actions/authentication';
+import { setError } from "../../actions";
 import classnames from 'classnames';
-
-import '../Register/Register.css'
+import Axios from "axios";
+import { store } from 'react-notifications-component'
+import '../Register/Register.scss'
+import './Login.scss'
+import {Link} from "react-router-dom";
 
 class Login extends Component {
 
@@ -19,25 +23,14 @@ class Login extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleInputChange(e) {
-        this.setState({
-            [e.target.name]: e.target.value
-        })
-    }
-
-    handleSubmit(e) {
-        e.preventDefault();
-        const user = {
-            email: this.state.email,
-            password: this.state.password,
-        }
-        this.props.loginUser(user);
-    }
-
     componentDidMount() {
         if(this.props.auth.isAuthenticated) {
             this.props.history.push('/');
         }
+    }
+
+    componentWillUnmount() {
+        this.props.setError({})
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
@@ -49,6 +42,42 @@ class Login extends Component {
                 errors: nextProps.errors
             });
         }
+    }
+
+    handleInputChange(e) {
+        this.setState({
+            [e.target.name]: e.target.value
+        })
+    }
+
+    handleSubmit(e) {
+        e.preventDefault();
+        const user = {
+            email: this.state.email.toLowerCase(),
+            password: this.state.password,
+        }
+        this.props.loginUser(user);
+    }
+
+    repeatedConfirmHandler = (e) => {
+        Axios.get(`api/users/register/repeated-confirm/${this.state.email}`)
+            .then(res => {
+                store.addNotification({
+                    title: 'Подтверждение',
+                    message: res.data.msg,
+                    type: "default",
+                    insert: "top",
+                    container: "top-right",
+                    animationIn: ["animated", "fadeIn"],
+                    animationOut: ["animated", "fadeOut"],
+                    dismiss: {
+                        duration: 5000,
+                        onScreen: true,
+                        pauseOnHover: true,
+                        showIcon: true
+                    }
+                });
+            })
     }
 
     render() {
@@ -73,13 +102,18 @@ class Login extends Component {
                                 onChange={ this.handleInputChange }
                                 value={ this.state.email }
                             />
-                            {errors.email && (<div className="feedback">{errors.email}</div>)}
+                            {errors.email &&
+                            (<div className="feedback">
+                                {errors.email === 'Почтовый адрес не подтвержден.'
+                                    ? (<p>{errors.email}<span className='feedback__confirm' onClick={this.repeatedConfirmHandler}>Повторная отправка письма</span></p>)
+                                    : errors.email}
+                            </div>)}
                         </div>
                         <div className="form-group">
                             <label htmlFor="password">Почтовый адрес*</label>
                             <input
                                 type="password"
-                                placeholder="Password"
+                                placeholder="Пароль"
                                 className={classnames('form-input', {
                                     'invalid': errors.password
                                 })}
@@ -94,6 +128,9 @@ class Login extends Component {
                                 Войти
                             </button>
                         </div>
+                        <div className="form-group forget-pass">
+                            <Link to={'/forgot-password'}>Забыли пароль?</Link>
+                        </div>
                     </form>
                 </div>
 
@@ -105,6 +142,7 @@ class Login extends Component {
 Login.propTypes = {
     loginUser: PropTypes.func.isRequired,
     auth: PropTypes.object.isRequired,
+    setError: PropTypes.func.isRequired,
     errors: PropTypes.object.isRequired
 }
 
@@ -113,4 +151,4 @@ const mapStateToProps = (state) => ({
     errors: state.errors
 })
 
-export  default connect(mapStateToProps, { loginUser })(Login)
+export  default connect(mapStateToProps, { loginUser, setError })(Login)

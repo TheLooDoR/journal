@@ -1,0 +1,43 @@
+.FilterSearch {
+  display: flex;
+  &__input {
+    border: 1px solid #2B9CFF;
+    border-right: none;
+    border-radius: 10px 0 0 10px;
+    outline: none;
+    padding: 0 15px;
+    width: 100%;
+  }
+  &__select-wrap {
+    display: inline-block;
+    position: relative;
+    &:before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 14px;
+      transform: translateY(-50%);
+      background: url('../../../assets/select-arrow.png') no-repeat center center;
+      width: 13px;
+      height: 13px;
+      pointer-events: none;
+    }
+  }
+  &__select {
+    border: 1px solid #2B9CFF;
+    border-radius: 0 10px 10px 0;
+    border-left: none;
+    -webkit-appearance: none;
+    outline: none;
+    padding: 0 30px 0 0;
+    color: rgba(29, 59, 85, .8);
+    text-transform: lowercase;
+    font-size: 14px;
+    option {
+      color: #1D3B55
+    }
+    &:hover {
+      cursor: default;
+    }
+  }
+}
