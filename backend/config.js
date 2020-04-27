@@ -1,3 +1,4 @@
+const isProduction = process.env.NODE_ENV === 'production'
 exports.PORT = process.env.PORT || 5000;
 
 exports.CLIENT_ORIGIN = process.env.NODE_ENV === 'production'
