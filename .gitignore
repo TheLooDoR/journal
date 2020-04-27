@@ -5,6 +5,8 @@ frontend/debug.log
 # testing
 frontend/coverage
 
+frontend/debug.log
+
 # production
 frontend/build
 
