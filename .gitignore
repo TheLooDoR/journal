@@ -1,12 +1,13 @@
 frontend/node_modules
-backend/node_modules
-.pnp.js
 frontend/debug.log
-# testing
 frontend/coverage
-
-# production
 frontend/build
+.pnp.js
+
+backend/node_modules
+backend/sqlfile.sql
+backend/db.db
+backend/.env
 backend/.gitignore
 backend/Procfile
 
