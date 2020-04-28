@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize')
+const config = require('../config')
 require('dotenv').config()
 
 // module.exports = new Sequelize({
@@ -14,11 +15,10 @@ require('dotenv').config()
 //     operatorsAliases: Sequelize.Op
 // }); // Создаём подключение
 
-module.exports = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, process.env.DB_PASSWORD,{
+module.exports = new Sequelize(config.DB_DATABASE, config.DB_USER, config.DB_PASSWORD,{
+    host: config.DB_HOST,
     dialect: 'postgres',
-    dialectOptions: {
-        multipleStatements: true
-    },
+    dialectOptions: config.dialectOptions,
     logging: console.log,
     define: {
         timestamps: false
