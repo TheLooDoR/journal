@@ -5,6 +5,7 @@ debug.log
 build
 sqlfile.sql
 db.db
+.env
 
 # misc
 .DS_Store

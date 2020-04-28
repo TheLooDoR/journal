@@ -5,10 +5,10 @@ frontend/debug.log
 # testing
 frontend/coverage
 
-frontend/debug.log
-
 # production
 frontend/build
+backend/.gitignore
+backend/Procfile
 
 # misc
 .DS_Store
