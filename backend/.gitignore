@@ -3,6 +3,8 @@ node_modules
 debug.log
 .idea
 build
+sqlfile.sql
+db.db
 
 # misc
 .DS_Store
