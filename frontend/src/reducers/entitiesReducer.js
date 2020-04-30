@@ -6,7 +6,7 @@ import {
     GET_ROLES,
     GET_SUBJECT_TYPES,
     GET_SUBJECTS,
-    GET_TIME
+    GET_TIME, REQUEST_ENTITIES, REQUEST_ENTITIES_FINISHED
 } from "../actions";
 
 const initialState =  {
@@ -17,7 +17,8 @@ const initialState =  {
     time: [],
     corps: [],
     roles: [],
-    positions: []
+    positions: [],
+    isLoading: false
 }
 
 export default (state = initialState , action ) => {
@@ -61,6 +62,16 @@ export default (state = initialState , action ) => {
             return {
                 ...state,
                 positions: action.payload
+            }
+        case REQUEST_ENTITIES:
+            return {
+                ...state,
+                isLoading: action.payload
+            }
+        case REQUEST_ENTITIES_FINISHED:
+            return {
+                ...state,
+                isLoading: action.payload
             }
         default:
             return state

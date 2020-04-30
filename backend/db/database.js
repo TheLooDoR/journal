@@ -15,10 +15,15 @@ require('dotenv').config()
 //     operatorsAliases: Sequelize.Op
 // }); // Создаём подключение
 
-module.exports = new Sequelize(config.DB_DATABASE, config.DB_USER, config.DB_PASSWORD,{
-    host: config.DB_HOST,
+module.exports = new Sequelize( `${process.env.DATABASE_URL}`, {
     dialect: 'postgres',
-    dialectOptions: config.dialectOptions,
+    dialectOptions: {
+        multipleStatements: true,
+        ssl: {
+            required: true,
+            rejectUnauthorized: false
+        }
+    },
     logging: console.log,
     define: {
         timestamps: false

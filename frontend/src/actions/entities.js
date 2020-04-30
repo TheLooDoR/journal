@@ -7,7 +7,7 @@ import {
     GET_ROLES,
     GET_SUBJECT_TYPES,
     GET_SUBJECTS,
-    GET_TIME
+    GET_TIME, REQUEST_ENTITIES, REQUEST_ENTITIES_FINISHED
 } from "./types";
 
 const departmentsData = departmentsData => {
@@ -66,6 +66,20 @@ const positionsData = positionsData => {
     }
 }
 
+const requestEntities = () => {
+    return {
+        type: REQUEST_ENTITIES,
+        payload: true
+    }
+}
+
+const requestEntitiesFinished = () => {
+    return {
+        type: REQUEST_ENTITIES_FINISHED,
+        payload: false
+    }
+}
+
 export const getDepartmentsData = () => dispatch => {
     axios.get('api/departments/')
         .then(res => {
@@ -73,10 +87,12 @@ export const getDepartmentsData = () => dispatch => {
         })
 }
 
-export const getGroupsData = () => dispatch => {
-    axios.get('api/groups/')
+export const getGroupsData = (filterType, filterValue) => dispatch => {
+    dispatch(requestEntities())
+    axios.get('api/groups/', { params: { filterType, filterValue } })
         .then((res) => {
             dispatch(groupsData(res.data.groups))
+            dispatch(requestEntitiesFinished())
         })
 }
 

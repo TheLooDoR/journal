@@ -4,7 +4,7 @@
   &__groups-table {
     height: 260px;
   }
-  &__users-table {
+  &__students-table {
     height: 390px;
   }
   &__filter {
@@ -38,8 +38,18 @@
     width: 200px;
     font-size: 13px;
   }
+  &__row {
+    &:hover {
+      cursor: default;
+      background: rgba(43, 156, 255, .1);
+      transition: background-color ease-in-out .2s;
+    }
+  }
   &__students-wrap {
     margin-top: 20px;
+  }
+  &__selected-row {
+    background: rgba(43, 156, 255, .2);
   }
   @media (min-width: 480px) {
     &__filter {
@@ -64,6 +74,12 @@
     &__buttons {
       margin-top: 0;
     }
+  }
+}
+
+#delete-group-modal {
+  .styles_closeButton__20ID4 {
+    display: none;
   }
 }
 

@@ -314,7 +314,8 @@ module.exports.getAll = async  (req, res) => {
                 attributes: [],
                 required: true
             }
-        ]
+        ],
+        order: ['surname', 'name', 'patronymic']
     })
         .then(users => {
             res.status(200).json(users)
