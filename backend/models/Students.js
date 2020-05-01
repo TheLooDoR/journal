@@ -32,6 +32,13 @@ const Students = db.define('student', {
     budget: {
         type: Sequelize.BOOLEAN,
         allowNull: false
+    },
+    email: {
+        type: Sequelize.TEXT,
+        unique: true
+    },
+    phone_number: {
+        type: Sequelize.TEXT
     }
 })
 

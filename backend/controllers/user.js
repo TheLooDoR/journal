@@ -250,7 +250,7 @@ module.exports.login = async (req, res) => {
 module.exports.getAll = async  (req, res) => {
     //filter value
     let filterValue = req.query.filterValue
-    filterValue = filterValue.toLowerCase()
+    // filterValue = filterValue.toLowerCase()
     //filter type (role, department, position)
     const filterType = req.query.filterType
     //keys to filter by (full name and short name)
@@ -291,8 +291,8 @@ module.exports.getAll = async  (req, res) => {
         where: {
             [Op.and]: {
                 [Op.or]: [
-                    { [filterKeys.full_name]:  {[Op.like]: '%' + filterValue + '%'}},
-                    { [filterKeys.short_name]: { [Op.like]: '%' + filterValue + '%' } }
+                    { [filterKeys.full_name]:  {[Op.iLike]: '%' + filterValue + '%'}},
+                    { [filterKeys.short_name]: { [Op.iLike]: '%' + filterValue + '%' } }
                 ],
                 [Op.not]: { id: currentUserId }
             }
@@ -314,7 +314,8 @@ module.exports.getAll = async  (req, res) => {
                 attributes: [],
                 required: true
             }
-        ]
+        ],
+        order: ['surname', 'name', 'patronymic']
     })
         .then(users => {
             res.status(200).json(users)

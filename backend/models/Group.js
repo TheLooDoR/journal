@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize')
 const db = require('../db/database')
 const Schedule = require('../models/Schedule')
+const Students = require('../models/Students')
 
 const Group = db.define('group', {
     id: {
@@ -26,5 +27,8 @@ const Group = db.define('group', {
 
 Schedule.hasMany(Group, {foreignKey: 'id', sourceKey: 'group_id'})
 Group.belongsTo(Schedule, {foreignKey: 'id', targetKey: 'group_id'})
+
+Students.hasMany(Group, {foreignKey: 'id', sourceKey: 'group_id'})
+Group.belongsTo(Students, {foreignKey: 'id', targetKey: 'group_id'})
 
 module.exports = Group

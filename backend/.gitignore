@@ -1,5 +1,4 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-# dependencies
+
 /node_modules
 /.pnp
 .pnp.js
@@ -9,6 +8,14 @@ debug.log
 
 # production
 /build
+=======
+node_modules
+.idea
+build
+sqlfile.sql
+db.db
+.env
+
 
 # misc
 .DS_Store

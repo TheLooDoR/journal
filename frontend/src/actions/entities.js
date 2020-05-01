@@ -4,10 +4,10 @@ import {
     GET_DEPARTMENTS,
     GET_GROUPS,
     GET_POSITIONS,
-    GET_ROLES,
+    GET_ROLES, GET_STUDENTS,
     GET_SUBJECT_TYPES,
     GET_SUBJECTS,
-    GET_TIME
+    GET_TIME, REQUEST_GROUPS, REQUEST_GROUPS_FINISHED, REQUEST_STUDENTS, REQUEST_STUDENTS_FINISHED
 } from "./types";
 
 const departmentsData = departmentsData => {
@@ -66,6 +66,41 @@ const positionsData = positionsData => {
     }
 }
 
+const studentsData = studentsData => {
+    return {
+        type: GET_STUDENTS,
+        payload: studentsData
+    }
+}
+
+const requestGroups = () => {
+    return {
+        type: REQUEST_GROUPS,
+        payload: true
+    }
+}
+
+const requestGroupsFinished = () => {
+    return {
+        type: REQUEST_GROUPS_FINISHED,
+        payload: false
+    }
+}
+
+const requestStudents = () => {
+    return {
+        type: REQUEST_STUDENTS,
+        payload: true
+    }
+}
+
+const requestStudentsFinished = () => {
+    return {
+        type: REQUEST_STUDENTS_FINISHED,
+        payload: false
+    }
+}
+
 export const getDepartmentsData = () => dispatch => {
     axios.get('api/departments/')
         .then(res => {
@@ -73,17 +108,21 @@ export const getDepartmentsData = () => dispatch => {
         })
 }
 
-export const getGroupsData = () => dispatch => {
-    axios.get('api/groups/')
+export const getGroupsData = (filterType, filterValue) => dispatch => {
+    dispatch(requestGroups())
+    axios.get('api/groups/', { params: { filterType, filterValue } })
         .then((res) => {
             dispatch(groupsData(res.data.groups))
+            dispatch(requestGroupsFinished())
         })
 }
 
 export const getGroupsDataByDepartment = (department_id) => dispatch => {
-    axios.get(`api/groups/${department_id}`)
+    dispatch(requestGroups())
+    axios.get('api/groups/by-department', { params: {department_id} })
         .then(res => {
             dispatch(groupsData(res.data.groups))
+            dispatch(requestGroupsFinished())
         })
 }
 
@@ -121,3 +160,11 @@ export const getPositionsData = () => dispatch => {
         .then(res => dispatch(positionsData(res.data.positions)))
 }
 
+export const getStudentsData = (filterType, filterValue, group_id) => dispatch => {
+    dispatch(requestStudents())
+    axios.get('api/students/by-group', { params: { filterType, filterValue, group_id } })
+        .then(res => {
+            dispatch(studentsData(res.data.students))
+            dispatch(requestStudentsFinished())
+        })
+}
