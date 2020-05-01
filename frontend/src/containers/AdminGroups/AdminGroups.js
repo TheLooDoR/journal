@@ -503,7 +503,7 @@ class AdminGroups extends Component {
                     </div>
                 )
             } else {
-                return (<p className='AdminGroups__empty-users'>Пользователи отсутствуют</p>)
+                return (<p className='AdminGroups__empty-users'>Студенты не найдены</p>)
             }
         }
     }

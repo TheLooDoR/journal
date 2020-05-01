@@ -118,9 +118,11 @@ export const getGroupsData = (filterType, filterValue) => dispatch => {
 }
 
 export const getGroupsDataByDepartment = (department_id) => dispatch => {
+    dispatch(requestGroups())
     axios.get('api/groups/by-department', { params: {department_id} })
         .then(res => {
             dispatch(groupsData(res.data.groups))
+            dispatch(requestGroupsFinished())
         })
 }
 

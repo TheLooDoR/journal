@@ -102,7 +102,7 @@ class Home extends Component {
         )
     }
 
-    selectOptions(entity) {
+    selectOptions(entity, entityType=null) {
         return entity.map((el) => {
             return (
                 <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
@@ -168,8 +168,8 @@ class Home extends Component {
                             className='Home__groups Home__select'
                             name='group'
                             changeHandler={(e) => this.changeHandler(e)}
-                            defaultValue='Группа'
-                            disabled={entities.groups.length === 0}
+                            defaultValue={this.props.groupsLoading ? 'Загрузка...' : 'Группа'}
+                            disabled={entities.groups.length === 0 || this.props.groupsLoading}
                             options={this.selectOptions(entities.groups)}
                         />
                         <Select
@@ -281,6 +281,7 @@ function mapStateToProps(state) {
         user: state.auth.user,
         errors: state.errors,
         isLoading: state.journal.isLoading,
+        groupsLoading: state.entities.groupsLoading,
         schedule: state.schedule
     }
 }
