@@ -36,7 +36,8 @@ class Users extends Component {
                 name: '',
                 surname: '',
                 patronymic: ''
-            }
+            },
+            userDataLoading: false
         }
     }
 
@@ -79,6 +80,9 @@ class Users extends Component {
     hideUpdateModal( id = null) {
         //if open model
         if (!this.state.showUpdateModal) {
+            this.setState({
+                userDataLoading: true
+            })
             Axios.get(`api/users/${id}`)
                 .then(res => {
                     let userData = this.state.userData
@@ -93,18 +97,16 @@ class Users extends Component {
                             position: res.data.positions[0],
                             department: res.data.departments[0],
                         },
-                        showUpdateModal: !this.state.showUpdateModal
+                        userDataLoading: false
                     })
                 })
                 .catch(err => {
                     console.log(err.message)
                 })
-        } else {
-            this.props.dispatch(setError({}))
-            this.setState({
-                showUpdateModal: !this.state.showUpdateModal
-            })
         }
+        this.setState({
+            showUpdateModal: !this.state.showUpdateModal
+        })
     }
 
     hideDeleteModal(user = null) {
@@ -164,111 +166,111 @@ class Users extends Component {
         const { department, role, position } = this.state.userData
         return (
             <div className='Users'>
-               <div className="admin-table__wrap Users__table">
-                   <div className="admin-table">
-                       <div className="admin-table__filter-table">
-                           <table>
-                               <thead>
-                               <tr>
-                                   <th  className='admin-table__title'>Управление пользователями</th>
-                               </tr>
-                               <tr>
-                                   <th  className='admin-table__filter-col'>
-                                       <div className='admin-table__filter-wrap'>
-                                           <div className="Users__search">
-                                               <FilterSearch
-                                                    options={[
-                                                        {name: 'По роли', value: 'by-role'},
-                                                        {name: 'По должности', value: 'by-position'},
-                                                        {name: 'По кафедре', value: 'by-department'}
-                                                    ]}
-                                                    height={45}
-                                                    inputName='filterValue'
-                                                    selectName='filterType'
-                                                    changeHandler={ this.filterChangeHandler }
-                                                    selectValue={this.state.filterParams.filterType}
-                                               />
-                                           </div>
-                                           <MainButton className='admin-table__filter-btn' onClick={() => this.filterSubmit() }>Найти</MainButton>
-                                       </div>
-                                   </th>
-                               </tr>
-                               </thead>
-                           </table>
-                       </div>
-                       <div className="admin-table__head">
-                           <table>
-                               <thead>
-                               <tr>
-                                   <th style={{ fontSize: 24 }} className='admin-table__number'>№</th>
-                                   <th style={{ fontSize: 24 }}>ФИО</th>
-                                   <th style={{ width: 100 }}>Кафедра</th>
-                                   <th style={{ width: 200 }}>Должность</th>
-                                   <th>E-mail</th>
-                                   <th>Номер телефона</th>
-                                   <th style={{ width: 100 }}>Роль</th>
-                                   <th className='admin-table__btn-cell'/>
-                                   <th className='admin-table__btn-cell'/>
-                               </tr>
-                               </thead>
-                           </table>
-                       </div>
-                       { isLoading ? <Loader/> :
-                           <div className="admin-table__body Users__users-table">
-                               <table>
-                                   <tbody>
-                                   {users.map((el, index) => {
-                                       return (
-                                           <tr key={el.id} id={`user-${el.id}`}>
-                                               <td className='admin-table__number'>{ index + 1 }.</td>
-                                               <td style={{ textAlign: 'left', paddingLeft: 20, paddingRight: 20 }}>{`${el.surname} ${el.name} ${el.patronymic}`}</td>
-                                               <td style={{ width: 100 }}>{el.department.toUpperCase()}</td>
-                                               <td style={{ width: 200 }}>{capitalize(el.position)}</td>
-                                               <td>{el.email}</td>
-                                               <td>{el.phone_number}</td>
-                                               <td style={{ width: 100 }}>{capitalize(el.role)}</td>
-                                               <td className='admin-table__btn-cell'>
-                                                   <button
-                                                       className='admin-table__edit-btn'
-                                                       onClick={() => this.hideUpdateModal(el.id)}
-                                                   >
-                                                       <img src={editLogo} alt='Редактировать'/>
-                                                   </button>
-                                               </td>
-                                               <td className='admin-table__btn-cell'>
-                                                   <button
-                                                       className='admin-table__delete-btn'
-                                                       onClick={() => this.hideDeleteModal({id: el.id, name: el.name, surname: el.surname, patronymic: el.patronymic})}
-                                                   >
-                                                       <img src={deleteLogo} alt='Удалить'/>
-                                                   </button>
-                                               </td>
-                                           </tr>
-                                       )
-                                   })}
-                                   </tbody>
-                               </table>
-                           </div>
-                       }
-                       <div className="admin-table__footer">
-                           <table>
-                               <tbody>
-                                   <tr>
-                                       <td className='admin-table__number'/>
-                                       <td/>
-                                       <td style={{ width: 100 }}/>
-                                       <td style={{ width: 200 }}/>
-                                       <td/>
-                                       <td/>
-                                       <td style={{ width: 100 }}/>
-                                       <td className='admin-table__btn-cell'/>
-                                       <td className='admin-table__btn-cell'/>
-                                   </tr>
-                               </tbody>
-                           </table>
-                       </div>
-                   </div>
-               </div>
+                {isLoading ? <Loader/>
+                : <div className="admin-table__wrap Users__table">
+                        <div className="admin-table">
+                            <div className="admin-table__filter-table">
+                                <table>
+                                    <thead>
+                                    <tr>
+                                        <th  className='admin-table__title'>Управление пользователями</th>
+                                    </tr>
+                                    <tr>
+                                        <th  className='admin-table__filter-col'>
+                                            <div className='admin-table__filter-wrap'>
+                                                <div className="Users__search">
+                                                    <FilterSearch
+                                                        options={[
+                                                            {name: 'По роли', value: 'by-role'},
+                                                            {name: 'По должности', value: 'by-position'},
+                                                            {name: 'По кафедре', value: 'by-department'}
+                                                        ]}
+                                                        height={45}
+                                                        inputName='filterValue'
+                                                        selectName='filterType'
+                                                        changeHandler={ this.filterChangeHandler }
+                                                        selectValue={this.state.filterParams.filterType}
+                                                    />
+                                                </div>
+                                                <MainButton className='admin-table__filter-btn' onClick={() => this.filterSubmit() }>Найти</MainButton>
+                                            </div>
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div className="admin-table__head">
+                                <table>
+                                    <thead>
+                                    <tr>
+                                        <th style={{ fontSize: 24 }} className='admin-table__number'>№</th>
+                                        <th style={{ fontSize: 24 }}>ФИО</th>
+                                        <th style={{ width: 100 }}>Кафедра</th>
+                                        <th style={{ width: 200 }}>Должность</th>
+                                        <th>E-mail</th>
+                                        <th>Номер телефона</th>
+                                        <th style={{ width: 100 }}>Роль</th>
+                                        <th className='admin-table__btn-cell'/>
+                                        <th className='admin-table__btn-cell'/>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                            <div className="admin-table__body Users__users-table">
+                                <table>
+                                    <tbody>
+                                    {users.map((el, index) => {
+                                        return (
+                                            <tr key={el.id} id={`user-${el.id}`}>
+                                                <td className='admin-table__number'>{ index + 1 }.</td>
+                                                <td style={{ textAlign: 'left', paddingLeft: 20, paddingRight: 20 }}>{`${el.surname} ${el.name} ${el.patronymic}`}</td>
+                                                <td style={{ width: 100 }}>{el.department.toUpperCase()}</td>
+                                                <td style={{ width: 200 }}>{capitalize(el.position)}</td>
+                                                <td>{el.email}</td>
+                                                <td>{el.phone_number}</td>
+                                                <td style={{ width: 100 }}>{capitalize(el.role)}</td>
+                                                <td className='admin-table__btn-cell'>
+                                                    <button
+                                                        className='admin-table__edit-btn'
+                                                        onClick={() => this.hideUpdateModal(el.id)}
+                                                    >
+                                                        <img src={editLogo} alt='Редактировать'/>
+                                                    </button>
+                                                </td>
+                                                <td className='admin-table__btn-cell'>
+                                                    <button
+                                                        className='admin-table__delete-btn'
+                                                        onClick={() => this.hideDeleteModal({id: el.id, name: el.name, surname: el.surname, patronymic: el.patronymic})}
+                                                    >
+                                                        <img src={deleteLogo} alt='Удалить'/>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })}
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div className="admin-table__footer">
+                                <table>
+                                    <tbody>
+                                    <tr>
+                                        <td className='admin-table__number'/>
+                                        <td/>
+                                        <td style={{ width: 100 }}/>
+                                        <td style={{ width: 200 }}/>
+                                        <td/>
+                                        <td/>
+                                        <td style={{ width: 100 }}/>
+                                        <td className='admin-table__btn-cell'/>
+                                        <td className='admin-table__btn-cell'/>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                }
                 <Modal
                     open={this.state.showUpdateModal}
                     onClose={() => this.hideUpdateModal()}
@@ -276,12 +278,12 @@ class Users extends Component {
                     animationDuration={250}
                     modalId='users-update-modal'
                 >
-                    {isEmpty(role) || isEmpty(position) || isEmpty(department) ? <Loader/> :
-                        <form onSubmit={ (e) => this.updateUserHandler(e) } className="admin-update">
-                            <h3 className="admin-update__title">Редактирование</h3>
-                            <div className="admin-update__inputs">
-                                <div className="admin-update__input">
-                                    <p className="admin-update__label">
+                    {isEmpty(role) || isEmpty(position) || isEmpty(department) || this.state.userDataLoading ? <Loader/> :
+                        <form onSubmit={ (e) => this.updateUserHandler(e) } className="admin-post">
+                            <h3 className="admin-post__title">Редактирование</h3>
+                            <div className="admin-post__inputs">
+                                <div className="admin-post__input">
+                                    <p className="admin-post__label">
                                         Кафедра
                                     </p>
                                     <Select
@@ -298,8 +300,8 @@ class Users extends Component {
                                         }
                                     />
                                 </div>
-                                <div className="admin-update__input">
-                                    <p className="admin-update__label">
+                                <div className="admin-post__input">
+                                    <p className="admin-post__label">
                                         Должность
                                     </p>
                                     <Select
@@ -316,30 +318,30 @@ class Users extends Component {
                                         }
                                     />
                                 </div>
-                                <div className="admin-update__input">
-                                    <p className="admin-update__label">E-mail</p>
+                                <div className="admin-post__input">
+                                    <p className="admin-post__label">E-mail</p>
                                     <input
-                                        className={`update-input-text ${this.props.errors.email ? 'invalid' : null}`}
+                                        className={`crud-input-text ${this.props.errors.email ? 'invalid' : null}`}
                                         type="email"
                                         name='email'
                                         value={this.state.userData.email}
                                         onChange={ (e) => this.inputChangeHandler(e) }/>
                                     {this.props.errors.email && (<div className="feedback">{this.props.errors.email}</div>)}
                                 </div>
-                                <div className="admin-update__input">
-                                    <p className="admin-update__label">Номер телефона</p>
+                                <div className="admin-post__input">
+                                    <p className="admin-post__label">Номер телефона</p>
                                     <InputMask
                                         type="tel"
                                         // className={`form-input ${errors.phone_number ? 'invalid' : null}`}
-                                        className='update-input-text'
+                                        className='crud-input-text'
                                         name="phone_number"
                                         onChange={ (e) => this.inputChangeHandler(e) }
                                         value={ this.state.userData.phone_number }
                                         mask='+3\8 (999) 99 99 999'
                                     />
                                 </div>
-                                <div className="admin-update__input">
-                                    <p className="admin-update__label">
+                                <div className="admin-post__input">
+                                    <p className="admin-post__label">
                                         Роль
                                     </p>
                                     <Select
@@ -359,7 +361,7 @@ class Users extends Component {
                             </div>
                             <MainButton
                                 type='submit'
-                                className='admin-update__submit'
+                                className='admin-post__submit'
                             >
                                 Сохранить
                             </MainButton>

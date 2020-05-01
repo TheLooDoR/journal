@@ -7,10 +7,11 @@ import { setCurrentUser, logoutUser } from './actions/authentication';
 import { withRouter } from 'react-router-dom';
 import ReactNotification from 'react-notifications-component'
 import { connect } from 'react-redux'
-
+import { store as Notification } from 'react-notifications-component'
 import 'react-notifications-component/dist/theme.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './commonStyles/admin-table.scss'
+import './commonStyles/admin-crud-modal.scss'
 import Navbar from './components/Navbar/Navbar';
 import Register from './containers/Register/Register';
 import Login from './containers/Login/Login';
@@ -25,7 +26,6 @@ import ResetPassword from "./containers/ResetPassword/ResetPassword";
 import LeftMenu from "./components/LeftMenu/LeftMenu";
 import NotFound from "./containers/NotFound/NotFound";
 import Users from "./containers/Users/Users";
-import { store as Notification } from 'react-notifications-component'
 import AdminGroups from "./containers/AdminGroups/AdminGroups";
 import './App.scss'
 
