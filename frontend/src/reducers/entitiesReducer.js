@@ -3,10 +3,10 @@ import {
     GET_DEPARTMENTS,
     GET_GROUPS,
     GET_POSITIONS,
-    GET_ROLES,
+    GET_ROLES, GET_STUDENTS,
     GET_SUBJECT_TYPES,
     GET_SUBJECTS,
-    GET_TIME, REQUEST_ENTITIES, REQUEST_ENTITIES_FINISHED
+    GET_TIME, REQUEST_GROUPS, REQUEST_GROUPS_FINISHED, REQUEST_STUDENTS, REQUEST_STUDENTS_FINISHED
 } from "../actions";
 
 const initialState =  {
@@ -18,7 +18,9 @@ const initialState =  {
     corps: [],
     roles: [],
     positions: [],
-    isLoading: false
+    students: [],
+    groupsLoading: false,
+    studentsLoading: false
 }
 
 export default (state = initialState , action ) => {
@@ -63,16 +65,32 @@ export default (state = initialState , action ) => {
                 ...state,
                 positions: action.payload
             }
-        case REQUEST_ENTITIES:
+        case GET_STUDENTS:
             return {
                 ...state,
-                isLoading: action.payload
+                students: action.payload
             }
-        case REQUEST_ENTITIES_FINISHED:
+        case REQUEST_GROUPS:
             return {
                 ...state,
-                isLoading: action.payload
+                groupsLoading: action.payload
             }
+        case REQUEST_GROUPS_FINISHED:
+            return {
+                ...state,
+                groupsLoading: action.payload
+            }
+        case REQUEST_STUDENTS:
+            return {
+                ...state,
+                studentsLoading: action.payload
+            }
+        case REQUEST_STUDENTS_FINISHED: {
+            return {
+                ...state,
+                studentsLoading: action.payload
+            }
+        }
         default:
             return state
     }

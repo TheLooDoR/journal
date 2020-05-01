@@ -7,7 +7,7 @@ import {
     getSubjectsData,
     getSubjectTypesData, setJournalData,
     setJournalParameters,
-    getUserScheduleData
+    getUserScheduleData, GET_GROUPS
 } from "../../actions";
 import MainButton from '../../components/UI/MainButton/MainButton'
 import Journal from "../../components/Journal/Journal";
@@ -44,6 +44,14 @@ class Home extends Component {
         if (prevState.journalData.department !== this.state.journalData.department) {
             this.props.dispatch(getGroupsDataByDepartment(this.state.journalData.department.id))
         }
+    }
+
+    componentWillUnmount() {
+        const { dispatch } = this.props
+        dispatch({
+            type: GET_GROUPS,
+            payload: []
+        })
     }
 
     changeHandler (e) {

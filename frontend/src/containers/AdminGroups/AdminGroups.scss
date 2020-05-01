@@ -51,6 +51,12 @@
   &__selected-row {
     background: rgba(43, 156, 255, .2);
   }
+  &__select-group {
+    font-size: 24px;
+  }
+  &__empty-users {
+    font-size: 24px;
+  }
   @media (min-width: 480px) {
     &__filter {
       justify-content: normal;
@@ -78,6 +84,12 @@
 }
 
 #delete-group-modal {
+  .styles_closeButton__20ID4 {
+    display: none;
+  }
+}
+
+#delete-student-modal {
   .styles_closeButton__20ID4 {
     display: none;
   }

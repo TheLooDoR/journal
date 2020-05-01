@@ -69,7 +69,7 @@ module.exports.getByDepartment = async (req, res) => {
     try {
         const groups = await Group.findAll({
             where: {
-                department_id: req.params.department_id
+                department_id: req.query.department_id
             },
             order: [
                 ['name', 'ASC']
@@ -83,16 +83,18 @@ module.exports.getByDepartment = async (req, res) => {
     }
 }
 
-module.exports.create = async (req, res) => {
-    try {
-        const group = {
-            name: req.body.name
-        }
-        await Group.create(group)
-            .then(result => res.status(201).json(result))
-    } catch (e) {
-        console.log(e.message)
-    }
+module.exports.createGroup = async (req, res) => {
+    const { name, department_id } = req.body
+
+    await Group.create({
+        name,
+        department_id
+    })
+        .then(() => res.status(200).json('Добавление успешно'))
+        .catch(err => {
+            console.log(err.message)
+            res.status(400).json(err.message)
+        })
 }
 
 module.exports.updateGroup = async (req, res) => {
