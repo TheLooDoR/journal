@@ -7,8 +7,10 @@ import classnames from 'classnames';
 import Axios from "axios";
 import { store } from 'react-notifications-component'
 import '../Register/Register.scss'
+import Loader from "../../components/UI/Loader/Loader";
 import './Login.scss'
 import {Link} from "react-router-dom";
+
 
 class Login extends Component {
 
@@ -82,8 +84,8 @@ class Login extends Component {
 
     render() {
         const { errors } = this.state;
+        const { auth } = this.props
         return(
-
                 <div className="form-container" >
                     <h2 className={'form-header'}>Авторизация</h2>
                     <form className={'login-form'} onSubmit={ this.handleSubmit }>
@@ -123,10 +125,12 @@ class Login extends Component {
                             />
                             {errors.password && (<div className="feedback">{errors.password}</div>)}
                         </div>
-                        <div className="form-group">
-                            <button type="submit" className="submit-btn">
-                                Войти
-                            </button>
+                        <div className="form-group" style={{ alignItems: 'center' }}>
+                            {auth.isLoggingIn ? <Loader/> :
+                                <button type="submit" className="submit-btn">
+                                    Войти
+                                </button>
+                            }
                         </div>
                         <div className="form-group forget-pass">
                             <Link to={'/forgot-password'}>Забыли пароль?</Link>

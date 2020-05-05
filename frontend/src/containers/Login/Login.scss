@@ -25,3 +25,14 @@
     }
   }
 }
+
+.form-group {
+  .loader-wrap {
+    padding-top: 0;
+    .lds-ring {
+      div {
+        border-color: #fff transparent transparent transparent;
+      }
+    }
+  }
+}

@@ -354,6 +354,9 @@ class AdminGroups extends Component {
         if (groupsLoading) {
             return (<Loader/>)
         } else {
+            if (groups.length === 0) {
+                return (<p className='AdminGroups__not-found'>Группы не найдены</p>)
+            }
             return (
                 <div className="admin-table__wrap AdminGroups__groups-table">
                     <div className="admin-table">
@@ -886,7 +889,6 @@ class AdminGroups extends Component {
     }
 
     render() {
-        console.log(this.state)
         return (
             <div className='AdminGroups'>
                 <div className="AdminGroups__groups-wrap">

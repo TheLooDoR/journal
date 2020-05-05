@@ -162,6 +162,7 @@ class Users extends Component {
     }
 
     render() {
+        console.log(this.state)
         const { departments, positions, roles, users, isLoading } = this.props
         const { department, role, position } = this.state.userData
         return (
@@ -190,6 +191,7 @@ class Users extends Component {
                                                         selectName='filterType'
                                                         changeHandler={ this.filterChangeHandler }
                                                         selectValue={this.state.filterParams.filterType}
+                                                        inputValue={this.state.filterParams.filterValue}
                                                     />
                                                 </div>
                                                 <MainButton className='admin-table__filter-btn' onClick={() => this.filterSubmit() }>Найти</MainButton>
@@ -216,58 +218,62 @@ class Users extends Component {
                                     </thead>
                                 </table>
                             </div>
-                            <div className="admin-table__body Users__users-table">
-                                <table>
-                                    <tbody>
-                                    {users.map((el, index) => {
-                                        return (
-                                            <tr key={el.id} id={`user-${el.id}`}>
-                                                <td className='admin-table__number'>{ index + 1 }.</td>
-                                                <td style={{ textAlign: 'left', paddingLeft: 20, paddingRight: 20 }}>{`${el.surname} ${el.name} ${el.patronymic}`}</td>
-                                                <td style={{ width: 100 }}>{el.department.toUpperCase()}</td>
-                                                <td style={{ width: 200 }}>{capitalize(el.position)}</td>
-                                                <td>{el.email}</td>
-                                                <td>{el.phone_number}</td>
-                                                <td style={{ width: 100 }}>{capitalize(el.role)}</td>
-                                                <td className='admin-table__btn-cell'>
-                                                    <button
-                                                        className='admin-table__edit-btn'
-                                                        onClick={() => this.hideUpdateModal(el.id)}
-                                                    >
-                                                        <img src={editLogo} alt='Редактировать'/>
-                                                    </button>
-                                                </td>
-                                                <td className='admin-table__btn-cell'>
-                                                    <button
-                                                        className='admin-table__delete-btn'
-                                                        onClick={() => this.hideDeleteModal({id: el.id, name: el.name, surname: el.surname, patronymic: el.patronymic})}
-                                                    >
-                                                        <img src={deleteLogo} alt='Удалить'/>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        )
-                                    })}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className="admin-table__footer">
-                                <table>
-                                    <tbody>
-                                    <tr>
-                                        <td className='admin-table__number'/>
-                                        <td/>
-                                        <td style={{ width: 100 }}/>
-                                        <td style={{ width: 200 }}/>
-                                        <td/>
-                                        <td/>
-                                        <td style={{ width: 100 }}/>
-                                        <td className='admin-table__btn-cell'/>
-                                        <td className='admin-table__btn-cell'/>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            {users.length === 0 ? <p className='Users__not-found'>Пользователи не найдены</p> :
+                                <div className="admin-table__body Users__users-table">
+                                    <table>
+                                        <tbody>
+                                        {users.map((el, index) => {
+                                            return (
+                                                <tr key={el.id} id={`user-${el.id}`}>
+                                                    <td className='admin-table__number'>{ index + 1 }.</td>
+                                                    <td style={{ textAlign: 'left', paddingLeft: 20, paddingRight: 20 }}>{`${el.surname} ${el.name} ${el.patronymic}`}</td>
+                                                    <td style={{ width: 100 }}>{el.department.toUpperCase()}</td>
+                                                    <td style={{ width: 200 }}>{capitalize(el.position)}</td>
+                                                    <td>{el.email}</td>
+                                                    <td>{el.phone_number}</td>
+                                                    <td style={{ width: 100 }}>{capitalize(el.role)}</td>
+                                                    <td className='admin-table__btn-cell'>
+                                                        <button
+                                                            className='admin-table__edit-btn'
+                                                            onClick={() => this.hideUpdateModal(el.id)}
+                                                        >
+                                                            <img src={editLogo} alt='Редактировать'/>
+                                                        </button>
+                                                    </td>
+                                                    <td className='admin-table__btn-cell'>
+                                                        <button
+                                                            className='admin-table__delete-btn'
+                                                            onClick={() => this.hideDeleteModal({id: el.id, name: el.name, surname: el.surname, patronymic: el.patronymic})}
+                                                        >
+                                                            <img src={deleteLogo} alt='Удалить'/>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
+                            {users.length === 0 ? null :
+                                <div className="admin-table__footer">
+                                    <table>
+                                        <tbody>
+                                        <tr>
+                                            <td className='admin-table__number'/>
+                                            <td/>
+                                            <td style={{ width: 100 }}/>
+                                            <td style={{ width: 200 }}/>
+                                            <td/>
+                                            <td/>
+                                            <td style={{ width: 100 }}/>
+                                            <td className='admin-table__btn-cell'/>
+                                            <td className='admin-table__btn-cell'/>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            }
                         </div>
                     </div>
                 }

@@ -3,10 +3,17 @@ import {
     GET_DEPARTMENTS,
     GET_GROUPS,
     GET_POSITIONS,
-    GET_ROLES, GET_STUDENTS,
+    GET_ROLES,
+    GET_STUDENTS,
     GET_SUBJECT_TYPES,
     GET_SUBJECTS,
-    GET_TIME, REQUEST_GROUPS, REQUEST_GROUPS_FINISHED, REQUEST_STUDENTS, REQUEST_STUDENTS_FINISHED
+    GET_TIME,
+    REQUEST_GROUPS,
+    REQUEST_GROUPS_FINISHED,
+    REQUEST_STUDENTS,
+    REQUEST_STUDENTS_FINISHED, REQUEST_SUBJECT_TYPES, REQUEST_SUBJECT_TYPES_FINISHED,
+    REQUEST_SUBJECTS,
+    REQUEST_SUBJECTS_FINISHED
 } from "../actions";
 
 const initialState =  {
@@ -20,7 +27,9 @@ const initialState =  {
     positions: [],
     students: [],
     groupsLoading: false,
-    studentsLoading: false
+    studentsLoading: false,
+    subjectsLoading: false,
+    subjectTypesLoading: false
 }
 
 export default (state = initialState , action ) => {
@@ -85,12 +94,31 @@ export default (state = initialState , action ) => {
                 ...state,
                 studentsLoading: action.payload
             }
-        case REQUEST_STUDENTS_FINISHED: {
+        case REQUEST_STUDENTS_FINISHED:
             return {
                 ...state,
                 studentsLoading: action.payload
             }
-        }
+        case REQUEST_SUBJECTS:
+            return {
+                ...state,
+                subjectsLoading: action.payload
+            }
+        case REQUEST_SUBJECTS_FINISHED:
+            return {
+                ...state,
+                subjectsLoading: action.payload
+            }
+        case REQUEST_SUBJECT_TYPES:
+            return {
+                ...state,
+                subjectTypesLoading: action.payload
+            }
+        case REQUEST_SUBJECT_TYPES_FINISHED:
+            return {
+                ...state,
+                subjectTypesLoading: action.payload
+            }
         default:
             return state
     }

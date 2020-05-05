@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from 'react-redux'
 import usersLogo from '../../assets/admin/users.png'
 import groupsLogo from '../../assets/admin/groups.png'
+import subjectsLogo from '../../assets/admin/subjects.png'
 import { NavLink } from "react-router-dom";
 
 import './LeftMenu.scss'
@@ -13,7 +14,8 @@ class LeftMenu extends Component {
         this.state = {
             adminLinks: [
                 {to: '/users', logo: usersLogo, exact: false},
-                {to: '/admin-groups', logo: groupsLogo, exact: false}
+                {to: '/admin-groups', logo: groupsLogo, exact: false},
+                {to: '/admin-subjects', logo: subjectsLogo, exact: false}
             ]
         }
     }

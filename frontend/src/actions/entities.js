@@ -4,10 +4,17 @@ import {
     GET_DEPARTMENTS,
     GET_GROUPS,
     GET_POSITIONS,
-    GET_ROLES, GET_STUDENTS,
+    GET_ROLES,
+    GET_STUDENTS,
     GET_SUBJECT_TYPES,
     GET_SUBJECTS,
-    GET_TIME, REQUEST_GROUPS, REQUEST_GROUPS_FINISHED, REQUEST_STUDENTS, REQUEST_STUDENTS_FINISHED
+    GET_TIME,
+    REQUEST_GROUPS,
+    REQUEST_GROUPS_FINISHED,
+    REQUEST_STUDENTS,
+    REQUEST_STUDENTS_FINISHED, REQUEST_SUBJECT_TYPES, REQUEST_SUBJECT_TYPES_FINISHED,
+    REQUEST_SUBJECTS,
+    REQUEST_SUBJECTS_FINISHED
 } from "./types";
 
 const departmentsData = departmentsData => {
@@ -101,6 +108,34 @@ const requestStudentsFinished = () => {
     }
 }
 
+const requestSubjects = () => {
+    return {
+        type: REQUEST_SUBJECTS,
+        payload: true
+    }
+}
+
+const requestSubjectsFinished = () => {
+    return {
+        type: REQUEST_SUBJECTS_FINISHED,
+        payload: false
+    }
+}
+
+const requestSubjectTypes = () => {
+    return {
+        type: REQUEST_SUBJECT_TYPES,
+        payload: true
+    }
+}
+
+const requestSubjectTypesFinished = () => {
+    return {
+        type: REQUEST_SUBJECT_TYPES_FINISHED,
+        payload: false
+    }
+}
+
 export const getDepartmentsData = () => dispatch => {
     axios.get('api/departments/')
         .then(res => {
@@ -126,17 +161,21 @@ export const getGroupsDataByDepartment = (department_id) => dispatch => {
         })
 }
 
-export const getSubjectTypesData = () => dispatch => {
-    axios.get('api/subject-types/')
+export const getSubjectTypesData = ( filterValue='' ) => dispatch => {
+    dispatch(requestSubjectTypes())
+    axios.get('api/subject-types/', {params: {filterValue}})
         .then((res) => {
             dispatch(subjectTypesData(res.data.subjectTypes))
+            dispatch(requestSubjectTypesFinished())
         })
 }
 
-export const getSubjectsData = () => dispatch => {
-    axios.get('api/subjects/')
+export const getSubjectsData = ( filterValue='' ) => dispatch => {
+    dispatch(requestSubjects())
+    axios.get('api/subjects/', {params: {filterValue}})
         .then(res => {
             dispatch(subjectsData(res.data.subjects))
+            dispatch(requestSubjectsFinished())
         })
 }
 

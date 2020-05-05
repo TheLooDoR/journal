@@ -7,6 +7,7 @@ import Select from "../../components/UI/Select/Select";
 import {getPositionsData, getDepartmentsData, setError} from "../../actions";
 import InputMask from 'react-input-mask';
 import './Register.scss'
+import Loader from "../../components/UI/Loader/Loader";
 
 class Register extends Component {
 
@@ -103,7 +104,7 @@ class Register extends Component {
     }
 
     render() {
-        const { departments, positions } = this.props
+        const { departments, positions, auth } = this.props
         const { errors } = this.state;
         return(
             <div className="form-container" >
@@ -214,10 +215,12 @@ class Register extends Component {
                         />
                         {errors.password_confirm && (<div className="feedback">{errors.password_confirm}</div>)}
                     </div>
-                    <div className="form-group">
-                        <button type="submit" className="submit-btn">
-                            Зарегестрироваться
-                        </button>
+                    <div className="form-group" style={{ alignItems: 'center' }}>
+                        {auth.isSigningUp ? <Loader/> :
+                            <button type="submit" className="submit-btn">
+                                Зарегестрироваться
+                            </button>
+                        }
                     </div>
                 </form>
             </div>

@@ -14,6 +14,9 @@ const Subject = db.define('subject', {
         type: Sequelize.TEXT,
         allowNull: false,
         unique: true
+    },
+    full_name: {
+        type: Sequelize.TEXT,
     }
 })
 

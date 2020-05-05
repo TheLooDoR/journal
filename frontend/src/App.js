@@ -28,6 +28,7 @@ import NotFound from "./containers/NotFound/NotFound";
 import Users from "./containers/Users/Users";
 import AdminGroups from "./containers/AdminGroups/AdminGroups";
 import './App.scss'
+import AdminSubjects from "./containers/AdminSubjects/AdminSubjects";
 
 if(localStorage.jwtToken) {
     setAuthToken(localStorage.jwtToken);
@@ -96,6 +97,7 @@ class App extends Component {
                                 <Route path="/subject-types" component={ PrivateRoute(SubjectTypes) } />
                                 <Route path='/users' component={ PrivateRoute(Users, true) }/>
                                 <Route path='/admin-groups' component={ PrivateRoute(AdminGroups, true) }/>
+                                <Route path='/admin-subjects' component={ PrivateRoute(AdminSubjects, true) }/>
                                 <Route exact path="/register" component={ Register } />
                                 <Route exact path="/login" component={ Login } />
                                 <Route exact path="/" component={ PrivateRoute(Home) } />

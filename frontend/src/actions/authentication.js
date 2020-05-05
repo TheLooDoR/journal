@@ -1,11 +1,56 @@
 import axios from 'axios';
-import {  SET_CURRENT_USER } from './types';
+import {
+    LOGIN_FAILURE,
+    LOGIN_REQUEST,
+    LOGIN_SUCCESS,
+    REGISTER_FAILURE,
+    REGISTER_REQUEST,
+    REGISTER_SUCCESS,
+    SET_CURRENT_USER
+} from './types';
 import setAuthToken from '../setAuthToken';
 import jwt_decode from 'jwt-decode';
 import { store } from 'react-notifications-component'
 import {setError} from "./error";
 
+const requestRegister = () => {
+    return {
+        type: REGISTER_REQUEST
+    }
+}
+
+const registerSuccess= () => {
+    return {
+        type: REGISTER_SUCCESS
+    }
+}
+
+const registerFailure = () => {
+    return {
+        type: REGISTER_FAILURE
+    }
+}
+
+const requestLogin = () => {
+    return {
+        type: LOGIN_REQUEST
+    }
+}
+
+const loginSuccess= () => {
+    return {
+        type: LOGIN_SUCCESS
+    }
+}
+
+const loginFailure = () => {
+    return {
+        type: LOGIN_FAILURE
+    }
+}
+
 export const registerUser = (user, history) => dispatch => {
+    dispatch(requestRegister())
     axios.post('/api/users/register', user)
         .then(res => {
             dispatch(setError({}))
@@ -25,13 +70,16 @@ export const registerUser = (user, history) => dispatch => {
                     showIcon: true
                 }
             });
+            dispatch(registerSuccess())
         })
         .catch(err => {
+            dispatch(registerFailure())
             dispatch(setError(err.response.data));
         });
 }
 
 export const loginUser = (user) => dispatch => {
+    dispatch(requestLogin())
     axios.post('/api/users/login', user)
         .then(res => {
             dispatch(setError({}))
@@ -40,8 +88,10 @@ export const loginUser = (user) => dispatch => {
             setAuthToken(token);
             const decoded = jwt_decode(token);
             dispatch(setCurrentUser(decoded));
+            dispatch(loginSuccess())
         })
         .catch(err => {
+            dispatch(loginFailure())
             dispatch(setError(err.response.data));
         });
 }
