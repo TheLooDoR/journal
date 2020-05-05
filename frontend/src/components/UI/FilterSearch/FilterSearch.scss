@@ -8,6 +8,10 @@
     padding: 0 15px;
     width: 100%;
   }
+  &--no-select {
+    border-radius: 10px;
+    border-right: 1px solid #2B9CFF;
+  }
   &__select-wrap {
     display: inline-block;
     position: relative;

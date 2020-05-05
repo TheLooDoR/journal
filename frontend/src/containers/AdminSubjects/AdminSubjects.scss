@@ -1,11 +1,11 @@
-.AdminGroups {
+.AdminSubjects {
   padding: 10px;
   color: #1D3B55;
-  &__groups-table {
-    height: 260px;
+  &__subjects-table {
+    height: 350px;
   }
-  &__students-table {
-    height: 390px;
+  &__subject-types-table {
+    height: 300px;
   }
   &__filter {
     margin-bottom: 20px;
@@ -30,7 +30,7 @@
     font-size: 13px;
     width: 124px;
   }
-  &__add-group-btn {
+  &__add-subject-btn {
     background: transparent;
     border: 1px solid #2B9CFF;
     color: #2B9CFF;
@@ -38,24 +38,8 @@
     width: 200px;
     font-size: 13px;
   }
-  &__row {
-    &:hover {
-      cursor: default;
-      background: rgba(43, 156, 255, .1);
-      transition: background-color ease-in-out .2s;
-    }
-  }
-  &__students-wrap {
+  &__subject-types-wrap {
     margin-top: 20px;
-  }
-  &__selected-row {
-    background: rgba(43, 156, 255, .2);
-  }
-  &__select-group {
-    font-size: 24px;
-  }
-  &__empty-users {
-    font-size: 24px;
   }
   &__not-found {
     font-size: 24px;
@@ -70,13 +54,16 @@
     &__filter-btn {
       margin-left: 14px;
     }
-    &__add-group-btn {
+    &__add-subject-btn {
       margin-left: 60px;
     }
   }
   @media (min-width: 768px) {
-    &__groups-table {
+    &__subjects-table {
       width: 60vw;
+    }
+    &__subject-types-table {
+      width: 40vw;
     }
   }
   @media (min-width: 965px) {
@@ -86,15 +73,14 @@
   }
 }
 
-#delete-group-modal {
+#delete-subject-modal {
   .styles_closeButton__20ID4 {
     display: none;
   }
 }
 
-#delete-student-modal {
+#delete-subject-type-modal {
   .styles_closeButton__20ID4 {
     display: none;
   }
 }
-
