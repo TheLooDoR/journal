@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Loader from "../../components/UI/Loader/Loader";
 import {connect} from "react-redux";
+import Axios from "axios";
 import {
     getDepartmentsData,
     getGroupsDataByDepartment,
@@ -14,6 +15,8 @@ import Journal from "../../components/Journal/Journal";
 import formatDate from "../../common-js/formatDate";
 import Select from "../../components/UI/Select/Select";
 import isEmpty from "../../common-js/isEmpty";
+import ScoreDoughnut from "../../components/Statistic/ScoreDoughnut/ScoreDoughnut";
+import AttendanceDoughnut from "../../components/Statistic/AttendanceDoughnut/AttendanceDoughnut";
 import './Home.scss'
 
 class Home extends Component {
@@ -27,6 +30,8 @@ class Home extends Component {
                 subjectType: {},
                 subject: {}
             },
+            statisticsData: {},
+            randomUsers: [],
             showModal: false
         }
     }
@@ -36,7 +41,32 @@ class Home extends Component {
         dispatch(getDepartmentsData())
         dispatch(getSubjectTypesData())
         dispatch(getSubjectsData())
-        dispatch(getUserScheduleData(this.props.user.userId))
+        if (this.props.user.role === 'admin') {
+            Axios.get('api/statistics/faculty')
+                .then(res => {
+                    const { present, miss, unsatisfactory, satisfactory, good, excellent} = res.data
+                    this.setState({
+                        statisticsData: {
+                            present,
+                            miss,
+                            unsatisfactory,
+                            satisfactory,
+                            good,
+                            excellent
+                        }
+                    })
+                })
+                .catch(err => console.log(err.message))
+            Axios.get('api/users/random-users')
+                .then(res => {
+                    this.setState({
+                        randomUsers: res.data
+                    })
+                })
+                .catch(err => console.log(err.message))
+        } else {
+            dispatch(getUserScheduleData(this.props.user.userId))
+        }
     }
 
     //get groups by department
@@ -102,20 +132,8 @@ class Home extends Component {
         )
     }
 
-    selectOptions(entity, entityType=null) {
-        return entity.map((el) => {
-            return (
-                <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-            )
-        })
-    }
-
-    render() {
-        const {entities, schedule} = this.props
-        const {journalData} = this.state
-        if (!entities.subjectTypes || !entities.groups || !entities.subjects || !entities.departments) {
-            return (<Loader/>)
-        }
+    renderTimeTable() {
+        const { schedule } = this.props
         //get dates for table titles
         const todayDate = new Date()
         let tomorrowDate = new Date()
@@ -152,6 +170,142 @@ class Home extends Component {
                     </tr>
                 )
             }
+        }
+        return (
+            <div className="Home__time-table-wrap">
+                <div className="Home__time-table time-table">
+                    <h2 className="time-table__title">Рассписание на сегодня ({formatDate(todayDate)})</h2>
+                    <div className="time-table__border">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Время</th>
+                                <th>Группа</th>
+                                <th>Дисциплина</th>
+                                <th>Тип занятия</th>
+                                <th>Аудит.</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {
+                                schedule.todaySchedule.map((el, index) => {
+                                    return (
+                                        <tr key={index}>
+                                            <td>{el.time}</td>
+                                            <td>{el.group}</td>
+                                            <td>{el.subject}</td>
+                                            <td>{el.subject_type}</td>
+                                            <td>{`${el.hall}, ${el.corp}`}</td>
+                                        </tr>
+                                    )
+                                })
+                            }
+                            {emptyRows.today.length === 0 ? null : emptyRows.today.map((el) => {
+                                return el
+                            })}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div className="Home__time-table time-table">
+                    <h2 className="time-table__title">Рассписание на завтра ({formatDate(tomorrowDate)})</h2>
+                    <div className="time-table__border">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Время</th>
+                                <th>Группа</th>
+                                <th>Дисциплина</th>
+                                <th>Тип занятия</th>
+                                <th>Аудит.</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {
+                                schedule.tomorrowSchedule.map((el, index) => {
+                                    return (
+                                        <tr key={index}>
+                                            <td>{el.time}</td>
+                                            <td>{el.group}</td>
+                                            <td>{el.subject}</td>
+                                            <td>{el.subject_type}</td>
+                                            <td>{`${el.hall}, ${el.corp}`}</td>
+                                        </tr>
+                                    )
+                                })
+                            }
+                            {emptyRows.tomorrow.length === 0 ? null : emptyRows.tomorrow.map((el) => {
+                                return el
+                            })}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    renderHomeFooter() {
+        const { present, miss, unsatisfactory, satisfactory, good, excellent } = this.state.statisticsData
+        return (
+            <div className='Home__home-footer home-footer'>
+                <div className="home-footer__users-wrap">
+                    <h3 className="home-footer__users-title">Пользователи</h3>
+                    <div className="home-footer__users">
+                        {this.state.randomUsers.map((el, index) => {
+                            return (
+                                <div className="home-footer__user footer-user" key={index}>
+                                    <div className="footer-user__circle"/>
+                                    <div className="footer-user__body">
+                                        <span className="footer-user__name">{`${el.surname} ${el.name}`}</span>
+                                        <span className="footer-user__position">{el.position}</span>
+                                    </div>
+                                </div>
+                            )
+                        })}
+                    </div>
+                </div>
+                <div className="home-footer__statistics-wrap">
+                    <div className="home-footer__diagram-wrap">
+                        <div className="home-footer__attendance-statistics">
+                            <AttendanceDoughnut
+                                present={present}
+                                miss={miss}
+                                height={200}
+                                width={300}
+                            />
+                        </div>
+                        <p className='home-footer__statistics-title'>Успеваемость факультета за неделю</p>
+                    </div>
+                    <div className="home-footer__diagram-wrap">
+                        <div className="home-footer__score-statistics">
+                            <ScoreDoughnut
+                                marksAmount={[unsatisfactory, satisfactory, good, excellent]}
+                                legend={{ display: false }}
+                                height={200}
+                            />
+                        </div>
+                        <p className='home-footer__statistics-title'>Посещаемость факультета за неделю</p>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    selectOptions(entity) {
+        return entity.map((el) => {
+            return (
+                <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
+            )
+        })
+    }
+
+    render() {
+        console.log(this.state)
+        const {entities, user} = this.props
+        const {journalData} = this.state
+        if (!entities.subjectTypes || !entities.groups || !entities.subjects || !entities.departments || (user.role === 'admin' && (isEmpty(this.state.statisticsData || this.state.randomUsers.length === 0))) ) {
+            return (<Loader/>)
         }
         return (
             <div className='Home'>
@@ -194,76 +348,7 @@ class Home extends Component {
                             Найти
                         </MainButton>
                     </div>
-                    <div className="Home__time-table-wrap">
-                        <div className="Home__time-table time-table">
-                            <h2 className="time-table__title">Рассписание на сегодня ({formatDate(todayDate)})</h2>
-                            <div className="time-table__border">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Время</th>
-                                            <th>Группа</th>
-                                            <th>Дисциплина</th>
-                                            <th>Тип занятия</th>
-                                            <th>Аудит.</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            schedule.todaySchedule.map((el, index) => {
-                                                return (
-                                                    <tr key={index}>
-                                                        <td>{el.time}</td>
-                                                        <td>{el.group}</td>
-                                                        <td>{el.subject}</td>
-                                                        <td>{el.subject_type}</td>
-                                                        <td>{`${el.hall}, ${el.corp}`}</td>
-                                                    </tr>
-                                                )
-                                            })
-                                        }
-                                        {emptyRows.today.length === 0 ? null : emptyRows.today.map((el) => {
-                                            return el
-                                        })}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div className="Home__time-table time-table">
-                            <h2 className="time-table__title">Рассписание на завтра ({formatDate(tomorrowDate)})</h2>
-                            <div className="time-table__border">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Время</th>
-                                            <th>Группа</th>
-                                            <th>Дисциплина</th>
-                                            <th>Тип занятия</th>
-                                            <th>Аудит.</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    {
-                                        schedule.tomorrowSchedule.map((el, index) => {
-                                            return (
-                                                <tr key={index}>
-                                                    <td>{el.time}</td>
-                                                    <td>{el.group}</td>
-                                                    <td>{el.subject}</td>
-                                                    <td>{el.subject_type}</td>
-                                                    <td>{`${el.hall}, ${el.corp}`}</td>
-                                                </tr>
-                                            )
-                                        })
-                                    }
-                                    {emptyRows.tomorrow.length === 0 ? null : emptyRows.tomorrow.map((el) => {
-                                        return el
-                                    })}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+                    { this.props.user.role === 'admin' ? this.renderHomeFooter() : this.renderTimeTable() }
                     {this.renderModal()}
                 </div>
             </div>

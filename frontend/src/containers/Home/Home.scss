@@ -1,6 +1,10 @@
 .Home {
   padding: 20px 0;
   font-family: Roboto, sans-serif;
+  .container {
+    position: relative;
+    height: calc(100vh - (75px + 40px) );
+  }
   &__categories {
     display: flex;
     flex-flow: column;
@@ -122,6 +126,112 @@
   @media (min-width: 1024px) {
     &:first-child {
       margin-right: 10px;
+    }
+  }
+}
+
+.home-footer {
+  color: rgba(29, 59, 85, .8);
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  &__users-wrap {
+    width: 49%;
+    display: flex;
+    flex-flow: column;
+    border: 1px solid #2B9CFF;
+    border-radius: 10px;
+    padding: 20px;
+  }
+  &__users-title {
+    margin: 0;
+    font-weight: 500;
+    font-size: 12px;
+  }
+  &__users {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+  }
+  &__user {
+
+  }
+  &__statistics-wrap {
+    border: 1px solid #2B9CFF;
+    border-radius: 10px;
+    width: 49%;
+    padding: 20px;
+    display: flex;
+    flex-flow: row wrap;
+  }
+  &__diagram-wrap {
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+    margin: 0 auto;
+  }
+  &__statistics-title {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  @media (min-width: 480px) {
+    &__users-title {
+      font-size: 20px;
+      text-align: initial;
+    }
+    &__body {
+      margin: 0 15px;
+    }
+  }
+  @media (min-width: 1024px) {
+    position: absolute;
+    bottom: 0;
+    &__diagram-wrap {
+      width: 45%;
+      margin: 0 10px;
+    }
+  }
+}
+
+.footer-user {
+  display: flex;
+  align-items: center;
+  margin-top: 30px;
+  flex: 50%;
+  flex-flow: row wrap;
+  justify-content: center;
+  &__circle {
+    width: 50px;
+    height: 50px;
+    background: rgba(0, 100, 251, 0.5);
+    border-radius: 50%;
+  }
+  &__body {
+    display: flex;
+    flex-flow: column;
+    text-align: center;
+  }
+  &__name {
+    font-size: 12px;
+    font-weight: 500;
+  }
+  &__position {
+    font-size: 10px;
+  }
+  @media (min-width: 480px) {
+    &__body {
+      margin: 0 15px;
+    }
+  }
+  @media (min-width: 1024px) {
+    justify-content: normal;
+    text-align: initial;
+    &__body {
+      text-align: initial;
     }
   }
 }

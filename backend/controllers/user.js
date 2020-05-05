@@ -407,3 +407,37 @@ module.exports.removeUser = async (req, res) => {
             res.status(401).json(err.message)
         })
 }
+
+module.exports.getRandom = async (req, res) => {
+    try {
+        const userIds_array = []
+        const userIds = await User.findAll({
+            attributes: ['id']
+        })
+        userIds.forEach(el => {
+            userIds_array.push(el.id)
+        })
+        const ids = []
+        for (let i = 0; i < 4; i++) {
+            let index = Math.floor(Math.random() * userIds_array.length)
+            ids.push(userIds_array[index])
+            userIds_array.splice(index, 1)
+        }
+        const randomUsers = await User.findAll({
+            attributes: ['name', 'surname', [Sequelize.literal('"positions"."name"'), 'position']],
+            where: {
+                id: {
+                    [Op.in]: ids
+                }
+            },
+            include: [{
+                model: Position,
+                attributes: [],
+                required: true
+            }]
+        })
+        res.status(200).json(randomUsers)
+    } catch (e) {
+        console.log(e.message)
+    }
+}

@@ -1,6 +1,7 @@
 frontend/node_modules
 frontend/debug.log
 frontend/coverage
+frontend/.gitignore
 frontend/build
 .pnp.js
 

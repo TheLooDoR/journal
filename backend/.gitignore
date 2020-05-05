@@ -1,11 +1,21 @@
-node_modules
+
+/node_modules
+/.pnp
 .pnp.js
 debug.log
+# testing
+/coverage
+
+# production
+/build
+=======
+node_modules
 .idea
 build
 sqlfile.sql
 db.db
 .env
+
 
 # misc
 .DS_Store
