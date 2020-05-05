@@ -314,7 +314,7 @@ class Journal extends Component {
             return (
                 <div className="statistic-modal statistic-modal--score">
                     <ScoreDoughnut
-                        marksAmmount={[unsatisfactory, satisfactory, good, excellent]}
+                        marksAmount={[unsatisfactory, satisfactory, good, excellent]}
                     />
                 </div>
             )

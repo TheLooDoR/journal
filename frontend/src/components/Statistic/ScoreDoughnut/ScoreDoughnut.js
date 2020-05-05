@@ -15,10 +15,11 @@ const ScoreDoughnut = props => {
 
     return (
         <Doughnut
+            height={props.height}
             data={{
                 labels: ['не удовлетворительно', 'удовлетворительно', 'хорошо', 'отлично'],
                 datasets: [{
-                    data: props.marksAmmount,
+                    data: props.marksAmount,
                     backgroundColor: [
                         'rgba(255, 135, 135, .9)',
                         'rgba(255, 227, 128, .9)',
@@ -27,7 +28,7 @@ const ScoreDoughnut = props => {
                     ]
                 }]
             }}
-            legend={{
+            legend={props.legend ? props.legend : {
                 position: 'right',
                 labels: {
                     fontColor: '#1D3B55',

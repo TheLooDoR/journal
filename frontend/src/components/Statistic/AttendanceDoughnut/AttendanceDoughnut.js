@@ -5,6 +5,8 @@ import '../../../chart-plugins/centeredLabel'
 const AttendanceDoughnut = props => {
     return (
         <Doughnut
+            height={props.height}
+            width={props.width}
             data={{
                 labels: ['пропуски', ' присутствия'],
                 datasets: [{
