@@ -7,7 +7,7 @@ import {
     GET_STUDENTS,
     GET_SUBJECT_TYPES,
     GET_SUBJECTS,
-    GET_TIME,
+    GET_TIME, REQUEST_CORPS, REQUEST_CORPS_FINISHED, REQUEST_DEPARTMENTS, REQUEST_DEPARTMENTS_FINISHED,
     REQUEST_GROUPS,
     REQUEST_GROUPS_FINISHED,
     REQUEST_STUDENTS,
@@ -29,7 +29,9 @@ const initialState =  {
     groupsLoading: false,
     studentsLoading: false,
     subjectsLoading: false,
-    subjectTypesLoading: false
+    subjectTypesLoading: false,
+    corpsLoading: false,
+    departmentsLoading: false
 }
 
 export default (state = initialState , action ) => {
@@ -118,6 +120,26 @@ export default (state = initialState , action ) => {
             return {
                 ...state,
                 subjectTypesLoading: action.payload
+            }
+        case REQUEST_CORPS:
+            return {
+                ...state,
+                corpsLoading: action.payload
+            }
+        case REQUEST_CORPS_FINISHED:
+            return {
+                ...state,
+                corpsLoading: action.payload
+            }
+        case REQUEST_DEPARTMENTS:
+            return {
+                ...state,
+                departmentsLoading: action.payload
+            }
+        case REQUEST_DEPARTMENTS_FINISHED:
+            return {
+                ...state,
+                departmentsLoading: action.payload
             }
         default:
             return state

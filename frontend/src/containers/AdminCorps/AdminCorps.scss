@@ -1,11 +1,8 @@
-.AdminSubjects {
+.AdminCorps {
   padding: 10px;
   color: #1D3B55;
-  &__subjects-table {
+  &__corps-table {
     height: 350px;
-  }
-  &__subject-types-table {
-    height: 300px;
   }
   .admin-table__body {
     tr {
@@ -40,16 +37,13 @@
     font-size: 13px;
     width: 124px;
   }
-  &__add-subject-btn {
+  &__add-corp-btn {
     background: transparent;
     border: 1px solid #2B9CFF;
     color: #2B9CFF;
     padding: 10px 0;
     width: 200px;
     font-size: 13px;
-  }
-  &__subject-types-wrap {
-    margin-top: 20px;
   }
   &__not-found {
     font-size: 24px;
@@ -64,16 +58,13 @@
     &__filter-btn {
       margin-left: 14px;
     }
-    &__add-subject-btn {
+    &__add-corp-btn {
       margin-left: 60px;
     }
   }
   @media (min-width: 768px) {
-    &__subjects-table {
+    &__corps-table {
       width: 60vw;
-    }
-    &__subject-types-table {
-      width: 40vw;
     }
   }
   @media (min-width: 965px) {
@@ -83,13 +74,7 @@
   }
 }
 
-#delete-subject-modal {
-  .styles_closeButton__20ID4 {
-    display: none;
-  }
-}
-
-#delete-subject-type-modal {
+#delete-corp-modal {
   .styles_closeButton__20ID4 {
     display: none;
   }
