@@ -6,7 +6,6 @@ import Loader from "../../components/UI/Loader/Loader";
 import editLogo from "../../assets/admin/edit.png";
 import deleteLogo from "../../assets/admin/delete.png";
 import './AdminDepartments.scss'
-import {func} from "prop-types";
 import Modal from "react-responsive-modal";
 import MainButton from "../../components/UI/MainButton/MainButton";
 import FilterSearch from "../../components/UI/FilterSearch/FilterSearch";
