@@ -8,7 +8,7 @@ import {
     GET_STUDENTS,
     GET_SUBJECT_TYPES,
     GET_SUBJECTS,
-    GET_TIME,
+    GET_TIME, REQUEST_CORPS, REQUEST_CORPS_FINISHED, REQUEST_DEPARTMENTS, REQUEST_DEPARTMENTS_FINISHED,
     REQUEST_GROUPS,
     REQUEST_GROUPS_FINISHED,
     REQUEST_STUDENTS,
@@ -136,10 +136,40 @@ const requestSubjectTypesFinished = () => {
     }
 }
 
-export const getDepartmentsData = () => dispatch => {
-    axios.get('api/departments/')
+const requestCorps = () => {
+    return {
+        type: REQUEST_CORPS,
+        payload: true
+    }
+}
+
+const requestCorpsFinished = () => {
+    return {
+        type: REQUEST_CORPS_FINISHED,
+        payload: false
+    }
+}
+
+const requestDepartments = () => {
+    return {
+        type: REQUEST_DEPARTMENTS,
+        payload: true
+    }
+}
+
+const requestDepartmentsFinished = () => {
+    return {
+        type: REQUEST_DEPARTMENTS_FINISHED,
+        payload: false
+    }
+}
+
+export const getDepartmentsData = (filterValue='') => dispatch => {
+    dispatch(requestDepartments())
+    axios.get('api/departments/', {params: {filterValue}})
         .then(res => {
             dispatch(departmentsData(res.data.departments))
+            dispatch(requestDepartmentsFinished())
         })
 }
 
@@ -184,9 +214,13 @@ export const getTimeData = () => dispatch => {
         .then(res => dispatch(timeData(res.data.time)))
 }
 
-export const getCorpsData = () => dispatch => {
-    axios.get('api/corps/')
-        .then(res => dispatch(corpsData(res.data.corps)))
+export const getCorpsData = (filterValue='') => dispatch => {
+    dispatch(requestCorps())
+    axios.get('api/corps/', {params: {filterValue}})
+        .then(res => {
+            dispatch(corpsData(res.data.corps))
+            dispatch(requestCorpsFinished())
+        })
 }
 
 export const getRolesData = () => dispatch => {
