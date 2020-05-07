@@ -15,6 +15,8 @@ import userLogo  from '../../assets/navbar/user.png'
 import withSizes from 'react-sizes'
 import { slide as Menu } from 'react-burger-menu'
 import './Navbar.scss'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 
 const authLinks = [
     {to: '/groups', label: 'Группы', logo: groupLogo, exact: false},
@@ -66,12 +68,25 @@ class Navbar extends Component {
 
         const guestLinks = (
             <>
-                <div className="Navbar__link">
-                    <Link className="Navbar__guest-link" to="/register">Зарегестрироваться</Link>
-                </div>
-                <div className="Navbar__link">
-                    <Link className="Navbar__guest-link" to="/login">Войти</Link>
-                </div>
+            
+        <input type="checkbox" href="#" className="menu-open" name="menu-open" id="menu-open"/>
+        <label className="menu-open-button" for="menu-open">
+            <span className="hamburger hamburger-1"></span>
+            <span className="hamburger hamburger-2"></span>
+            <span className="hamburger hamburger-3"></span>
+        </label>
+                         <div className="Navbar__link menu-item">
+                            <Link className="Navbar__guest-link " to="/register">  <FontAwesomeIcon className="Navbar__guest-link-icon" icon="check-square" /> 
+                            <p>Зарегистрироватся</p>
+                            </Link>
+                        </div>
+                        <div className="Navbar__link menu-item">
+                            <Link className="Navbar__guest-link " to="/login"> <FontAwesomeIcon className="Navbar__guest-link-icon" icon="check-square" />
+                            <p>Войти</p>
+                            </Link>
+                        </div>
+
+
             </>
         )
         return (
