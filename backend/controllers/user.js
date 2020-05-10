@@ -357,6 +357,33 @@ module.exports.getById = async (req, res) => {
         })
 }
 
+module.exports.getUsersSelect = async (req, res) => {
+    await User.findAll({
+        attributes: ['id', 'name', 'surname', 'patronymic'],
+        where: {
+            '$roles.name$': 'teacher'
+        },
+        include: [
+            {
+                model: Role,
+                attributes: [],
+                required: true
+            }
+        ],
+        order: [
+            ['surname', 'ASC'],
+            ['name', 'ASC']
+        ]
+    })
+        .then(users => {
+            res.status(200).json({users})
+        })
+        .catch(err => {
+            console.log(err.message)
+            res.status(400).json(err.message)
+        })
+}
+
 module.exports.updateUser = async (req, res) => {
 
     const { errors, isValid } = validateUpdateUserInput(req.body);

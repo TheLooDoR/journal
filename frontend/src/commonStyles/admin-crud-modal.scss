@@ -35,6 +35,20 @@
     padding: 15px 90px;
     margin-top: 20px;
   }
+  &__combined-input {
+    display: flex;
+    justify-content: space-between;
+    flex-flow: column;
+  }
+  @media (min-width: 480px) {
+    &__combined-input {
+      flex-flow: row;
+      .admin-post__input {
+        max-width: 49%;
+        width: 100%;
+      }
+    }
+  }
 }
 
 .admin-delete {

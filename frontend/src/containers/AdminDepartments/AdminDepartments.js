@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import Axios from "axios";
 import {connect} from 'react-redux'
-import {getDepartmentsData} from "../../actions";
+import {getDepartmentsData, requestDepartments} from "../../actions";
 import Loader from "../../components/UI/Loader/Loader";
 import editLogo from "../../assets/admin/edit.png";
 import deleteLogo from "../../assets/admin/delete.png";
@@ -25,13 +25,32 @@ class AdminDepartments extends Component {
             departmentLoading: false,
             showCreateDepartmentModal: false,
             showUpdateDepartmentModal: false,
-            showDeleteDepartmentModal: false
+            showDeleteDepartmentModal: false,
+            scrollValue: 0
         }
     }
+
+    tableRef = React.createRef()
 
     componentDidMount() {
         const { dispatch } = this.props
         dispatch(getDepartmentsData(this.state.departmentsFilter.filterValue))
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const table = this.tableRef.current
+        if(table) {
+            table.scrollTop = this.state.scrollValue
+        }
+    }
+
+    scrollHandler = () => {
+        const table = this.tableRef.current
+        if(table) {
+            this.setState({
+                scrollValue: table.scrollTop
+            })
+        }
     }
 
     departmentsFilterChangeHandler = e => {
@@ -66,9 +85,10 @@ class AdminDepartments extends Component {
         const { name, full_name } = this.state.departmentData
         const { filterValue } = this.state.departmentsFilter
         const data = { name, full_name }
+        this.hideCreateDepartmentModal()
+        dispatch(requestDepartments())
         Axios.post('api/departments', data)
             .then(() => {
-                this.hideCreateDepartmentModal()
                 dispatch(getDepartmentsData(filterValue))
             })
             .catch(err => {
@@ -82,9 +102,10 @@ class AdminDepartments extends Component {
         const { id, name, full_name } = this.state.departmentData
         const { filterValue } = this.state.departmentsFilter
         const params = { id, name, full_name }
+        this.hideUpdateDepartmentModal()
+        dispatch(requestDepartments())
         Axios.patch('api/departments/', params)
             .then(() => {
-                this.hideUpdateDepartmentModal()
                 dispatch(getDepartmentsData(filterValue))
             })
             .catch(err => {
@@ -97,9 +118,10 @@ class AdminDepartments extends Component {
         const { dispatch } = this.props
         const { id } = this.state.departmentData
         const { filterValue } = this.state.departmentsFilter
+        this.hideDeleteDepartmentModal()
+        dispatch(requestDepartments())
         Axios.delete(`api/departments/${id}`)
             .then(() => {
-                this.hideDeleteDepartmentModal()
                 dispatch(getDepartmentsData(filterValue))
             })
             .catch(err => console.log(err.response.data))
@@ -184,7 +206,7 @@ class AdminDepartments extends Component {
                                 </thead>
                             </table>
                         </div>
-                        <div className="admin-table__body">
+                        <div className="admin-table__body" ref={this.tableRef} onScroll={this.scrollHandler}>
                             <table>
                                 <tbody>
                                 { departments.map((el, index) => {

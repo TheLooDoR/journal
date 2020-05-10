@@ -8,16 +8,16 @@ import {
     getSubjectsData,
     getSubjectTypesData, setJournalData,
     setJournalParameters,
-    getUserScheduleData, GET_GROUPS
+    getUserScheduleData
 } from "../../actions";
 import MainButton from '../../components/UI/MainButton/MainButton'
 import Journal from "../../components/Journal/Journal";
-import formatDate from "../../common-js/formatDate";
 import Select from "../../components/UI/Select/Select";
 import isEmpty from "../../common-js/isEmpty";
 import ScoreDoughnut from "../../components/Statistic/ScoreDoughnut/ScoreDoughnut";
 import AttendanceDoughnut from "../../components/Statistic/AttendanceDoughnut/AttendanceDoughnut";
 import './Home.scss'
+import UserSchedule from "../../components/UserSchedule/UserSchedule";
 
 class Home extends Component {
 
@@ -76,14 +76,6 @@ class Home extends Component {
         }
     }
 
-    componentWillUnmount() {
-        const { dispatch } = this.props
-        dispatch({
-            type: GET_GROUPS,
-            payload: []
-        })
-    }
-
     changeHandler (e) {
         if (e.target.value !== '') {
             let journalData = this.state.journalData
@@ -129,119 +121,6 @@ class Home extends Component {
                 errors={this.props.errors}
                 isLoading={this.props.isLoading}
             />
-        )
-    }
-
-    renderTimeTable() {
-        const { schedule } = this.props
-        //get dates for table titles
-        const todayDate = new Date()
-        let tomorrowDate = new Date()
-        tomorrowDate.setDate(new Date().getDate() + 1)
-        //empty rows if amount is less then 5
-        let emptyRows = {
-            today: [],
-            tomorrow: []
-        }
-        if (schedule.todaySchedule.length < 5) {
-            let missAmount = 5 - schedule.todaySchedule.length
-            for (let i = 0; i < missAmount; i++) {
-                emptyRows.today.push(
-                    <tr key={i}>
-                        <td className='time-table__empty-row'/>
-                        <td className='time-table__empty-row'/>
-                        <td className='time-table__empty-row'/>
-                        <td className='time-table__empty-row'/>
-                        <td className='time-table__empty-row'/>
-                    </tr>
-                )
-            }
-        }
-        if (schedule.tomorrowSchedule.length < 5) {
-            let missAmount = 5 - schedule.tomorrowSchedule.length
-            for (let i = 0; i < missAmount; i++) {
-                emptyRows.tomorrow.push(
-                    <tr key={i}>
-                        <td className='time-table__empty-row'/>
-                        <td className='time-table__empty-row'/>
-                        <td className='time-table__empty-row'/>
-                        <td className='time-table__empty-row'/>
-                        <td className='time-table__empty-row'/>
-                    </tr>
-                )
-            }
-        }
-        return (
-            <div className="Home__time-table-wrap">
-                <div className="Home__time-table time-table">
-                    <h2 className="time-table__title">Рассписание на сегодня ({formatDate(todayDate)})</h2>
-                    <div className="time-table__border">
-                        <table>
-                            <thead>
-                            <tr>
-                                <th>Время</th>
-                                <th>Группа</th>
-                                <th>Дисциплина</th>
-                                <th>Тип занятия</th>
-                                <th>Аудит.</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {
-                                schedule.todaySchedule.map((el, index) => {
-                                    return (
-                                        <tr key={index}>
-                                            <td>{el.time}</td>
-                                            <td>{el.group}</td>
-                                            <td>{el.subject}</td>
-                                            <td>{el.subject_type}</td>
-                                            <td>{`${el.hall}, ${el.corp}`}</td>
-                                        </tr>
-                                    )
-                                })
-                            }
-                            {emptyRows.today.length === 0 ? null : emptyRows.today.map((el) => {
-                                return el
-                            })}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div className="Home__time-table time-table">
-                    <h2 className="time-table__title">Рассписание на завтра ({formatDate(tomorrowDate)})</h2>
-                    <div className="time-table__border">
-                        <table>
-                            <thead>
-                            <tr>
-                                <th>Время</th>
-                                <th>Группа</th>
-                                <th>Дисциплина</th>
-                                <th>Тип занятия</th>
-                                <th>Аудит.</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {
-                                schedule.tomorrowSchedule.map((el, index) => {
-                                    return (
-                                        <tr key={index}>
-                                            <td>{el.time}</td>
-                                            <td>{el.group}</td>
-                                            <td>{el.subject}</td>
-                                            <td>{el.subject_type}</td>
-                                            <td>{`${el.hall}, ${el.corp}`}</td>
-                                        </tr>
-                                    )
-                                })
-                            }
-                            {emptyRows.tomorrow.length === 0 ? null : emptyRows.tomorrow.map((el) => {
-                                return el
-                            })}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
         )
     }
 
@@ -301,7 +180,6 @@ class Home extends Component {
     }
 
     render() {
-        console.log(this.state)
         const {entities, user} = this.props
         const {journalData} = this.state
         if (!entities.subjectTypes || !entities.groups || !entities.subjects || !entities.departments || (user.role === 'admin' && (isEmpty(this.state.statisticsData || this.state.randomUsers.length === 0))) ) {
@@ -348,7 +226,7 @@ class Home extends Component {
                             Найти
                         </MainButton>
                     </div>
-                    { this.props.user.role === 'admin' ? this.renderHomeFooter() : this.renderTimeTable() }
+                    { this.props.user.role === 'admin' ? this.renderHomeFooter() : <UserSchedule schedule={this.props.schedule}/> }
                     {this.renderModal()}
                 </div>
             </div>

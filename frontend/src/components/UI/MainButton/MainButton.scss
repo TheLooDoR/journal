@@ -12,4 +12,7 @@
     background: #e2e6ea;
     cursor: not-allowed;
   }
+  &:focus {
+    outline: none;
+  }
 }

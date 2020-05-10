@@ -1,7 +1,13 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux'
 import Axios from "axios";
-import {GET_GROUPS, getDepartmentsData, getGroupsData, getStudentsData} from "../../actions";
+import {
+    getDepartmentsData,
+    getGroupsData,
+    getStudentsData,
+    requestGroups,
+    requestStudents
+} from "../../actions";
 import Loader from "../../components/UI/Loader/Loader";
 import Modal from 'react-responsive-modal';
 import InputMask from "react-input-mask";
@@ -50,23 +56,45 @@ class AdminGroups extends Component {
             showCreateStudentModal: false,
             showUpdateStudentModal: false,
             showDeleteStudentModal: false,
+            groupsScrollValue: 0,
+            studentsScrollValue: 0
         }
     }
+
+    groupsTableRef = React.createRef()
+    studentsTableRef = React.createRef()
 
     componentDidMount() {
         const { dispatch } = this.props
         const { filterType, filterValue } = this.state.groupsFilter
         dispatch(getGroupsData(filterType, filterValue))
         dispatch(getDepartmentsData())
-        dispatch(getGroupsData())
     }
 
-    componentWillUnmount() {
-        const { dispatch } = this.props
-        dispatch({
-            type: GET_GROUPS,
-            payload: []
-        })
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const groupsTable = this.groupsTableRef.current
+        const studentsTable = this.studentsTableRef.current
+        if (groupsTable) {
+            groupsTable.scrollTop = this.state.groupsScrollValue
+        }
+        if (studentsTable) {
+            studentsTable.scrollTop = this.state.studentsScrollValue
+        }
+    }
+
+    scrollHandler = () => {
+        const groupsTable = this.groupsTableRef.current
+        const studentsTable = this.studentsTableRef.current
+        if(groupsTable) {
+            this.setState({
+                groupsScrollValue: groupsTable.scrollTop
+            })
+        }
+        if (studentsTable) {
+            this.setState({
+                studentsScrollValue: studentsTable.scrollTop
+            })
+        }
     }
 
     groupsFilterChangeHandler = e => {
@@ -149,9 +177,10 @@ class AdminGroups extends Component {
             name,
             department_id: department.id
         }
+        this.hideCreateGroupModal()
+        dispatch(requestGroups())
         Axios.post('api/groups/', params)
             .then(() => {
-                this.hideCreateGroupModal()
                 dispatch(getGroupsData(filterType, filterValue))
             })
             .catch(err => {
@@ -169,9 +198,10 @@ class AdminGroups extends Component {
             group_id: group.id,
             budget: budget === 'true'
         }
+        this.hideCreateStudentModal()
+        dispatch(requestStudents())
         Axios.post('api/students/', params)
             .then(() => {
-                this.hideCreateStudentModal()
                 dispatch(getStudentsData(filterType, filterValue, this.state.groupData.id))
             })
     }
@@ -185,9 +215,10 @@ class AdminGroups extends Component {
             id, name,
             department_id: department.id
         }
+        this.hideUpdateGroupModal()
+        dispatch(requestGroups())
         Axios.patch('api/groups/', params)
             .then(() => {
-                this.hideUpdateGroupModal()
                 dispatch(getGroupsData(filterType, filterValue))
             })
             .catch(err => {
@@ -205,9 +236,10 @@ class AdminGroups extends Component {
             group_id: group.id,
             budget: budget === 'true'
         }
+        this.hideUpdateStudentModal()
+        dispatch(requestStudents())
         Axios.patch('api/students/', params)
             .then(() => {
-                this.hideUpdateStudentModal()
                 dispatch(getStudentsData(filterType, filterValue, this.state.groupData.id))
             })
             .catch(err => {
@@ -220,9 +252,10 @@ class AdminGroups extends Component {
         const { dispatch } = this.props
         const { id } = this.state.groupData
         const { filterType, filterValue } = this.state.groupsFilter
+        this.hideDeleteGroupModal()
+        dispatch(requestGroups())
         Axios.delete(`api/groups/${id}`)
             .then(() => {
-                this.hideDeleteGroupModal()
                 dispatch(getGroupsData(filterType, filterValue))
             })
             .catch(err => console.log(err.response.data))
@@ -233,9 +266,10 @@ class AdminGroups extends Component {
         const { dispatch } = this.props
         const { id } = this.state.studentData
         const { filterType, filterValue } = this.state.studentsFilter
+        this.hideDeleteStudentModal()
+        dispatch(requestStudents())
         Axios.delete(`api/students/${id}`)
             .then(() => {
-                this.hideDeleteStudentModal()
                 dispatch(getStudentsData(filterType, filterValue, this.state.groupData.id))
             })
             .catch(err => console.log(err.response.data))
@@ -373,7 +407,7 @@ class AdminGroups extends Component {
                                 </thead>
                             </table>
                         </div>
-                        <div className="admin-table__body">
+                        <div className="admin-table__body" ref={this.groupsTableRef} onScroll={this.scrollHandler}>
                             <table>
                                 <tbody>
                                 { groups.map((el, index) => {
@@ -452,7 +486,7 @@ class AdminGroups extends Component {
                                     </thead>
                                 </table>
                             </div>
-                            <div className="admin-table__body">
+                            <div className="admin-table__body" ref={this.studentsTableRef} onScroll={this.scrollHandler}>
                                 <table>
                                     <tbody>
                                     { students.map((el, index) => {
