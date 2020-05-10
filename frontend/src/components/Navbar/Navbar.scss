@@ -80,14 +80,16 @@
 
     // Edits
     @media (max-width : 480px) {
+     
         height: 61px;
         // Burger
         .Navbar__guest-link{
+              width: 20px;
             & p{
-
            display: none;
         }
              &-icon{ 
+            color: #40ffff;
             visibility: visible;
             display:inline-block;
         }
@@ -116,7 +118,7 @@ $opening-angle:$pi*2;
   position:absolute;
   color:white;
   text-align:center;
-  line-height:80px;
+  line-height:76px;
   transform:translate3d(0,0,0);
   transition:transform ease-out 200ms;
 }
@@ -135,7 +137,7 @@ $opening-angle:$pi*2;
   $height:2px;
   width:$width;
   height:$height;
-  background:white;
+  background:#40ffff;
   display:block;
   position:absolute;
   top:50%;
@@ -222,6 +224,7 @@ $hamburger-spacing:6px;
   }
 }
 
+
     }
     @media (min-width: 480px) {
         .menu-open{
@@ -239,15 +242,11 @@ $hamburger-spacing:6px;
             padding-right: 35px;
             border:none;
         }
+    
+       
 
         
     }
-    @media (min-width: 1024px) {
-        // Нахуя это нужно? 
-        
-    // я удалил , ахахах 
-
-}
 }
 
 /* Position and sizing of burger button */
@@ -256,7 +255,7 @@ $hamburger-spacing:6px;
     width: 36px;
     height: 30px;
     right: 36px;
-    top: 40px;
+    top: 33px;
     transform: translateY(-50%);
 }
 
@@ -268,7 +267,7 @@ $hamburger-spacing:6px;
 
 /* Color/shape of burger icon bars on hover*/
 .bm-burger-bars-hover {
-    background: #a90000;
+    background: #40ffff;
 }
 
 /* Position and sizing of clickable cross button */
