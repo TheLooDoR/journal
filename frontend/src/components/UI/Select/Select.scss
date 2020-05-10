@@ -1,11 +1,19 @@
 .filter-select {
-  border-radius: 10px;
-  border-color: #2B9CFF;
+  border-radius: 10px; 
+  // border-color: #2B9CFF;
+  // R
   border-width: 1px;
   border-style: solid;
+  border-image-source: linear-gradient(rgba(43, 156, 255, 1) , rgba(150, 16, 255, 1));
+  border-image-slice: 1;
+    // R
   -webkit-appearance: none;
   outline: none;
+  &::after{
+    border-radius: 10px;
+  }
   &__wrap {
+    
     position: relative;
 
     width: 100%;
@@ -19,8 +27,18 @@
       width: 13px;
       height: 13px;
       pointer-events: none;
+      
     }
+    @media (max-width : 480px) {
+      font-size: 12px;
+      color: #1D3B55;
+      opacity: 0.7;
+    }
+    // R
+
   }
+  
+
   @media (min-width: 768px) {
     &__wrap {
       width: initial;
