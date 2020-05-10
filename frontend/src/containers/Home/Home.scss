@@ -18,7 +18,16 @@
     margin: 10px 0;
 
     width: 100%;
+     //R
+    @media (max-width : 480px) {
+      height: 30px;
+      margin: 5px 0;
+      
+    }
+    // R
   }
+ 
+
   &__btn {
     padding: 12px 80px;
     margin: 10px;
@@ -85,8 +94,16 @@
     font-weight: 500;
     margin: 20px 0;
   }
+  
+  
   th, &__empty-row {
     height: 63px;
+    // R
+    width: 16.6vw;
+  @media (max-width: 768px) {
+    
+  }
+  // R
   }
   th, td {
     border: 1px solid #2B9CFF;
