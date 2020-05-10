@@ -5,7 +5,7 @@ import Modal from 'react-responsive-modal';
 import FilterSearch from "../../components/UI/FilterSearch/FilterSearch";
 import MainButton from "../../components/UI/MainButton/MainButton";
 import Loader from "../../components/UI/Loader/Loader";
-import {getSubjectsData, getSubjectTypesData} from "../../actions";
+import {getSubjectsData, getSubjectTypesData, requestSubjects, requestSubjectTypes} from "../../actions";
 import editLogo from "../../assets/admin/edit.png";
 import deleteLogo from "../../assets/admin/delete.png";
 import './AdminSubjects.scss'
@@ -37,14 +37,45 @@ class AdminSubjects extends Component {
             showDeleteSubjectModal: false,
             showCreateSubjectTypeModal: false,
             showUpdateSubjectTypeModal: false,
-            showDeleteSubjectTypeModal: false
+            showDeleteSubjectTypeModal: false,
+            subjectsScrollValue: 0,
+            subjectTypesScrollValue: 0
         }
     }
+
+    subjectsTableRef = React.createRef()
+    subjectTypesTableRef = React.createRef()
 
     componentDidMount() {
         const { dispatch } = this.props
         dispatch(getSubjectsData(this.state.subjectsFilter.filterValue))
         dispatch(getSubjectTypesData(this.state.subjectTypesFilter.filterValue))
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const subjectsTable = this.subjectsTableRef.current
+        const subjectTypesTable = this.subjectTypesTableRef.current
+        if (subjectsTable) {
+            subjectsTable.scrollTop = this.state.subjectsScrollValue
+        }
+        if (subjectTypesTable) {
+            subjectTypesTable.scrollTop = this.state.subjectTypesScrollValue
+        }
+    }
+
+    scrollHandler = () => {
+        const subjectsTable = this.subjectsTableRef.current
+        const subjectTypesTable = this.subjectTypesTableRef.current
+        if(subjectsTable) {
+            this.setState({
+                subjectsScrollValue: subjectsTable.scrollTop
+            })
+        }
+        if (subjectTypesTable) {
+            this.setState({
+                subjectTypesScrollValue: subjectTypesTable.scrollTop
+            })
+        }
     }
 
     subjectsFilterChangeHandler = e => {
@@ -101,9 +132,10 @@ class AdminSubjects extends Component {
         const data = {
             name, full_name
         }
+        this.hideCreateSubjectModal()
+        dispatch(requestSubjects())
         Axios.post('api/subjects', data)
             .then(res => {
-                this.hideCreateSubjectModal()
                 dispatch(getSubjectsData(filterValue))
             })
             .catch(err => {
@@ -117,9 +149,10 @@ class AdminSubjects extends Component {
         const { name } = this.state.subjectTypeData
         const { filterValue } = this.state.subjectTypesFilter
         const data = { name }
+        this.hideCreateSubjectTypeModal()
+        dispatch(requestSubjectTypes())
         Axios.post('api/subject-types', data)
             .then(() => {
-                this.hideCreateSubjectTypeModal()
                 dispatch(getSubjectTypesData(filterValue))
             })
             .catch(err => console.log(err.response.data))
@@ -131,9 +164,10 @@ class AdminSubjects extends Component {
         const { id, name, full_name } = this.state.subjectData
         const { filterValue } = this.state.subjectsFilter
         const params = { id, name, full_name }
+        this.hideUpdateSubjectModal()
+        dispatch(requestSubjects())
         Axios.patch('api/subjects/', params)
             .then(() => {
-                this.hideUpdateSubjectModal()
                 dispatch(getSubjectsData(filterValue))
             })
             .catch(err => {
@@ -147,9 +181,10 @@ class AdminSubjects extends Component {
         const { id, name } = this.state.subjectTypeData
         const { filterValue } = this.state.subjectTypesFilter
         const params = { id, name }
+        this.hideUpdateSubjectTypeModal()
+        dispatch(requestSubjectTypes())
         Axios.patch('api/subject-types/', params)
             .then(() => {
-                this.hideUpdateSubjectTypeModal()
                 dispatch(getSubjectTypesData(filterValue))
             })
             .catch(err => connect.log(err.response.data))
@@ -160,9 +195,10 @@ class AdminSubjects extends Component {
         const { dispatch } = this.props
         const { id } = this.state.subjectData
         const { filterValue } = this.state.subjectsFilter
+        this.hideDeleteSubjectModal()
+        dispatch(requestSubjects())
         Axios.delete(`api/subjects/${id}`)
             .then(() => {
-                this.hideDeleteSubjectModal()
                 dispatch(getSubjectsData(filterValue))
             })
             .catch(err => console.log(err.response.data))
@@ -173,9 +209,10 @@ class AdminSubjects extends Component {
         const { dispatch } = this.props
         const { id } = this.state.subjectTypeData
         const { filterValue } = this.state.subjectTypesFilter
+        this.hideDeleteSubjectTypeModal()
+        dispatch(requestSubjectTypes())
         Axios.delete(`api/subject-types/${id}`)
             .then(() => {
-                this.hideDeleteSubjectTypeModal()
                 dispatch(getSubjectTypesData(filterValue))
             })
     }
@@ -312,7 +349,7 @@ class AdminSubjects extends Component {
                                 </thead>
                             </table>
                         </div>
-                        <div className="admin-table__body">
+                        <div className="admin-table__body" ref={this.subjectsTableRef} onScroll={this.scrollHandler}>
                             <table>
                                 <tbody>
                                     { subjects.map((el, index) => {
@@ -385,7 +422,7 @@ class AdminSubjects extends Component {
                                 </thead>
                             </table>
                         </div>
-                        <div className="admin-table__body">
+                        <div className="admin-table__body" ref={this.subjectTypesTableRef} onScroll={this.scrollHandler}>
                             <table>
                                 <tbody>
                                 { subjectTypes.map((el, index) => {

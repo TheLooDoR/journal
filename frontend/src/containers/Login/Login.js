@@ -8,8 +8,8 @@ import Axios from "axios";
 import { store } from 'react-notifications-component'
 import '../Register/Register.scss'
 import Loader from "../../components/UI/Loader/Loader";
-import './Login.scss'
 import {Link} from "react-router-dom";
+import './Login.scss'
 
 
 class Login extends Component {

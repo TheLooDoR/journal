@@ -18,6 +18,7 @@ const roleRoutes = require('./routes/role')
 const positionRoutes = require('./routes/position')
 const studentRoutes = require('./routes/student')
 const statisticRoutes = require('./routes/statistics')
+const weekDayRoutes = require('./routes/weekDay')
 
 const app = express();
 app.use(passport.initialize());
@@ -54,6 +55,7 @@ app.use('/api/roles', roleRoutes)
 app.use('/api/positions', positionRoutes)
 app.use('/api/students', studentRoutes)
 app.use('/api/statistics', statisticRoutes)
+app.use('/api/week-days', weekDayRoutes)
 
 app.listen(PORT, () => {
     console.log(`Server is running on PORT ${PORT}`);

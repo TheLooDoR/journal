@@ -1,0 +1,83 @@
+.AdminSchedule {
+  padding: 10px;
+  color: #1D3B55;
+  &__table {
+    height: 85vh;
+    width: 100%;
+  }
+  &__search {
+    width: 500px;
+  }
+  &__schedule-table {
+    tr {
+      &:nth-child(odd) {
+        background: rgba(43, 156, 255, .1);
+      }
+      &:nth-child(even) {
+        background: rgba(150, 16, 255, .1);
+      }
+    }
+  }
+  &__filter-wrap {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+  }
+  &__group-selects {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    margin-top: 10px;
+  }
+  &__select {
+    select {
+      padding: 0 10px;
+      height: 45px;
+    }
+  }
+  &__department-select {
+    margin-right: 10px;
+    margin-left: 5px;
+    select {
+      width: 200px;
+    }
+  }
+  &__group-select {
+    margin-right: 20px;
+    select {
+      width: 140px;
+    }
+  }
+  &__btn {
+    height: 45px;
+    padding: 0 30px;
+  }
+  .admin-table {
+    &__head {
+      th {
+        word-break: break-word;
+      }
+    }
+  }
+  &__not-found {
+    font-size: 24px;
+  }
+  @media (min-width: 1355px){
+    &__filter-wrap {
+      justify-content: space-between;
+    }
+    &__department-select {
+      margin-left: 0;
+    }
+    &__group-selects {
+      margin-top: 0;
+    }
+  }
+}
+
+#delete-schedule-modal {
+  .styles_closeButton__20ID4 {
+    display: none;
+  }
+}
+

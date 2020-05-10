@@ -7,7 +7,7 @@ import {
     GET_STUDENTS,
     GET_SUBJECT_TYPES,
     GET_SUBJECTS,
-    GET_TIME, REQUEST_CORPS, REQUEST_CORPS_FINISHED, REQUEST_DEPARTMENTS, REQUEST_DEPARTMENTS_FINISHED,
+    GET_TIME, GET_WEEK_DAYS, REQUEST_CORPS, REQUEST_CORPS_FINISHED, REQUEST_DEPARTMENTS, REQUEST_DEPARTMENTS_FINISHED,
     REQUEST_GROUPS,
     REQUEST_GROUPS_FINISHED,
     REQUEST_STUDENTS,
@@ -26,6 +26,7 @@ const initialState =  {
     roles: [],
     positions: [],
     students: [],
+    weekDays: [],
     groupsLoading: false,
     studentsLoading: false,
     subjectsLoading: false,
@@ -80,6 +81,11 @@ export default (state = initialState , action ) => {
             return {
                 ...state,
                 students: action.payload
+            }
+        case GET_WEEK_DAYS:
+            return {
+                ...state,
+                weekDays: action.payload
             }
         case REQUEST_GROUPS:
             return {
