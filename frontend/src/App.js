@@ -29,6 +29,7 @@ import AdminSubjects from "./containers/AdminSubjects/AdminSubjects";
 import AdminCorps from "./containers/AdminCorps/AdminCorps";
 import AdminDepartments from "./containers/AdminDepartments/AdminDepartments";
 import AdminSchedule from "./containers/AdminSchedule/AdminSchedule";
+import PersonalPage from "./containers/PersonalPage/PersonalPage";
 
 if(localStorage.jwtToken) {
     setAuthToken(localStorage.jwtToken);
@@ -98,6 +99,7 @@ class App extends Component {
                                 <Route path='/admin-subjects' component={ PrivateRoute(AdminSubjects, true) }/>
                                 <Route path='/admin-corps' component={ PrivateRoute(AdminCorps, true) }/>
                                 <Route path='/admin-departments' component={ PrivateRoute(AdminDepartments, true) }/>
+                                <Route path='/me' component={ PrivateRoute(PersonalPage) } />
                                 <Route exact path="/register" component={ Register } />
                                 <Route exact path="/login" component={ Login } />
                                 <Route exact path="/" component={ PrivateRoute(Home) } />

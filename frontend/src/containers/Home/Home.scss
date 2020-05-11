@@ -60,6 +60,11 @@
         width: 323px;
       }
     }
+    .time-table {
+      &:first-child {
+        margin-right: 10px;
+      }
+    }
   }
   @media (min-width: 1260px) {
     &__categories {

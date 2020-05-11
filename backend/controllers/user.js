@@ -330,7 +330,7 @@ module.exports.getById = async (req, res) => {
     let user_id = req.params.id
 
     await User.findOne({
-        attributes: ['id', 'email', 'phone_number'],
+        attributes: ['id','name','surname', 'patronymic', 'email', 'phone_number'],
         where: {
             id: user_id
         },
@@ -387,7 +387,7 @@ module.exports.getUsersSelect = async (req, res) => {
 module.exports.updateUser = async (req, res) => {
 
     const { errors, isValid } = validateUpdateUserInput(req.body);
-    const { user_id, department_id, position_id, email, phone_number, role_id } = req.body
+    const { user_id, department_id, position_id, email, phone_number, role_id, name, surname, patronymic } = req.body
 
     if(!isValid) {
         return res.status(400).json(errors);
@@ -413,7 +413,10 @@ module.exports.updateUser = async (req, res) => {
                 position_id,
                 email,
                 phone_number,
-                role_id
+                role_id,
+                name,
+                surname,
+                patronymic
             },
             { where: { id: user_id } }
         )

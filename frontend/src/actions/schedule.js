@@ -33,9 +33,11 @@ export const requestScheduleDataFinished = () => {
 }
 
 export const getUserScheduleData = user_id => dispatch => {
+    dispatch(requestScheduleData())
     Axios.get(`api/schedule/user-schedule/${user_id}`)
         .then(res => {
             dispatch(userScheduleData(res.data))
+            dispatch(requestScheduleDataFinished())
         })
 }
 

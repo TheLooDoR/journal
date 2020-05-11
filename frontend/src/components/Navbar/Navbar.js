@@ -14,6 +14,8 @@ import rating from '../../assets/navbar/rating.png'
 import userLogo  from '../../assets/navbar/user.png'
 import withSizes from 'react-sizes'
 import { slide as Menu } from 'react-burger-menu'
+import {DropdownButton} from "react-bootstrap";
+import {Dropdown} from "react-bootstrap";
 import './Navbar.scss'
 
 const authLinks = [
@@ -54,12 +56,27 @@ class Navbar extends Component {
             authLinks = (
                 <>
                     {this.renderAuthLinks()}
-                    <div className={'Navbar__link'}>
-                        <img src={userLogo} alt=""/>
-                        <button className="Navbar__logout-btn" onClick={this.onLogout.bind(this)}>
-                            {user.name}
-                        </button>
-                    </div>
+                    <DropdownButton
+                        id='user-dropdown-btn'
+                        className='Navbar__dropdown'
+                        title={
+                            <div className={'Navbar__link'}>
+                                <img src={userLogo} alt=""/>
+                                <div className="Navbar__logout-btn">
+                                    {user.name}
+                                </div>
+                            </div>
+                        }
+                    >
+                        <Dropdown.Item as={Link} to='/me'>Личный кабинет</Dropdown.Item>
+                        <Dropdown.Item onClick={this.onLogout.bind(this)}>Выйти</Dropdown.Item>
+                    </DropdownButton>
+                    {/*<div className={'Navbar__link'}>*/}
+                    {/*    <img src={userLogo} alt=""/>*/}
+                    {/*    <button className="Navbar__logout-btn" onClick={this.onLogout.bind(this)}>*/}
+                    {/*        {user.name}*/}
+                    {/*    </button>*/}
+                    {/*</div>*/}
                 </>
             )
         }
@@ -80,12 +97,21 @@ class Navbar extends Component {
                     {this.props.isDesktop || !isAuthenticated || user.role === 'admin' ?  null :
                         <Menu right>
                             {this.renderAuthLinks()}
-                            <div className={'Navbar__link'}>
-                                <img src={userLogo} alt=""/>
-                                <button className="Navbar__logout-btn" onClick={this.onLogout.bind(this)}>
-                                    {user.name}
-                                </button>
-                            </div>
+                            <DropdownButton
+                                id='user-dropdown-btn-mobile'
+                                className='Navbar__dropdown'
+                                title={
+                                    <div className={'Navbar__link'} style={{ flexDirection: 'row'}}>
+                                        <img src={userLogo} alt=""/>
+                                        <div className="Navbar__logout-btn">
+                                            {user.name}
+                                        </div>
+                                    </div>
+                                }
+                            >
+                                <Dropdown.Item as={Link} to='/me'>Личный кабинет</Dropdown.Item>
+                                <Dropdown.Item onClick={this.onLogout.bind(this)}>Выйти</Dropdown.Item>
+                            </DropdownButton>
                         </Menu>
                     }
                     <nav className={'Navbar'}>

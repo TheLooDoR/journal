@@ -10,7 +10,7 @@ import {
     GET_SUBJECTS,
     GET_TIME, GET_WEEK_DAYS, REQUEST_CORPS, REQUEST_CORPS_FINISHED, REQUEST_DEPARTMENTS, REQUEST_DEPARTMENTS_FINISHED,
     REQUEST_GROUPS,
-    REQUEST_GROUPS_FINISHED,
+    REQUEST_GROUPS_FINISHED, REQUEST_POSITIONS, REQUEST_POSITIONS_FINISHED,
     REQUEST_STUDENTS,
     REQUEST_STUDENTS_FINISHED, REQUEST_SUBJECT_TYPES, REQUEST_SUBJECT_TYPES_FINISHED,
     REQUEST_SUBJECTS,
@@ -171,6 +171,20 @@ export const requestDepartmentsFinished = () => {
     }
 }
 
+export const requestPositions = () => {
+    return {
+        type: REQUEST_POSITIONS,
+        payload: true
+    }
+}
+
+export const requestPositionsFinished = () => {
+    return {
+        type: REQUEST_POSITIONS_FINISHED,
+        payload: false
+    }
+}
+
 export const getDepartmentsData = (filterValue='') => dispatch => {
     dispatch(requestDepartments())
     axios.get('api/departments/', {params: {filterValue}})
@@ -243,8 +257,12 @@ export const getRolesData = () => dispatch => {
 }
 
 export const getPositionsData = () => dispatch => {
+    dispatch(requestPositions())
     axios.get('api/positions/')
-        .then(res => dispatch(positionsData(res.data.positions)))
+        .then(res => {
+            dispatch(positionsData(res.data.positions))
+            dispatch(requestPositionsFinished())
+        })
 }
 
 export const getStudentsData = (filterType, filterValue, group_id) => dispatch => {
