@@ -8,7 +8,15 @@
   &__date-wrap {
     font-weight: 500;
   }
+  &__time-wrap {
+    font-weight: 500;
+    margin-left: 20px;
+  }
   &__date {
+    font-weight: bold;
+    color: #8823FF;
+  }
+  &__time {
     font-weight: bold;
     color: #8823FF;
   }
