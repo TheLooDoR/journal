@@ -16,8 +16,8 @@ import Select from "../../components/UI/Select/Select";
 import isEmpty from "../../common-js/isEmpty";
 import ScoreDoughnut from "../../components/Statistic/ScoreDoughnut/ScoreDoughnut";
 import AttendanceDoughnut from "../../components/Statistic/AttendanceDoughnut/AttendanceDoughnut";
-import './Home.scss'
 import UserSchedule from "../../components/UserSchedule/UserSchedule";
+import './Home.scss'
 
 class Home extends Component {
 
@@ -180,9 +180,11 @@ class Home extends Component {
     }
 
     render() {
-        const {entities, user} = this.props
+        const {entities, user, scheduleLoading} = this.props
         const {journalData} = this.state
-        if (!entities.subjectTypes || !entities.groups || !entities.subjects || !entities.departments || (user.role === 'admin' && (isEmpty(this.state.statisticsData || this.state.randomUsers.length === 0))) ) {
+        if (!entities.subjectTypes || !entities.groups || !entities.subjects || !entities.departments
+            || (user.role === 'admin' && (isEmpty(this.state.statisticsData || this.state.randomUsers.length === 0)))
+            || scheduleLoading ) {
             return (<Loader/>)
         }
         return (
@@ -245,7 +247,8 @@ function mapStateToProps(state) {
         errors: state.errors,
         isLoading: state.journal.isLoading,
         groupsLoading: state.entities.groupsLoading,
-        schedule: state.schedule
+        schedule: state.schedule,
+        scheduleLoading: state.schedule.scheduleLoading
     }
 }
 

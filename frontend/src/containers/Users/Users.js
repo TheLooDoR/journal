@@ -44,9 +44,12 @@ class Users extends Component {
                 surname: '',
                 patronymic: ''
             },
-            userDataLoading: false
+            userDataLoading: false,
+            scrollValue: 0
         }
     }
+
+    tableRef = React.createRef()
 
     componentDidMount() {
         const { dispatch, currentUser } = this.props
@@ -55,6 +58,22 @@ class Users extends Component {
         dispatch(getDepartmentsData())
         dispatch(getRolesData())
         dispatch(getPositionsData())
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const table = this.tableRef.current
+        if(table) {
+            table.scrollTop = this.state.scrollValue
+        }
+    }
+
+    scrollHandler = () => {
+        const table = this.tableRef.current
+        if(table) {
+            this.setState({
+                scrollValue: table.scrollTop
+            })
+        }
     }
 
     filterChangeHandler = (e) => {
@@ -98,6 +117,9 @@ class Users extends Component {
                         userData: {
                             ...userData,
                             user_id: res.data.id,
+                            name: res.data.name,
+                            surname: res.data.surname,
+                            patronymic: res.data.patronymic,
                             email: res.data.email,
                             phone_number: res.data.phone_number,
                             role: res.data.roles[0],
@@ -137,14 +159,17 @@ class Users extends Component {
     updateUserHandler = (e) => {
         e.preventDefault()
         const { dispatch, currentUser } = this.props
-        const { user_id, department, position, email, phone_number, role } = this.state.userData
+        const { user_id, department, position, email, phone_number, role, name, surname, patronymic } = this.state.userData
         const userData = {
             user_id,
             department_id: department.id,
             position_id: position.id,
             email,
             phone_number,
-            role_id: role.id
+            role_id: role.id,
+            name,
+            surname,
+            patronymic
         }
         this.hideUpdateModal()
         dispatch(requestUsersData())
@@ -241,7 +266,7 @@ class Users extends Component {
                             </table>
                         </div>
                         { isLoading ? <Loader/> : users.length === 0 ? <p className='Users__not-found'>Пользователи не найдены</p> :
-                            <div className="admin-table__body Users__users-table">
+                            <div className="admin-table__body Users__users-table" ref={this.tableRef} onScroll={this.scrollHandler}>
                                 <table>
                                     <tbody>
                                     {users.map((el, index) => {

@@ -9,7 +9,7 @@ import {
     GET_SUBJECTS,
     GET_TIME, GET_WEEK_DAYS, REQUEST_CORPS, REQUEST_CORPS_FINISHED, REQUEST_DEPARTMENTS, REQUEST_DEPARTMENTS_FINISHED,
     REQUEST_GROUPS,
-    REQUEST_GROUPS_FINISHED,
+    REQUEST_GROUPS_FINISHED, REQUEST_POSITIONS, REQUEST_POSITIONS_FINISHED,
     REQUEST_STUDENTS,
     REQUEST_STUDENTS_FINISHED, REQUEST_SUBJECT_TYPES, REQUEST_SUBJECT_TYPES_FINISHED,
     REQUEST_SUBJECTS,
@@ -32,7 +32,8 @@ const initialState =  {
     subjectsLoading: false,
     subjectTypesLoading: false,
     corpsLoading: false,
-    departmentsLoading: false
+    departmentsLoading: false,
+    positionsLoading: false
 }
 
 export default (state = initialState , action ) => {
@@ -146,6 +147,16 @@ export default (state = initialState , action ) => {
             return {
                 ...state,
                 departmentsLoading: action.payload
+            }
+        case REQUEST_POSITIONS:
+            return {
+                ...state,
+                positionsLoading: action.payload
+            }
+        case REQUEST_POSITIONS_FINISHED:
+            return {
+                ...state,
+                positionsLoading: action.payload
             }
         default:
             return state

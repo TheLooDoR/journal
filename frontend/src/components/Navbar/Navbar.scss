@@ -46,7 +46,6 @@
             }
         }
         &:last-child {
-            padding-right: 35px;
             border:none;
             display: flex;
             flex-direction: column;
@@ -70,6 +69,34 @@
         height: 75px;
         width: 75px;
         background: #0064FB;
+    }
+    &__dropdown {
+        button {
+            padding: 0;
+            display: flex;
+            margin-right: 35px;
+            background: transparent;
+            border: none;
+            &:after {
+                display: none;
+            }
+            &:hover {
+                background: transparent;
+            }
+            &:focus {
+                outline: none;
+                box-shadow: none;
+            }
+            &:active {
+                background: transparent !important;
+            }
+        }
+    }
+    .show>.btn-primary.dropdown-toggle {
+        background-color: transparent !important;
+    }
+    .show>.btn-primary.dropdown-toggle {
+        box-shadow: none !important;
     }
     @media (min-width: 480px) {
         &__logo {
