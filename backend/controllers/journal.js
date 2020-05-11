@@ -9,7 +9,7 @@ module.exports.getData = async (req, res) => {
     try {
         const errors = {}
 
-        //Students search by broup
+        //Students search by group
         const studentsGroup = await Students.findAll({
             where: {
                 group_id: req.body.group_id
@@ -62,7 +62,8 @@ module.exports.getData = async (req, res) => {
                 }
             ],
             order: [
-                ['dates', 'date', 'ASC']
+                ['dates', 'date', 'ASC'],
+                ['times', 'time', 'ASC']
             ],
             raw: true
         })
@@ -89,12 +90,19 @@ module.exports.getData = async (req, res) => {
                     [Op.in]: students_id
                 }
             },
-            include: {
-                model: Date,
-                required: true
-            },
+            include: [
+                {
+                    model: Date,
+                    required: true
+                },
+                {
+                    model: Time,
+                    required: true
+                }
+            ],
             order: [
-                ['dates', 'date', 'ASC']
+                ['dates', 'date', 'ASC'],
+                ['times', 'time', 'ASC']
             ]
         })
         if (Array.isArray(journal) && journal.length === 0) {
@@ -130,7 +138,8 @@ module.exports.updateStudentData = async (req, res) => {
                     date_id: req.body.date_id,
                     subject_id: req.body.subject_id,
                     student_id: req.body.student_id,
-                    type_id: req.body.type_id
+                    type_id: req.body.type_id,
+                    time_id: req.body.time_id
                 }
             }
         ).catch(e => {
@@ -159,8 +168,7 @@ module.exports.addTaskByDate = async (req, res) => {
                 date: req.body.date
             },
             defaults: {
-                date: req.body.date,
-                time: null
+                date: req.body.date
             }
         })
         const studentsGroup = await Students.findAll({
@@ -230,8 +238,6 @@ module.exports.addTaskByDate = async (req, res) => {
                             type_id: req.body.type_id,
                             valid_miss: false,
                             time_id: time_id[0].time_id,
-                            corps_id: req.body.corps_id,
-                            hall: req.body.hall
                         })
                     } catch (e) {
                         console.log(e.message)
@@ -270,9 +276,7 @@ module.exports.addTaskByDate = async (req, res) => {
                         date_id: date[0].id,
                         type_id: req.body.type_id,
                         valid_miss: false,
-                        time_id: req.body.time_id,
-                        corps_id: req.body.corps_id,
-                        hall: req.body.hall
+                        time_id: req.body.time_id
                     })
                 } catch (e) {
                     error.message = 'Ошибка добавления'

@@ -8,6 +8,7 @@ import {setJournalData, updateStudentData} from "../../actions"
 import isEmpty from "../../common-js/isEmpty"
 import formatDate from "../../common-js/formatDate"
 import './PresentModal.scss'
+import formatTime from "../../common-js/formatTime";
 
 
 class PresentModal extends Component{
@@ -93,6 +94,7 @@ class PresentModal extends Component{
             date_id: student.date_id,
             note: this.state.note,
             score: this.state.grade,
+            time_id: student.time_id,
             present,
             valid_miss
         }
@@ -125,8 +127,19 @@ class PresentModal extends Component{
                             Число:
                             <span className="PresentModal__date">
                                 {this.props.journalDate.map(el => {
-                                    if (el.date_id === student.date_id) {
+                                    if (el.date_id === student.date_id && el.time_id === student.time_id) {
                                         return (` ${formatDate(el.date)}`)
+                                    }
+                                    return null
+                                })}
+                            </span>
+                        </div>
+                        <div className="PresentModal__time-wrap">
+                            Время:
+                            <span className="PresentModal__time">
+                                {this.props.journalDate.map(el => {
+                                    if (el.date_id === student.date_id && el.time_id === student.time_id) {
+                                        return (` ${formatTime(el.time)}`)
                                     }
                                     return null
                                 })}
