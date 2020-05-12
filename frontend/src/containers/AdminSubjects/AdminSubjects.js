@@ -489,6 +489,7 @@ class AdminSubjects extends Component {
                                 name='name'
                                 value={this.state.subjectData.name}
                                 onChange={ e => this.subjectTextChangeHandler(e) }
+                                required
                             />
                         </div>
                         <div className="admin-post__input">
@@ -499,6 +500,7 @@ class AdminSubjects extends Component {
                                 name='full_name'
                                 value={this.state.subjectData.full_name}
                                 onChange={ e => this.subjectTextChangeHandler(e) }
+                                required
                             />
                         </div>
                     </div>
@@ -532,6 +534,7 @@ class AdminSubjects extends Component {
                                 name='name'
                                 value={this.state.subjectTypeData.name}
                                 onChange={ e => this.subjectTypeTextChangeHandler(e) }
+                                required
                             />
                         </div>
                     </div>
@@ -567,6 +570,7 @@ class AdminSubjects extends Component {
                                     name='name'
                                     value={this.state.subjectData.name}
                                     onChange={ e => this.subjectTextChangeHandler(e) }
+                                    required
                                 />
                             </div>
                             <div className="admin-post__input">
@@ -577,6 +581,7 @@ class AdminSubjects extends Component {
                                     name='full_name'
                                     value={this.state.subjectData.full_name}
                                     onChange={ e => this.subjectTextChangeHandler(e) }
+                                    required
                                 />
                             </div>
                         </div>
@@ -613,6 +618,7 @@ class AdminSubjects extends Component {
                                     name='name'
                                     value={this.state.subjectTypeData.name}
                                     onChange={ e => this.subjectTypeTextChangeHandler(e) }
+                                    required
                                 />
                             </div>
                         </div>

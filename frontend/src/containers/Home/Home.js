@@ -90,11 +90,13 @@ class Home extends Component {
         const { user } = this.props
         const {journalData} = this.state
         dispatch(setJournalParameters(this.state.journalData))
+        const isAdmin = user.role === 'admin'
         const journalParameters = {
             group_id: journalData.group.id,
             subject_id: journalData.subject.id,
             type_id: journalData.subjectType.id,
-            user_id: user.userId
+            user_id: user.userId,
+            isAdmin
         }
         dispatch(setJournalData(journalParameters))
         this.setShowModal()
@@ -118,6 +120,7 @@ class Home extends Component {
                 journalData={this.props.journalData}
                 journalDate={this.props.journalDate}
                 journalStudents={this.props.journalStudents}
+                journalUser={this.props.journalUser}
                 errors={this.props.errors}
                 isLoading={this.props.isLoading}
             />
@@ -243,6 +246,7 @@ function mapStateToProps(state) {
         journalData: state.journal.journalData,
         journalDate: state.journal.journalDate,
         journalStudents: state.journal.journalStudents,
+        journalUser: state.journal.journalUser,
         user: state.auth.user,
         errors: state.errors,
         isLoading: state.journal.isLoading,

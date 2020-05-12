@@ -5,7 +5,7 @@ import {
     REQUEST_JOURNAL_DATA,
     REQUEST_JOURNAL_DATA_FINISHED,
     SET_JOURNAL_DATE,
-    SET_JOURNAL_STUDENTS
+    SET_JOURNAL_STUDENTS, SET_JOURNAL_USER
 } from "./types";
 import Axios from "axios";
 import { store } from 'react-notifications-component';
@@ -38,6 +38,13 @@ const journalStudents = journalStudents => {
     }
 }
 
+const journalUser = journalUser => {
+    return {
+        type: SET_JOURNAL_USER,
+        payload: journalUser
+    }
+}
+
 const requestJournalData = () => {
     return {
         type: REQUEST_JOURNAL_DATA,
@@ -57,12 +64,14 @@ export const setJournalData = (journalParameters) => dispatch => {
     const user_id = journalParameters.user_id
     const subject_id = journalParameters.subject_id
     const type_id = journalParameters.type_id
+    const isAdmin = journalParameters.isAdmin
     dispatch(requestJournalData())
-    Axios.post('api/journal', { group_id, user_id, subject_id, type_id })
+    Axios.post('api/journal', { group_id, user_id, subject_id, type_id, isAdmin })
         .then(res => {
             dispatch(journalData(res.data.journal))
             dispatch(journalDate(res.data.dates))
             dispatch(journalStudents(res.data.students))
+            dispatch(journalUser(res.data.user))
             dispatch(requestJournalDataFinished())
         })
         .catch(err => {

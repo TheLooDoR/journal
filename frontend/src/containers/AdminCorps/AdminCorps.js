@@ -270,6 +270,7 @@ class AdminCorps extends Component{
                                 name='name'
                                 value={this.state.corpData.name}
                                 onChange={ e => this.corpTextChangeHandler(e) }
+                                required
                             />
                         </div>
                     </div>
@@ -305,6 +306,7 @@ class AdminCorps extends Component{
                                     name='name'
                                     value={this.state.corpData.name}
                                     onChange={ e => this.corpTextChangeHandler(e) }
+                                    required
                                 />
                             </div>
                         </div>

@@ -618,6 +618,7 @@ class AdminSchedule extends Component {
                                     name='hall'
                                     value={this.state.scheduleData.hall}
                                     onChange={ e => this.inputChangeHandler(e) }
+                                    required
                                 />
                             </div>
                         </div>
@@ -781,6 +782,7 @@ class AdminSchedule extends Component {
                                         name='hall'
                                         value={this.state.scheduleData.hall}
                                         onChange={ e => this.inputChangeHandler(e) }
+                                        required
                                     />
                                 </div>
                             </div>

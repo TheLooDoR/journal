@@ -11,6 +11,7 @@ const Radio = props => {
                 checked={props.checked}
                 value={props.value}
                 onChange={props.onChange}
+                disabled={props.disabled}
             />
             <span className='Radio__mark'/>
         </label>

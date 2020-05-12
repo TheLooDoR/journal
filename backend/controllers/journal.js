@@ -2,6 +2,7 @@ const Journal = require('../models/Journal')
 const Students = require('../models/Students')
 const Date = require('../models/Date')
 const Time = require('../models/Time')
+const User = require('../models/User')
 const { Op } = require("sequelize");
 const Sequelize = require('sequelize')
 
@@ -20,11 +21,16 @@ module.exports.getData = async (req, res) => {
             students_id.push(studentsGroup[i].id)
         }
 
-        //Students search by journal
-        const studentFromJournal = await Journal.findAll({
-            attributes: ['student_id'],
-            group: ['student_id'],
-            where: {
+        let where
+        req.body.isAdmin ?
+            where = {
+                subject_id: req.body.subject_id,
+                type_id: req.body.type_id,
+                student_id: {
+                    [Op.in]: students_id
+                }
+            } :
+            where = {
                 user_id: req.body.user_id,
                 subject_id: req.body.subject_id,
                 type_id: req.body.type_id,
@@ -32,6 +38,13 @@ module.exports.getData = async (req, res) => {
                     [Op.in]: students_id
                 }
             }
+
+
+        //Students search by journal
+        const studentFromJournal = await Journal.findAll({
+            attributes: ['student_id'],
+            group: ['student_id'],
+            where: where
         })
         let studentsFromJournal_id = []
         for(let i = 0; i < studentFromJournal.length; i++) {
@@ -40,14 +53,7 @@ module.exports.getData = async (req, res) => {
 
         const dates = await Journal.findAll({
             attributes: ['date_id', 'time_id', [Sequelize.literal('"times"."time"'), 'time'], [Sequelize.literal('"dates"."date"'), 'date']],
-            where: {
-                user_id: req.body.user_id,
-                subject_id: req.body.subject_id,
-                type_id: req.body.type_id,
-                student_id: {
-                    [Op.in]: students_id
-                }
-            },
+            where: where,
             group: ['date_id', 'time_id', 'times.time', 'dates.date'],
             include: [
                 {
@@ -82,14 +88,7 @@ module.exports.getData = async (req, res) => {
             ]
         })
         const journal = await Journal.findAll({
-            where: {
-                user_id: req.body.user_id,
-                subject_id: req.body.subject_id,
-                type_id: req.body.type_id,
-                student_id: {
-                    [Op.in]: students_id
-                }
-            },
+            where: where,
             include: [
                 {
                     model: Date,
@@ -105,6 +104,33 @@ module.exports.getData = async (req, res) => {
                 ['times', 'time', 'ASC']
             ]
         })
+        const user = await Journal.findOne({
+            attributes: ['user_id', [Sequelize.literal('"users"."surname"'), 'surname'],
+                [Sequelize.literal('"users"."name"'), 'name'], [Sequelize.literal('"users"."patronymic"'), 'patronymic']],
+            where: where,
+            include: [
+                {
+                    model: Date,
+                    attributes: [],
+                    required: true
+                },
+                {
+                    model: Time,
+                    attributes: [],
+                    required: true
+                },
+                {
+                    model: User,
+                    attributes: [],
+                    required: true
+                }
+            ],
+            order: [
+                ['dates', 'date', 'ASC'],
+                ['times', 'time', 'ASC']
+            ],
+            group: ['user_id', 'dates.id', 'subject_id', 'times.id', 'users.surname', 'users.name', 'users.patronymic']
+        })
         if (Array.isArray(journal) && journal.length === 0) {
             errors.search = 'Журнал не найден'
             return res.status(404).json(errors)
@@ -112,7 +138,8 @@ module.exports.getData = async (req, res) => {
             res.status(200).json({
                 journal,
                 students,
-                dates
+                dates,
+                user
             })
         }
 

@@ -7,9 +7,8 @@ import {connect} from "react-redux"
 import {setJournalData, updateStudentData} from "../../actions"
 import isEmpty from "../../common-js/isEmpty"
 import formatDate from "../../common-js/formatDate"
-import './PresentModal.scss'
 import formatTime from "../../common-js/formatTime";
-
+import './PresentModal.scss'
 
 class PresentModal extends Component{
 
@@ -114,13 +113,13 @@ class PresentModal extends Component{
     }
 
     render() {
-        const { student } = this.props
+        const { student, user } = this.props
         //check if student is not null
         if (isEmpty(student)) {
             return null
         }
         return (
-            <Modal onClose={this.props.onHide} open={this.props.show} modalId={'present-modal'} center={this.props.center}>
+            <Modal onClose={this.props.onHide} open={this.props.show} modalId={'present-modal'} center={this.props.center} animationDuration={250}>
                 <form className="PresentModal" onSubmit={e => this.submitHandler(e)}>
                     <div className="PresentModal__title">
                         <div className="PresentModal__date-wrap">
@@ -169,6 +168,7 @@ class PresentModal extends Component{
                                     onChange={this.gradeChangeHandler}
                                     value={this.state.grade}
                                     disabled={this.state.miss !== 'is-present'}
+                                    readOnly={user.role === 'admin'}
                                 />
                             </div>
                             <div className="grades__comment-wrap">
@@ -179,6 +179,7 @@ class PresentModal extends Component{
                                     rows={3}
                                     value={this.state.note}
                                     onChange={event => this.changeHandler(event)}
+                                    readOnly={user.role === 'admin'}
                                 />
                             </div>
                         </div>
@@ -242,6 +243,7 @@ class PresentModal extends Component{
                             checked={this.state.miss === 'is-present'}
                             onChange={e => this.changeHandler(e)}
                             name='miss'
+                            disabled={user.role === 'admin'}
                         />
                         <Radio
                             value='valid-miss'
@@ -249,6 +251,7 @@ class PresentModal extends Component{
                             checked={this.state.miss === 'valid-miss'}
                             onChange={e => this.changeHandler(e)}
                             name='miss'
+                            disabled={user.role === 'admin'}
                         />
                         <Radio
                             value='miss'
@@ -256,9 +259,10 @@ class PresentModal extends Component{
                             checked={this.state.miss === 'miss'}
                             onChange={e => this.changeHandler(e)}
                             name='miss'
+                            disabled={user.role === 'admin'}
                         />
                     </div>
-                    <MainButton className='PresentModal__btn' type='submit' disabled={typeof this.state.grade === 'string'}>Сохранить</MainButton>
+                    {user.role !== 'admin' && <MainButton className='PresentModal__btn' type='submit' disabled={typeof this.state.grade === 'string'}>Сохранить</MainButton>}
                 </form>
             </Modal>
         )
@@ -269,7 +273,8 @@ function mapStateToProps(state) {
     return {
         journalStudents: state.journal.journalStudents,
         journalDate: state.journal.journalDate,
-        journalParameters: state.journal.journalParameters
+        journalParameters: state.journal.journalParameters,
+        user: state.auth.user
     }
 }
 
