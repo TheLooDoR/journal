@@ -275,6 +275,7 @@ class AdminDepartments extends Component {
                                 name='name'
                                 value={this.state.departmentData.name}
                                 onChange={ e => this.departmentTextChangeHandler(e) }
+                                required
                             />
                         </div>
                         <div className="admin-post__input">
@@ -285,6 +286,7 @@ class AdminDepartments extends Component {
                                 name='full_name'
                                 value={this.state.departmentData.full_name}
                                 onChange={ e => this.departmentTextChangeHandler(e) }
+                                required
                             />
                         </div>
                     </div>
@@ -320,6 +322,7 @@ class AdminDepartments extends Component {
                                     name='name'
                                     value={this.state.departmentData.name}
                                     onChange={ e => this.departmentTextChangeHandler(e) }
+                                    required
                                 />
                             </div>
                             <div className="admin-post__input">
@@ -330,6 +333,7 @@ class AdminDepartments extends Component {
                                     name='full_name'
                                     value={this.state.departmentData.full_name}
                                     onChange={ e => this.departmentTextChangeHandler(e) }
+                                    required
                                 />
                             </div>
                         </div>

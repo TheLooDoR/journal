@@ -2,7 +2,7 @@ import {
     SET_JOURNAL_PARAMETERS,
     SET_JOURNAL_DATA,
     REQUEST_JOURNAL_DATA,
-    REQUEST_JOURNAL_DATA_FINISHED, SET_JOURNAL_DATE, SET_JOURNAL_STUDENTS
+    REQUEST_JOURNAL_DATA_FINISHED, SET_JOURNAL_DATE, SET_JOURNAL_STUDENTS, SET_JOURNAL_USER
 } from "../actions";
 
 const initialState = {
@@ -14,6 +14,7 @@ const initialState = {
     journalData: {},
     journalDate: {},
     journalStudents: {},
+    journalUser: {},
     isLoading: false
 }
 
@@ -38,6 +39,11 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 journalStudents: action.payload
+            }
+        case SET_JOURNAL_USER:
+            return {
+                ...state,
+                journalUser: action.payload
             }
         case REQUEST_JOURNAL_DATA:
             return {

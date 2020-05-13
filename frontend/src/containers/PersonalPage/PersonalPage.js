@@ -162,13 +162,13 @@ class PersonalPage extends Component {
                             {editData ?
                                 <div className='personal-data__edit-fio edit-input'>
                                     <div className="edit-input__name edit-input__input">Имя:
-                                        <input type="text" name='name' value={userData.name} onChange={ e => this.inputChangeHandler(e) }/>
+                                        <input type="text" name='name' value={userData.name} onChange={ e => this.inputChangeHandler(e) } required/>
                                     </div>
                                     <div className="edit-input__surname edit-input__input">Фамилия:
-                                        <input type="text" name='surname' value={userData.surname} onChange={ e => this.inputChangeHandler(e) }/>
+                                        <input type="text" name='surname' value={userData.surname} onChange={ e => this.inputChangeHandler(e) } required/>
                                     </div>
                                     <div className="edit-input__patronymic edit-input__input">Отчество:
-                                        <input type="text" name='patronymic' value={userData.patronymic} onChange={ e => this.inputChangeHandler(e) }/>
+                                        <input type="text" name='patronymic' value={userData.patronymic} onChange={ e => this.inputChangeHandler(e) } required/>
                                     </div>
                                 </div>
                                 : <div className="personal-data__fio">{`${userData.surname} ${userData.name} ${userData.patronymic}`}</div>}

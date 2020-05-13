@@ -565,6 +565,7 @@ class AdminGroups extends Component {
                                 name='name'
                                 value={this.state.groupData.name}
                                 onChange={ e => this.groupTextChangeHandler(e) }
+                                required
                             />
                         </div>
                         <div className="admin-post__input">
@@ -614,6 +615,7 @@ class AdminGroups extends Component {
                                 name='name'
                                 value={this.state.studentData.name}
                                 onChange={ e => this.studentTextChangeHandler(e) }
+                                required
                             />
                         </div>
                         <div className="admin-post__input">
@@ -624,6 +626,7 @@ class AdminGroups extends Component {
                                 name='surname'
                                 value={this.state.studentData.surname}
                                 onChange={ e => this.studentTextChangeHandler(e) }
+                                required
                             />
                         </div>
                         <div className="admin-post__input">
@@ -634,6 +637,7 @@ class AdminGroups extends Component {
                                 name='patronymic'
                                 value={this.state.studentData.patronymic}
                                 onChange={ e => this.studentTextChangeHandler(e) }
+                                required
                             />
                         </div>
                         <div className="admin-post__input">
@@ -722,6 +726,7 @@ class AdminGroups extends Component {
                                     name='name'
                                     value={this.state.groupData.name}
                                     onChange={ e => this.groupTextChangeHandler(e) }
+                                    required
                                 />
                             </div>
                             <div className="admin-post__input">
@@ -776,6 +781,7 @@ class AdminGroups extends Component {
                                     name='name'
                                     value={this.state.studentData.name}
                                     onChange={ e => this.studentTextChangeHandler(e) }
+                                    required
                                 />
                             </div>
                             <div className="admin-post__input">
@@ -786,6 +792,7 @@ class AdminGroups extends Component {
                                     name='surname'
                                     value={this.state.studentData.surname}
                                     onChange={ e => this.studentTextChangeHandler(e) }
+                                    required
                                 />
                             </div>
                             <div className="admin-post__input">
@@ -796,6 +803,7 @@ class AdminGroups extends Component {
                                     name='patronymic'
                                     value={this.state.studentData.patronymic}
                                     onChange={ e => this.studentTextChangeHandler(e) }
+                                    required
                                 />
                             </div>
                             <div className="admin-post__input">

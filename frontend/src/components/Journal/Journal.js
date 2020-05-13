@@ -191,11 +191,10 @@ class Journal extends Component {
                     </th>
                     <th
                         height={98}
-                        onClick={() => this.hideDateModal()}
                         style={{top: 56, borderBottom: 'none'}}
                         className='fixed-row add-row'
                     >
-                        <div className="journal-content__add-btn">Добавить</div>
+                        {this.props.user.role !== 'admin' && <div className="journal-content__add-btn" onClick={() => this.hideDateModal()}>Добавить</div>}
                     </th>
                     <th
                         height={98}
@@ -318,7 +317,7 @@ class Journal extends Component {
     }
 
     render() {
-        const {group, subjectType, subject, errors, journalData, journalDate, journalStudents, time} = this.props
+        const {group, subjectType, subject, errors, journalData, journalDate, journalStudents, journalUser, time, user} = this.props
         const {taskData} = this.state
         if (!group || !subjectType || !subject) {
             return null
@@ -349,11 +348,12 @@ class Journal extends Component {
                     isEmpty(journalData) ?
                         <div className='search-error'>
                             <h2>{errors.search}</h2>
-                            <MainButton className='search-error__btn' onClick={() => this.hideDateModal()}>Создать журнал</MainButton>
+                            {user.role !== 'admin' && <MainButton className='search-error__btn' onClick={() => this.hideDateModal()}>Создать журнал</MainButton>}
                         </div>
                         :
                         <div className="Journal">
                             <div className="Journal__title">
+                                {user.role === 'admin' ? (`${journalUser.surname} ${journalUser.name.substr(0, 1)}. ${journalUser.patronymic.substr(0, 1)}./`) : null}
                                 {group.name}/{subjectType.name}/{subject.name}
                                 <DropdownButton
                                     title={<img src={dropdownIcon} alt="More"/>}

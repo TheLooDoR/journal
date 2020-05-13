@@ -21,6 +21,7 @@ const Number = props => {
             name={props.name}
             disabled={props.disabled}
             placeholder={props.placeholder}
+            readOnly={props.readOnly}
         />
     )
 }
