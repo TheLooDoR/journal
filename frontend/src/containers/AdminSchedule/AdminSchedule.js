@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from 'react-redux'
 import FilterSearch from "../../components/UI/FilterSearch/FilterSearch";
 import MainButton from "../../components/UI/MainButton/MainButton";
-import Select from "../../components/UI/Select/Select";
+import CustomSelect from "../../components/UI/Select/CustomSelect";
 import Modal from 'react-responsive-modal';
 import {
     getCorpsData,
@@ -93,16 +93,24 @@ class AdminSchedule extends Component {
         }
     }
 
-    paramsChangeHandler (e) {
-        if (e.target.value !== '') {
-            const { scheduleParams } = this.state
-            this.setState({
-                scheduleParams: {
-                    ...scheduleParams,
-                    [e.target.name]: JSON.parse(e.target.value)
-                }
-            })
-        }
+    paramsDepartmentChangeHandler(value) {
+        const { scheduleParams } = this.state
+        this.setState({
+            scheduleParams: {
+                ...scheduleParams,
+                department: value
+            }
+        })
+    }
+
+    paramsGroupChangeHandler(value) {
+        const { scheduleParams } = this.state
+        this.setState({
+            scheduleParams: {
+                ...scheduleParams,
+                group: value
+            }
+        })
     }
 
     filterChangeHandler = e => {
@@ -124,6 +132,66 @@ class AdminSchedule extends Component {
             scheduleData: {
                 ...scheduleData,
                 [e.target.name]: JSON.parse(e.target.value)
+            }
+        })
+    }
+
+    scheduleUserChangeHandler(value) {
+        const { scheduleData } = this.state
+        this.setState({
+            scheduleData: {
+                ...scheduleData,
+                user: value
+            }
+        })
+    }
+
+    scheduleSubjectChangeHandler(value) {
+        const { scheduleData } = this.state
+        this.setState({
+            scheduleData: {
+                ...scheduleData,
+                subject: value
+            }
+        })
+    }
+
+    scheduleSubjectTypeChangeHandler(value) {
+        const { scheduleData } = this.state
+        this.setState({
+            scheduleData: {
+                ...scheduleData,
+                subjectType: value
+            }
+        })
+    }
+
+    scheduleWeekDayChangeHandler(value) {
+        const { scheduleData } = this.state
+        this.setState({
+            scheduleData: {
+                ...scheduleData,
+                weekDay: value
+            }
+        })
+    }
+
+    scheduleTimeChangeHandler(value) {
+        const { scheduleData } = this.state
+        this.setState({
+            scheduleData: {
+                ...scheduleData,
+                time: value
+            }
+        })
+    }
+
+    scheduleCorpChangeHandler(value) {
+        const { scheduleData } = this.state
+        this.setState({
+            scheduleData: {
+                ...scheduleData,
+                corp: value
             }
         })
     }
@@ -397,28 +465,25 @@ class AdminSchedule extends Component {
                                                 <MainButton className='admin-table__filter-btn' onClick={() => this.filterSubmit() }>Найти</MainButton>
                                             </div>
                                             <div className="AdminSchedule__group-selects">
-                                                <Select
+                                                <CustomSelect
                                                     className='AdminSchedule__select AdminSchedule__department-select'
-                                                    name='department'
-                                                    defaultValue={'Выберите кафедру'}
-                                                    changeHandler={ e => this.paramsChangeHandler(e) }
-                                                    options={departments.map(el => {
-                                                        return (
-                                                            <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-                                                        )
-                                                    })}
+                                                    label={el => `${el.name}`}
+                                                    value={el => el}
+                                                    options={departments}
+                                                    isSearchable
+                                                    changeHandler={(value) => this.paramsDepartmentChangeHandler(value)}
+                                                    placeholder='Кафедра'
                                                 />
-                                                <Select
+                                                <CustomSelect
                                                     className='AdminSchedule__select AdminSchedule__group-select'
-                                                    name='group'
-                                                    defaultValue={ groupsLoading ? 'Загрузка...' : 'Группа' }
-                                                    changeHandler={ e => this.paramsChangeHandler(e) }
-                                                    disabled={groups.length === 0 || groupsLoading}
-                                                    options={groups.map(el => {
-                                                        return (
-                                                            <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-                                                        )
-                                                    })}
+                                                    label={el => `${el.name}`}
+                                                    value={el => el}
+                                                    options={groups}
+                                                    isSearchable
+                                                    changeHandler={(value) => this.paramsGroupChangeHandler(value)}
+                                                    placeholder='Группа'
+                                                    isLoading={groupsLoading}
+                                                    disabled={groupsLoading }
                                                 />
                                                 <MainButton
                                                     className='AdminSchedule__btn'
@@ -525,6 +590,7 @@ class AdminSchedule extends Component {
 
     renderCreateScheduleModal() {
         const { subjects, subjectTypes, users, corps, time, weekDays } = this.props
+        const { user, subject, subjectType, weekDay, corp, hall } = this.state.scheduleData
         return (
             <Modal
                 onClose={ () => this.hideCreateScheduleModal() }
@@ -551,63 +617,51 @@ class AdminSchedule extends Component {
                         </div>
                         <div className="admin-post__input">
                             <p className="admin-post__label">Дисциплина</p>
-                            <Select
-                                name='subject'
-                                changeHandler={ e => this.selectChangeHandler(e) }
-                                defaultValue={ 'Выберите дисциплину' }
-                                options={
-                                    subjects.map(el => {
-                                        return (
-                                            <option key={el.id} value={JSON.stringify(el)}>{el.full_name}</option>
-                                        )
-                                    })
-                                }
+                            <CustomSelect
+                                className='admin-post__select'
+                                label={el => `${el.full_name}`}
+                                value={el => el}
+                                options={subjects}
+                                isSearchable
+                                changeHandler={(value) => this.scheduleSubjectChangeHandler(value)}
+                                placeholder=''
                             />
                         </div>
                         <div className="admin-post__input">
                             <p className="admin-post__label">Вид занятия</p>
-                            <Select
-                                name='subjectType'
-                                changeHandler={ e => this.selectChangeHandler(e) }
-                                defaultValue={ 'Выберите вид занятия' }
-                                options={
-                                    subjectTypes.map(el => {
-                                        return (
-                                            <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-                                        )
-                                    })
-                                }
+                            <CustomSelect
+                                className='admin-post__select'
+                                label={el => `${el.name}`}
+                                value={el => el}
+                                options={subjectTypes}
+                                isSearchable
+                                changeHandler={(value) => this.scheduleSubjectTypeChangeHandler(value)}
+                                placeholder=''
                             />
                         </div>
                         <div className="admin-post__input">
                             <p className="admin-post__label">Преподаватель</p>
-                            <Select
-                                name='user'
-                                changeHandler={ e => this.selectChangeHandler(e) }
-                                defaultValue={ 'Выберите преподавателя' }
-                                options={
-                                    users.map(el => {
-                                        return (
-                                            <option key={el.id} value={JSON.stringify(el)}>{`${el.surname} ${el.name} ${el.patronymic}`}</option>
-                                        )
-                                    })
-                                }
+                            <CustomSelect
+                                className='admin-post__select'
+                                label={el => `${el.surname} ${el.name} ${el.patronymic}`}
+                                value={el => el}
+                                options={users}
+                                isSearchable
+                                changeHandler={(value) => this.scheduleUserChangeHandler(value)}
+                                placeholder=''
                             />
                         </div>
                         <div className="admin-post__combined-input">
                             <div className="admin-post__input">
                                 <p className="admin-post__label">Учебный корпус</p>
-                                <Select
-                                    name='corp'
-                                    changeHandler={ e => this.selectChangeHandler(e) }
-                                    defaultValue={ 'Выберите корпус' }
-                                    options={
-                                        corps.map(el => {
-                                            return (
-                                                <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-                                            )
-                                        })
-                                    }
+                                <CustomSelect
+                                    className='admin-post__select'
+                                    label={el => `${el.name}`}
+                                    value={el => el}
+                                    options={corps}
+                                    isSearchable
+                                    changeHandler={(value) => this.scheduleCorpChangeHandler(value)}
+                                    placeholder=''
                                 />
                             </div>
                             <div className="admin-post__input">
@@ -625,32 +679,26 @@ class AdminSchedule extends Component {
                         <div className="admin-post__combined-input">
                             <div className="admin-post__input">
                                 <p className="admin-post__label">Начало занятия</p>
-                                <Select
-                                    name='time'
-                                    changeHandler={ e => this.selectChangeHandler(e) }
-                                    defaultValue={ 'Выберите время' }
-                                    options={
-                                        time.map(el => {
-                                            return (
-                                                <option key={el.id} value={JSON.stringify(el)}>{el.time}</option>
-                                            )
-                                        })
-                                    }
+                                <CustomSelect
+                                    className='admin-post__select'
+                                    label={el => `${el.time}`}
+                                    value={el => el}
+                                    options={time}
+                                    isSearchable
+                                    changeHandler={(value) => this.scheduleTimeChangeHandler(value)}
+                                    placeholder=''
                                 />
                             </div>
                             <div className="admin-post__input">
                                 <p className="admin-post__label">День недели</p>
-                                <Select
-                                    name='weekDay'
-                                    changeHandler={ e => this.selectChangeHandler(e) }
-                                    defaultValue={ 'Выберите день' }
-                                    options={
-                                        weekDays.map(el => {
-                                            return (
-                                                <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-                                            )
-                                        })
-                                    }
+                                <CustomSelect
+                                    className='admin-post__select'
+                                    label={el => `${el.name}`}
+                                    value={el => el}
+                                    options={weekDays}
+                                    isSearchable
+                                    changeHandler={(value) => this.scheduleWeekDayChangeHandler(value)}
+                                    placeholder=''
                                 />
                             </div>
                         </div>
@@ -676,7 +724,8 @@ class AdminSchedule extends Component {
                     <MainButton
                         type='submit'
                         className='admin-post__submit'
-                        disabled={ !this.state.scheduleData.first_week && !this.state.scheduleData.second_week}
+                        disabled={ (!this.state.scheduleData.first_week && !this.state.scheduleData.second_week) || ((isEmpty(subjectType)) || isEmpty(subject) || isEmpty(user)
+                            || isEmpty(weekDay) || isEmpty(this.state.scheduleData.time) || isEmpty(corp)) || hall === ''}
                     >
                         Создать
                     </MainButton>
@@ -711,67 +760,55 @@ class AdminSchedule extends Component {
                             </div>
                             <div className="admin-post__input">
                                 <p className="admin-post__label">Дисциплина</p>
-                                <Select
-                                    name='subject'
-                                    changeHandler={ e => this.selectChangeHandler(e) }
-                                    defaultValue={ JSON.stringify(this.state.scheduleData.subject) }
-                                    placeholder
-                                    options={
-                                        subjects.map(el => {
-                                            return (
-                                                <option key={el.id} value={JSON.stringify(el)}>{el.full_name}</option>
-                                            )
-                                        })
-                                    }
+                                <CustomSelect
+                                    className='admin-post__select'
+                                    label={el => `${el.full_name}`}
+                                    value={el => el}
+                                    options={subjects}
+                                    isSearchable
+                                    changeHandler={(value) => this.scheduleSubjectChangeHandler(value)}
+                                    placeholder=''
+                                    defaultValue={this.state.scheduleData.subject}
                                 />
                             </div>
                             <div className="admin-post__input">
                                 <p className="admin-post__label">Вид занятия</p>
-                                <Select
-                                    name='subjectType'
-                                    changeHandler={ e => this.selectChangeHandler(e) }
-                                    defaultValue={ JSON.stringify(this.state.scheduleData.subjectType) }
-                                    placeholder
-                                    options={
-                                        subjectTypes.map(el => {
-                                            return (
-                                                <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-                                            )
-                                        })
-                                    }
+                                <CustomSelect
+                                    className='admin-post__select'
+                                    label={el => `${el.name}`}
+                                    value={el => el}
+                                    options={subjectTypes}
+                                    isSearchable
+                                    changeHandler={(value) => this.scheduleSubjectTypeChangeHandler(value)}
+                                    placeholder=''
+                                    defaultValue={this.state.scheduleData.subjectType}
                                 />
                             </div>
                             <div className="admin-post__input">
                                 <p className="admin-post__label">Преподаватель</p>
-                                <Select
-                                    name='user'
-                                    changeHandler={ e => this.selectChangeHandler(e) }
-                                    defaultValue={ JSON.stringify(this.state.scheduleData.user) }
-                                    placeholder
-                                    options={
-                                        users.map(el => {
-                                            return (
-                                                <option key={el.id} value={JSON.stringify(el)}>{`${el.surname} ${el.name} ${el.patronymic}`}</option>
-                                            )
-                                        })
-                                    }
+                                <CustomSelect
+                                    className='admin-post__select'
+                                    label={el => `${el.surname} ${el.name} ${el.patronymic}`}
+                                    value={el => el}
+                                    options={users}
+                                    isSearchable
+                                    changeHandler={(value) => this.scheduleUserChangeHandler(value)}
+                                    placeholder=''
+                                    defaultValue={this.state.scheduleData.user}
                                 />
                             </div>
                             <div className="admin-post__combined-input">
                                 <div className="admin-post__input">
                                     <p className="admin-post__label">Учебный корпус</p>
-                                    <Select
-                                        name='corp'
-                                        changeHandler={ e => this.selectChangeHandler(e) }
-                                        defaultValue={ JSON.stringify(this.state.scheduleData.corp) }
-                                        placeholder
-                                        options={
-                                            corps.map(el => {
-                                                return (
-                                                    <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-                                                )
-                                            })
-                                        }
+                                    <CustomSelect
+                                        className='admin-post__select'
+                                        label={el => `${el.name}`}
+                                        value={el => el}
+                                        options={corps}
+                                        isSearchable
+                                        changeHandler={(value) => this.scheduleCorpChangeHandler(value)}
+                                        placeholder=''
+                                        defaultValue={this.state.scheduleData.corp}
                                     />
                                 </div>
                                 <div className="admin-post__input">
@@ -789,34 +826,28 @@ class AdminSchedule extends Component {
                             <div className="admin-post__combined-input">
                                 <div className="admin-post__input">
                                     <p className="admin-post__label">Начало занятия</p>
-                                    <Select
-                                        name='time'
-                                        changeHandler={ e => this.selectChangeHandler(e) }
-                                        defaultValue={ JSON.stringify(this.state.scheduleData.time) }
-                                        placeholder
-                                        options={
-                                            time.map(el => {
-                                                return (
-                                                    <option key={el.id} value={JSON.stringify(el)}>{el.time}</option>
-                                                )
-                                            })
-                                        }
+                                    <CustomSelect
+                                        className='admin-post__select'
+                                        label={el => `${el.time}`}
+                                        value={el => el}
+                                        options={time}
+                                        isSearchable
+                                        changeHandler={(value) => this.scheduleTimeChangeHandler(value)}
+                                        placeholder=''
+                                        defaultValue={this.state.scheduleData.time}
                                     />
                                 </div>
                                 <div className="admin-post__input">
                                     <p className="admin-post__label">День недели</p>
-                                    <Select
-                                        name='weekDay'
-                                        changeHandler={ e => this.selectChangeHandler(e) }
-                                        defaultValue={ JSON.stringify(this.state.scheduleData.weekDay) }
-                                        placeholder
-                                        options={
-                                            weekDays.map(el => {
-                                                return (
-                                                    <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-                                                )
-                                            })
-                                        }
+                                    <CustomSelect
+                                        className='admin-post__select'
+                                        label={el => `${el.name}`}
+                                        value={el => el}
+                                        options={weekDays}
+                                        isSearchable
+                                        changeHandler={(value) => this.scheduleWeekDayChangeHandler(value)}
+                                        placeholder=''
+                                        defaultValue={this.state.scheduleData.weekDay}
                                     />
                                 </div>
                             </div>

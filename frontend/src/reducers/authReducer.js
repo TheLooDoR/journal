@@ -4,7 +4,7 @@ import {
     LOGIN_SUCCESS, REGISTER_FAILURE,
     REGISTER_REQUEST,
     REGISTER_SUCCESS,
-    SET_CURRENT_USER
+    SET_CURRENT_USER, UPDATE_CURRENT_USER
 } from '../actions/types';
 import isEmpty from '../is-empty';
 
@@ -22,6 +22,17 @@ export default function(state = initialState, action ) {
                 ...state,
                 isAuthenticated: !isEmpty(action.payload),
                 user: action.payload
+            }
+        case UPDATE_CURRENT_USER:
+            const { user } = state
+            return {
+                ...state,
+                user: {
+                    ...user,
+                    name: action.payload.name,
+                    surname: action.payload.surname,
+                    patronymic: action.payload.patronymic
+                }
             }
         case LOGIN_REQUEST:
             return {

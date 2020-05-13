@@ -8,7 +8,6 @@
     display: flex;
     flex-flow: column;
     justify-content: center;
-    align-items: center;
     padding: 60px;
 }
 
@@ -16,11 +15,15 @@
     font-weight: 500;
     font-size: 35px;
     margin-bottom: 24px;
+    align-self: center;
 }
 
 .register-form {
     display: flex;
     flex-flow: column;
+    max-width: 450px;
+    width: 100%;
+    align-self: center;
 }
 
 .form-group {
@@ -34,8 +37,6 @@
 .form-input {
     display: block;
     padding: 10px;
-    //width: 450px;
-    //max-width: 450px;
     width: 100%;
     outline: none;
     border-radius: 10px;
@@ -95,25 +96,23 @@
     font-size: 19px;
     line-height: 22px;
     align-self: center;
-    &:hover {
+    &:hover:not(:disabled) {
         background: #3de3e3;
         transition: background-color .3s;
+    }
+    &:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
     }
 }
 
 .register-select {
     width: 100%;
-    select {
-        border: 1px solid #ccc;
-        width: 100%;
-        height: 38px;
-        padding: 0 10px;
-        color: black;
-       option:not([selected]) {
-           color: black;
-       }
-        &:invalid {
-            color: gray;
+    height: 38px;
+    color: initial;
+    .react-select {
+        &__control {
+            border: 1px solid #ccc !important;
         }
     }
 }

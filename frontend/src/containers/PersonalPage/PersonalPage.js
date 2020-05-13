@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from 'react-redux'
 import Axios from "axios";
 import UserSchedule from "../../components/UserSchedule/UserSchedule";
-import {getDepartmentsData, getPositionsData, getUserScheduleData} from "../../actions";
+import {getDepartmentsData, getPositionsData, getUserScheduleData, updateCurrentUser} from "../../actions";
 import userLogo from '../../assets/user-page.png'
 import InputMask from "react-input-mask";
 import Loader from "../../components/UI/Loader/Loader";
@@ -93,6 +93,7 @@ class PersonalPage extends Component {
         Axios.patch('api/users/', userData)
             .then(() => {
                 this.getUserData()
+                this.props.dispatch(updateCurrentUser({name: userData.name, surname: userData.surname, patronymic: userData.patronymic}))
                 this.setState({
                     dataUpdating: false,
                     editData: false

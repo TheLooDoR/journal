@@ -30,23 +30,18 @@
     margin-top: 10px;
   }
   &__select {
-    select {
-      padding: 0 10px;
-      height: 45px;
-    }
+    padding: 0 10px;
+    height: 45px;
+    font-weight: normal;
   }
   &__department-select {
     margin-right: 10px;
     margin-left: 5px;
-    select {
-      width: 200px;
-    }
+    width: 200px;
   }
   &__group-select {
     margin-right: 20px;
-    select {
-      width: 140px;
-    }
+    width: 140px;
   }
   &__btn {
     height: 45px;

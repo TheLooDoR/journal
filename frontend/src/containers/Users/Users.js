@@ -5,7 +5,7 @@ import deleteLogo from '../../assets/admin/delete.png'
 import MainButton from "../../components/UI/MainButton/MainButton";
 import FilterSearch from "../../components/UI/FilterSearch/FilterSearch";
 import Modal from 'react-responsive-modal';
-import Select from "../../components/UI/Select/Select";
+import CustomSelect from "../../components/UI/Select/CustomSelect";
 import { connect } from 'react-redux'
 import {
     getDepartmentsData,
@@ -89,10 +89,33 @@ class Users extends Component {
         dispatch(getUsersData(filterType, filterValue, currentUser.userId))
     }
 
-    selectChangeHandler (e) {
-        let userData = this.state.userData
+    departmentChangeHandler(value) {
+        const { userData } = this.state
         this.setState({
-            userData: {...userData, [e.target.name]: JSON.parse(e.target.value)}
+            userData: {
+                ...userData,
+                department: value
+            }
+        })
+    }
+
+    positionChangeHandler(value) {
+        const { userData } = this.state
+        this.setState({
+            userData: {
+                ...userData,
+                position: value
+            }
+        })
+    }
+
+    roleChangeHandler(value) {
+        const { userData } = this.state
+        this.setState({
+            userData: {
+                ...userData,
+                role: value
+            }
         })
     }
 
@@ -338,36 +361,30 @@ class Users extends Component {
                                     <p className="admin-post__label">
                                         Кафедра
                                     </p>
-                                    <Select
-                                        name='department'
-                                        changeHandler={ (e) => this.selectChangeHandler(e) }
-                                        defaultValue={ JSON.stringify(this.state.userData.department) }
-                                        placeholder
-                                        options={
-                                            departments.map( el => {
-                                                return (
-                                                    <option key={el.id} value={JSON.stringify(el)}>{ el.full_name }</option>
-                                                )
-                                            })
-                                        }
+                                    <CustomSelect
+                                        className='admin-post__select'
+                                        label={el => `${el.name}`}
+                                        value={el => el}
+                                        options={departments}
+                                        isSearchable
+                                        changeHandler={(value) => this.departmentChangeHandler(value)}
+                                        placeholder='Кафедра'
+                                        defaultValue={this.state.userData.department}
                                     />
                                 </div>
                                 <div className="admin-post__input">
                                     <p className="admin-post__label">
                                         Должность
                                     </p>
-                                    <Select
-                                        name='position'
-                                        changeHandler={ (e) => this.selectChangeHandler(e) }
-                                        defaultValue={ JSON.stringify(this.state.userData.position) }
-                                        placeholder
-                                        options={
-                                            positions.map( el => {
-                                                return (
-                                                    <option key={el.id} value={JSON.stringify(el)}>{ el.name }</option>
-                                                )
-                                            })
-                                        }
+                                    <CustomSelect
+                                        className='admin-post__select'
+                                        label={el => `${el.name}`}
+                                        value={el => el}
+                                        options={positions}
+                                        isSearchable
+                                        changeHandler={(value) => this.positionChangeHandler(value)}
+                                        placeholder='Должность'
+                                        defaultValue={this.state.userData.position}
                                     />
                                 </div>
                                 <div className="admin-post__input">
@@ -396,18 +413,15 @@ class Users extends Component {
                                     <p className="admin-post__label">
                                         Роль
                                     </p>
-                                    <Select
-                                        name='role'
-                                        changeHandler={ (e) => this.selectChangeHandler(e) }
-                                        defaultValue={ JSON.stringify(this.state.userData.role) }
-                                        placeholder
-                                        options={
-                                            roles.map( el => {
-                                                return (
-                                                    <option key={el.id} value={JSON.stringify(el)}>{ el.full_name }</option>
-                                                )
-                                            })
-                                        }
+                                    <CustomSelect
+                                        className='admin-post__select'
+                                        label={el => `${el.full_name}`}
+                                        value={el => el}
+                                        options={roles}
+                                        isSearchable
+                                        changeHandler={(value) => this.roleChangeHandler(value)}
+                                        placeholder='Роль'
+                                        defaultValue={this.state.userData.role}
                                     />
                                 </div>
                             </div>
