@@ -14,7 +14,7 @@ import InputMask from "react-input-mask";
 import isEmpty from "../../common-js/isEmpty";
 import FilterSearch from "../../components/UI/FilterSearch/FilterSearch";
 import MainButton from "../../components/UI/MainButton/MainButton";
-import Select from "../../components/UI/Select/Select";
+import CustomSelect from "../../components/UI/Select/CustomSelect";
 import editLogo from '../../assets/admin/edit.png'
 import deleteLogo from '../../assets/admin/delete.png'
 import './AdminGroups.scss'
@@ -44,7 +44,7 @@ class AdminGroups extends Component {
                 surname: '',
                 patronymic: '',
                 group: {},
-                budget: null,
+                budget: {},
                 email: '',
                 phone_number: ''
             },
@@ -118,18 +118,33 @@ class AdminGroups extends Component {
         })
     }
 
-    groupSelectChangeHandler(e) {
-        let groupData = this.state.groupData
+    departmentChangeHandler(value) {
+        const { groupData } = this.state
         this.setState({
-            groupData: { ...groupData, [e.target.name]: JSON.parse(e.target.value) }
+            groupData: {
+                ...groupData,
+                department: value
+            }
         })
     }
 
-    studentSelectChangeHandler(e) {
-        let studentData = this.state.studentData
-        const value = e.target.name === 'budget' ? e.target.value : JSON.parse(e.target.value)
+    groupChangeHandler(value) {
+        const { studentData } = this.state
         this.setState({
-            studentData: {  ...studentData, [e.target.name]: value }
+            studentData: {
+                ...studentData,
+                group: value
+            }
+        })
+    }
+
+    budgetChangeHandler(value) {
+        const { studentData } = this.state
+        this.setState({
+            studentData: {
+                ...studentData,
+                budget: value
+            }
         })
     }
 
@@ -196,7 +211,7 @@ class AdminGroups extends Component {
         const params = {
             name, surname, patronymic, email, phone_number,
             group_id: group.id,
-            budget: budget === 'true'
+            budget: budget.value
         }
         this.hideCreateStudentModal()
         dispatch(requestStudents())
@@ -234,7 +249,7 @@ class AdminGroups extends Component {
         const params = {
             id, name, surname, patronymic, email, phone_number,
             group_id: group.id,
-            budget: budget === 'true'
+            budget: budget.value
         }
         this.hideUpdateStudentModal()
         dispatch(requestStudents())
@@ -299,7 +314,7 @@ class AdminGroups extends Component {
                 surname: '',
                 patronymic: '',
                 group: {},
-                budget: null,
+                budget: {},
                 email: '',
                 phone_number: ''
             }
@@ -341,6 +356,12 @@ class AdminGroups extends Component {
             Axios.get(`api/students/${id}`)
                 .then(res => {
                     let studentData = this.state.studentData
+                    let budget
+                    if (res.data.budget) {
+                        budget = {name: 'Бюджет', value: true}
+                    } else {
+                        budget =  {name: 'Контракт', value: false}
+                    }
                     this.setState({
                         studentData: {
                             ...studentData,
@@ -348,7 +369,7 @@ class AdminGroups extends Component {
                             name: res.data.name,
                             surname: res.data.surname,
                             patronymic: res.data.patronymic,
-                            budget: res.data.budget.toString(),
+                            budget: budget,
                             email: res.data.email,
                             phone_number: res.data.phone_number,
                             group: res.data.groups[0]
@@ -569,23 +590,21 @@ class AdminGroups extends Component {
                         </div>
                         <div className="admin-post__input">
                             <p className="admin-post__label">Кафедра</p>
-                            <Select
-                                name='department'
-                                changeHandler={ e => this.groupSelectChangeHandler(e) }
-                                defaultValue={'Выберите кафедру'}
-                                options={
-                                    departments.map(el => {
-                                        return (
-                                            <option key={el.id} value={JSON.stringify(el)}>{el.full_name}</option>
-                                        )
-                                    })
-                                }
+                            <CustomSelect
+                                className='admin-post__select'
+                                label={el => `${el.full_name}`}
+                                value={el => el}
+                                options={departments}
+                                isSearchable
+                                changeHandler={(value) => this.departmentChangeHandler(value)}
+                                placeholder=''
                             />
                         </div>
                     </div>
                     <MainButton
                         type='submit'
                         className='admin-post__submit'
+                        disabled={isEmpty(this.state.groupData.department) || this.state.groupData.name === '' }
                     >
                         Сохранить
                     </MainButton>
@@ -596,6 +615,7 @@ class AdminGroups extends Component {
 
     renderCreateStudentModal() {
         const { groups } = this.props
+        const { name, surname, patronymic, group, budget } = this.state.studentData
         return (
             <Modal
                 onClose={ () => this.hideCreateStudentModal() }
@@ -638,32 +658,26 @@ class AdminGroups extends Component {
                         </div>
                         <div className="admin-post__input">
                             <p className="admin-post__label">Группа</p>
-                            <Select
-                                name='group'
-                                changeHandler={ e => this.studentSelectChangeHandler(e) }
-                                defaultValue={ 'Выберите группу' }
-                                options={
-                                    groups.map(el => {
-                                        return (
-                                            <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-                                        )
-                                    })
-                                }
+                            <CustomSelect
+                                className='admin-post__select'
+                                label={el => `${el.name}`}
+                                value={el => el}
+                                options={groups}
+                                isSearchable
+                                changeHandler={(value) => this.groupChangeHandler(value)}
+                                placeholder=''
                             />
                         </div>
                         <div className="admin-post__input">
                             <p className="admin-post__label">Бюджет</p>
-                            <Select
-                                name='budget'
-                                changeHandler={ e => this.studentSelectChangeHandler(e) }
-                                defaultValue={ 'Бюджет/контракт' }
-                                options={
-                                    [{name: 'Бюджет', value: true}, {name: 'Контракт', value: false}].map((el, index) => {
-                                        return (
-                                            <option key={index} value={el.value}>{el.name}</option>
-                                        )
-                                    })
-                                }
+                            <CustomSelect
+                                className='admin-post__select'
+                                label={el => `${el.name}`}
+                                value={el => el.value}
+                                options={[{name: 'Бюджет', value: true}, {name: 'Контракт', value: false}]}
+                                isSearchable
+                                changeHandler={(value) => this.budgetChangeHandler(value)}
+                                placeholder=''
                             />
                         </div>
                         <div className="admin-post__input">
@@ -691,7 +705,8 @@ class AdminGroups extends Component {
                     <MainButton
                         type='submit'
                         className='admin-post__submit'
-                    >
+                        disabled={ isEmpty(group) || isEmpty(budget) || (name === '' || surname === '' || patronymic === '')}
+                        >
                         Сохранить
                     </MainButton>
                 </form>
@@ -726,18 +741,15 @@ class AdminGroups extends Component {
                             </div>
                             <div className="admin-post__input">
                                 <p className="admin-post__label">Кафедра</p>
-                                <Select
-                                    name='department'
-                                    changeHandler={ e => this.groupSelectChangeHandler(e) }
-                                    defaultValue={ JSON.stringify(this.state.groupData.department) }
-                                    placeholder
-                                    options={
-                                        departments.map(el => {
-                                            return (
-                                                <option key={el.id} value={JSON.stringify(el)}>{el.full_name}</option>
-                                            )
-                                        })
-                                    }
+                                <CustomSelect
+                                    className='admin-post__select'
+                                    label={el => `${el.full_name}`}
+                                    value={el => el}
+                                    options={departments}
+                                    isSearchable
+                                    changeHandler={(value) => this.departmentChangeHandler(value)}
+                                    placeholder=''
+                                    defaultValue={this.state.groupData.department}
                                 />
                             </div>
                         </div>
@@ -800,34 +812,28 @@ class AdminGroups extends Component {
                             </div>
                             <div className="admin-post__input">
                                 <p className="admin-post__label">Группа</p>
-                                <Select
-                                    name='group'
-                                    changeHandler={ e => this.studentSelectChangeHandler(e) }
-                                    defaultValue={ JSON.stringify(this.state.studentData.group) }
-                                    placeholder
-                                    options={
-                                        groups.map(el => {
-                                            return (
-                                                <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-                                            )
-                                        })
-                                    }
+                                <CustomSelect
+                                    className='admin-post__select'
+                                    label={el => `${el.name}`}
+                                    value={el => el}
+                                    options={groups}
+                                    isSearchable
+                                    changeHandler={(value) => this.groupChangeHandler(value)}
+                                    placeholder=''
+                                    defaultValue={this.state.studentData.group}
                                 />
                             </div>
                             <div className="admin-post__input">
                                 <p className="admin-post__label">Бюджет</p>
-                                <Select
-                                    name='budget'
-                                    changeHandler={ e => this.studentSelectChangeHandler(e) }
-                                    defaultValue={ this.state.studentData.budget }
-                                    placeholder
-                                    options={
-                                        [{name: 'Бюджет', value: true}, {name: 'Контракт', value: false}].map((el, index) => {
-                                            return (
-                                                <option key={index} value={el.value}>{el.name}</option>
-                                            )
-                                        })
-                                    }
+                                <CustomSelect
+                                    className='admin-post__select'
+                                    label={el => `${el.name}`}
+                                    value={el => el.value}
+                                    options={[{name: 'Бюджет', value: true}, {name: 'Контракт', value: false}]}
+                                    isSearchable
+                                    changeHandler={(value) => this.budgetChangeHandler(value)}
+                                    placeholder=''
+                                    defaultValue={this.state.studentData.budget}
                                 />
                             </div>
                             <div className="admin-post__input">

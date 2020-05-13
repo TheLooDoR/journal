@@ -11,21 +11,24 @@
     justify-content: center;
     align-items: center;
   }
-  select {
+  &__select {
     box-sizing: border-box;
     height: 45px;
-    padding: 0 10px;
-    margin: 10px 0;
-
     width: 100%;
+    margin: 10px 0;
   }
   &__btn {
     padding: 12px 80px;
     margin: 10px;
   }
+  .react-select {
+    &__control {
+      height: 45px;
+    }
+  }
 
   @media (min-width: 768px) {
-    select {
+    &__select {
       width: 323px;
     }
   }
@@ -41,24 +44,16 @@
       justify-content: center;
     }
     &__departments {
-      select {
-        width: 222px;
-      }
+      width: 222px;
     }
     &__groups {
-      select {
-        width: 135px;
-      }
+      width: 135px;
     }
     &__subject-types {
-      select {
-        width: 222px;
-      }
+      width: 222px;
     }
     &__subjects {
-      select {
-        width: 323px;
-      }
+      width: 323px;
     }
     .time-table {
       &:first-child {

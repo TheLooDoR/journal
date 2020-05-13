@@ -4,6 +4,10 @@
   padding: 10px 15px;
   width: 100%;
   outline: none;
+  height: 45px;
+  &:focus {
+    border: 2px solid #2B9CFF;
+  }
 }
 
 .admin-post {
@@ -26,9 +30,11 @@
   }
   &__input {
     margin: 10px 0;
-    select {
+  }
+  &__select {
+    .react-select__control {
       width: 100%;
-      padding: 10px 15px;
+      height: 45px;
     }
   }
   &__submit {

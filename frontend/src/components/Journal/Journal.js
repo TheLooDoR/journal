@@ -13,11 +13,11 @@ import isEmpty from "../../common-js/isEmpty";
 import formatDate from "../../common-js/formatDate";
 import dropdownIcon from './assets/dropdown-icon.png'
 import {Dropdown} from "react-bootstrap";
-import Select from "../UI/Select/Select";
+import CustomSelect from "../UI/Select/CustomSelect";
 import AttendanceDoughnut from "../Statistic/AttendanceDoughnut/AttendanceDoughnut";
 import ScoreDoughnut from "../Statistic/ScoreDoughnut/ScoreDoughnut";
-import './Journal.scss'
 import formatTime from "../../common-js/formatTime";
+import './Journal.scss'
 
 class Journal extends Component {
 
@@ -60,13 +60,14 @@ class Journal extends Component {
         }
     }
 
-    changeHandler (e) {
-        if (e.target.value !== '') {
-            let taskData = this.state.taskData
-            this.setState({
-                taskData: {...taskData, [e.target.name]: JSON.parse(e.target.value)}
-            })
-        }
+    timeChangeHandler(value) {
+        const { taskData } = this.state
+        this.setState({
+            taskData: {
+                ...taskData,
+                time: value
+            }
+        })
     }
 
     scrollHandler = () => {
@@ -390,17 +391,14 @@ class Journal extends Component {
                             formatLongDate={(date) => formatDate(date)}
                         />
                         <div className="journal-add-form__place-time">
-                            <Select
+                            <CustomSelect
                                 className='journal-add-form__time'
-                                name='time'
-                                changeHandler={(e) => this.changeHandler(e)}
-                                defaultValue='Время'
+                                label={el => `${formatTime(el.time)}`}
+                                value={el => el}
+                                options={time}
+                                changeHandler={(value) => this.timeChangeHandler(value)}
+                                placeholder='Время'
                                 disabled={time.length === 0}
-                                options={time.map((el) => {
-                                    return (
-                                        <option key={el.id} value={JSON.stringify(el)}>{formatTime(el.time)}</option>
-                                    )
-                                })}
                             />
 
                         </div>

@@ -8,11 +8,11 @@ import {
     getSubjectsData,
     getSubjectTypesData, setJournalData,
     setJournalParameters,
-    getUserScheduleData
+    getUserScheduleData, GET_GROUPS
 } from "../../actions";
 import MainButton from '../../components/UI/MainButton/MainButton'
 import Journal from "../../components/Journal/Journal";
-import Select from "../../components/UI/Select/Select";
+import CustomSelect from "../../components/UI/Select/CustomSelect";
 import isEmpty from "../../common-js/isEmpty";
 import ScoreDoughnut from "../../components/Statistic/ScoreDoughnut/ScoreDoughnut";
 import AttendanceDoughnut from "../../components/Statistic/AttendanceDoughnut/AttendanceDoughnut";
@@ -42,7 +42,7 @@ class Home extends Component {
         dispatch(getSubjectTypesData())
         dispatch(getSubjectsData())
         if (this.props.user.role === 'admin') {
-            Axios.get('api/statistics/faculty')
+             Axios.get('api/statistics/faculty')
                 .then(res => {
                     const { present, miss, unsatisfactory, satisfactory, good, excellent} = res.data
                     this.setState({
@@ -76,13 +76,51 @@ class Home extends Component {
         }
     }
 
-    changeHandler (e) {
-        if (e.target.value !== '') {
-            let journalData = this.state.journalData
-            this.setState({
-                journalData: {...journalData, [e.target.name]: JSON.parse(e.target.value)}
-            })
-        }
+    componentWillUnmount() {
+        this.props.dispatch({
+            type: GET_GROUPS,
+            payload: []
+        })
+    }
+
+    departmentChangeHandler(value) {
+        const { journalData } = this.state
+        this.setState({
+            journalData: {
+                ...journalData,
+                department: value
+            }
+        })
+    }
+
+    groupChangeHandler(value) {
+        const { journalData } = this.state
+        this.setState({
+            journalData: {
+                ...journalData,
+                group: value
+            }
+        })
+    }
+
+    subjectChangeHandler(value) {
+        const { journalData } = this.state
+        this.setState({
+            journalData: {
+                ...journalData,
+                subject: value
+            }
+        })
+    }
+
+    subjectTypeChangeHandler(value) {
+        const { journalData } = this.state
+        this.setState({
+            journalData: {
+                ...journalData,
+                subjectType: value
+            }
+        })
     }
 
     clickHandler = () => {
@@ -171,54 +209,56 @@ class Home extends Component {
         )
     }
 
-    selectOptions(entity) {
-        return entity.map((el) => {
-            return (
-                <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-            )
-        })
-    }
-
     render() {
         const {entities, user, scheduleLoading} = this.props
         const {journalData} = this.state
-        if (!entities.subjectTypes || !entities.groups || !entities.subjects || !entities.departments
-            || (user.role === 'admin' && (isEmpty(this.state.statisticsData || this.state.randomUsers.length === 0)))
-            || scheduleLoading ) {
+        if ((!entities.subjectTypes || !entities.groups || !entities.subjects || !entities.departments) || scheduleLoading ) {
+            return (<Loader/>)
+        }
+        if (user.role === 'admin' && (this.state.randomUsers.length === 0 || isEmpty(this.state.statisticsData ))) {
             return (<Loader/>)
         }
         return (
             <div className='Home'>
                 <div className="container">
                     <div className="Home__categories">
-                        <Select
+                        <CustomSelect
                             className='Home__departments Home__select'
-                            name='department'
-                            changeHandler={(e) => this.changeHandler(e)}
-                            defaultValue='Кафедра'
-                            options={this.selectOptions(entities.departments)}
+                            label={el => `${el.name}`}
+                            value={el => el}
+                            options={entities.departments}
+                            isSearchable
+                            changeHandler={(value) => this.departmentChangeHandler(value)}
+                            placeholder='Кафедра'
                         />
-                        <Select
+                        <CustomSelect
                             className='Home__groups Home__select'
-                            name='group'
-                            changeHandler={(e) => this.changeHandler(e)}
-                            defaultValue={this.props.groupsLoading ? 'Загрузка...' : 'Группа'}
-                            disabled={entities.groups.length === 0 || this.props.groupsLoading}
-                            options={this.selectOptions(entities.groups)}
+                            label={el => `${el.name}`}
+                            value={el => el}
+                            options={entities.groups}
+                            isSearchable
+                            changeHandler={(value) => this.groupChangeHandler(value)}
+                            isLoading={this.props.groupsLoading}
+                            disabled={this.props.groupsLoading}
+                            placeholder='Группа'
                         />
-                        <Select
+                        <CustomSelect
                             className='Home__subjects Home__select'
-                            name='subject'
-                            changeHandler={(e) => this.changeHandler(e)}
-                            defaultValue='Дисциплина'
-                            options={this.selectOptions(entities.subjects)}
+                            label={el => `${el.full_name}`}
+                            value={el => el}
+                            options={entities.subjects}
+                            isSearchable
+                            changeHandler={(value) => this.subjectChangeHandler(value)}
+                            placeholder='Дисциплина'
                         />
-                        <Select
+                        <CustomSelect
                             className='Home__subject-types Home__select'
-                            name='subjectType'
-                            changeHandler={(e) => this.changeHandler(e)}
-                            defaultValue='Вид занятия'
-                            options={this.selectOptions(entities.subjectTypes)}
+                            label={el => `${el.name}`}
+                            value={el => el}
+                            options={entities.subjectTypes}
+                            isSearchable
+                            changeHandler={(value) => this.subjectTypeChangeHandler(value)}
+                            placeholder='Тип занятия'
                         />
                         <MainButton
                             className='Home__btn'
