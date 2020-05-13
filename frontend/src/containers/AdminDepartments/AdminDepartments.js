@@ -360,8 +360,9 @@ class AdminDepartments extends Component {
             >
                 <form className="admin-delete" onSubmit={ e => this.deleteDepartmentHandler(e) }>
                     <p className='admin-delete__text'>
-                        Вы уверенны что хотите удалить корпус
-                        <span>{this.state.departmentData.full_name}</span>
+                        Вы уверенны что хотите удалить кафедру
+                        <span>{this.state.departmentData.full_name}?</span>
+                        <span className="admin-delete__warning">Внимание! Данное действие приведёт к удалению всех связанных данных с выбранной записью.</span>
                     </p>
                     <div className="admin-delete__buttons">
                         <button className="admin-delete__btn" onClick={(e) => {

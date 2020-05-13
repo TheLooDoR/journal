@@ -5,6 +5,7 @@ import MainButton from "../../components/UI/MainButton/MainButton";
 import CustomSelect from "../../components/UI/Select/CustomSelect";
 import Modal from 'react-responsive-modal';
 import {
+    GET_GROUPS,
     getCorpsData,
     getDepartmentsData,
     getGroupsDataByDepartment,
@@ -82,6 +83,13 @@ class AdminSchedule extends Component {
         if(table) {
             table.scrollTop = this.state.scrollValue
         }
+    }
+
+    componentWillUnmount() {
+        this.props.dispatch({
+            type: GET_GROUPS,
+            payload: []
+        })
     }
 
     scrollHandler = () => {
