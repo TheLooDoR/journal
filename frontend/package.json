@@ -101,7 +101,7 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:5000",
+  "proxy": "https://journalsu-api.herokuapp.com/",
   "devDependencies": {
     "prop-types": "^15.7.2"
   },

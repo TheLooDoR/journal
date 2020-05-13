@@ -334,7 +334,8 @@ class AdminCorps extends Component{
                 <form className="admin-delete" onSubmit={ e => this.deleteCorpHandler(e) }>
                     <p className='admin-delete__text'>
                         Вы уверенны что хотите удалить корпус
-                        <span>{this.state.corpData.name}</span>
+                        <span>{this.state.corpData.name}?</span>
+                        <span className="admin-delete__warning">Внимание! Данное действие приведёт к удалению всех связанных данных с выбранной записью.</span>
                     </p>
                     <div className="admin-delete__buttons">
                         <button className="admin-delete__btn" onClick={(e) => {

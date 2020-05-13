@@ -156,18 +156,19 @@ class AdminGroups extends Component {
     }
 
     rowClickHandler(group) {
-
         let groupData = this.state.groupData
-        this.setState({
-            groupData: {
-                ...groupData,
-                id: group.id,
-                name: group.name
-            }
-        })
-        const { dispatch } = this.props
-        const { studentsFilter } = this.state
-        dispatch(getStudentsData(studentsFilter.filterType, studentsFilter.filterValue, group.id))
+        if (groupData.id !== group.id) {
+            this.setState({
+                groupData: {
+                    ...groupData,
+                    id: group.id,
+                    name: group.name
+                }
+            })
+            const { dispatch } = this.props
+            const { studentsFilter } = this.state
+            dispatch(getStudentsData(studentsFilter.filterType, studentsFilter.filterValue, group.id))
+        }
     }
 
     groupsFilterSubmit = () => {
@@ -272,6 +273,13 @@ class AdminGroups extends Component {
         Axios.delete(`api/groups/${id}`)
             .then(() => {
                 dispatch(getGroupsData(filterType, filterValue))
+                this.setState({
+                    groupData: {
+                        id: null,
+                        name: '',
+                        department: {}
+                    }
+                })
             })
             .catch(err => console.log(err.response.data))
     }
@@ -893,7 +901,8 @@ class AdminGroups extends Component {
                 >
                     <p className='admin-delete__text'>
                         Вы уверенны что хотите удалить группу
-                        <span>{this.state.groupData.name}</span>
+                        <span>{this.state.groupData.name}?</span>
+                        <span className="admin-delete__warning">Внимание! Данное действие приведёт к удалению всех связанных данных с выбранной записью.</span>
                     </p>
                     <div className="admin-delete__buttons">
                         <button className="admin-delete__btn" onClick={(e) => {
@@ -922,7 +931,8 @@ class AdminGroups extends Component {
                 >
                     <p className='admin-delete__text'>
                         Вы уверенны что хотите удалить студента
-                        <span>{`${this.state.studentData.surname} ${this.state.studentData.name}  ${this.state.studentData.patronymic}`}</span>
+                        <span>{`${this.state.studentData.surname} ${this.state.studentData.name}  ${this.state.studentData.patronymic}`}?</span>
+                        <span className="admin-delete__warning">Внимание! Данное действие приведёт к удалению всех связанных данных с выбранной записью.</span>
                     </p>
                     <div className="admin-delete__buttons">
                         <button className="admin-delete__btn" onClick={(e) => {

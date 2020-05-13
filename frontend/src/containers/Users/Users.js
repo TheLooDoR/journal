@@ -442,8 +442,9 @@ class Users extends Component {
                 >
                     <form onSubmit={ e => this.deleteUserHandler(e) } className="admin-delete">
                         <p className="admin-delete__text">
-                            Вы уверенны что хотите удалить пользователя
+                            Вы уверены что хотите удалить пользователя
                             <span>{`${this.state.userData.surname} ${this.state.userData.name} ${this.state.userData.patronymic}?`}</span>
+                            <span className="admin-delete__warning">Внимание! Данное действие приведёт к удалению всех связанных данных с выбранной записью.</span>
                         </p>
                         <div className="admin-delete__buttons">
                             <button className="admin-delete__btn" onClick={(e) => {
