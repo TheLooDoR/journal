@@ -2,10 +2,13 @@
   position: relative;
   &__title {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
     color: #1D3B55;
     font-weight: 500;
     font-size: 24px;
+    @media (max-width: 480px) {
+      font-size: 14px;
+    }
   }
   &__dropdown {
     right: 40px;
@@ -26,6 +29,12 @@
         box-shadow: none !important;
       }
     }
+  }
+  #journal-dropdown-btn img{
+    width: 20px;
+    margin-top: -25px;
+    margin-right: -16px;
+
   }
   .btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active, .show>.btn-primary.dropdown-toggle {
     color: transparent;
@@ -56,6 +65,8 @@
   text-align: center;
   overflow-x:scroll;
   overflow-y:visible;
+  margin-left: 27.2vw;
+  margin-right: 34.2vw;
   &::-webkit-scrollbar {
     height: 10px;
   }
@@ -76,6 +87,7 @@
       cursor: default;
     }
   }
+
   &__add {
     height: 50px;
   }
@@ -86,6 +98,24 @@
     border-radius: 5px;
     &:hover {
       cursor: pointer;
+    }
+    @media (max-width: 1300px) {
+      // padding: 3px;
+      font-size: 14px;
+    }
+    @media (max-width: 1200px) {
+      display: none;
+    }
+    &-icon{
+      display: none;
+
+    @media (max-width: 1200px) {
+      display: block;
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(90deg, #388BFF 0%, #8823FF 100%);
+      color: #fff;
+    }
     }
   }
   &__total-grades {
@@ -176,9 +206,11 @@
     }
     td {
       font-size: 14px;
+
     }
     th {
       font-size: 16px;
+
     }
   }
   @media (min-width: 370px) {
@@ -203,6 +235,7 @@
     &__wrap {
       justify-content: space-between;
     }
+
   }
 }
 
@@ -226,37 +259,44 @@
   position: absolute;
   display: flex;
   justify-content: center;
+
   align-items: center;
+  &tbody>td{
+    height: 8%;
+  }
 }
 .number-row {
   left: 0;
-  width: 55px;
+  width: 4.6vw;
 }
 .name-row {
-  left: 54px;
-  width: 200px;
+  left: 4.46vw;
+  width: 22.9vw;
   background: white;
+
+
 }
 .add-row {
-  right: 419px;
-  width: 105px;
+  right: 28.2vw;
+  width: 6.3vw;
   background: white;
+  padding: 0;
 }
 .miss-row {
-  right: 248px;
-  width: 120px;
+  right: 16.6vw;
+  width: 8.36vw;
 }
 .valid-miss-row {
-  right: 129px;
-  width: 120px;
+  right: 8.3vw;
+  width: 8.33vw;
 }
 .total-grades-row {
   right: 0;
-  width: 130px;
+  width: 8.39vw;
 }
 .budget-row {
-  right: 367px;
-  width: 53px;
+  right: 24.9vw;
+  width: 3.36vw;
 }
 
 
@@ -292,6 +332,19 @@
 
 .table thead th {
   vertical-align: middle;
+  top: 58px;
+  @media (max-width: 1200px) {
+
+      font-size: 0.8rem;
+    }
+  @media (max-width: 900px) {
+
+      font-size: 0.7rem;}
+      @media (max-width: 760px) {
+
+        font-size: 0.6rem;}
+
+
 }
 
 .table-bordered td, .table-bordered th {
@@ -315,4 +368,59 @@
   &:focus {
     outline: none;
   }
+}
+@media (max-width: 640px) {
+  .journal-content__presents , .journal-content__add,.journal-content__total-grades, tbody td{
+    font-size: 10px;
+     height: 40px;
+   }
+   .fixed-row{
+
+   }
+   .fixed-row:last-child{
+    writing-mode: tb;
+   }
+   .miss-row{
+     display: none;
+   }
+   .valid-miss-row{
+     display: none;
+   }
+   .add-row {
+     width: 45px;
+    right: 12.2vw;
+  }
+  .budget-row{
+
+    right: 8.3vw;
+  }
+  .journal-content{
+    margin-left: 26.9vw;
+    margin-right: 19.2vw;
+  }
+}
+@media (max-width: 480px) {
+  .add-row {
+   right: 13.2vw;
+ }
+ .table thead th {
+  top: 43px;
+}
+.Journal #journal-dropdown-btn img{
+  width: 18px;
+  margin-top: -10px;
+  margin-right: -16px;
+}
+}
+
+@media (max-width: 420px) {
+  .add-row {
+   right: 14.6vw;
+ }
+ .name-row{
+  left: 6.46vw;
+}
+
+
+
 }

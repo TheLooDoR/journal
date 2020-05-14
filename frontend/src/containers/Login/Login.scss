@@ -36,3 +36,37 @@
     }
   }
 }
+// R
+.login-title{
+  display: none;
+}
+@media (max-width : 480px) {
+  .login-title{
+    width: 280px;
+    height: 35px;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 35px;
+    background: linear-gradient(90deg, #2B9CFF 0%, #9610FF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: #0B2349;
+    display: table;
+    margin: 150px auto 15px auto;
+          &::after{
+            /* Градиент */
+            background: #ffffff;
+            background: linear-gradient(to right, #2B9CFF  0%, #9610FF 100%);
+            filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#2B9CFF', endColorstr='#9610FF', GradientType=1);
+            content: "";
+            display: block;
+            /* Толщина !!!*/
+            height: 2px;
+            width: 70%;
+            margin: 10px auto;
+  }
+}
+}
+// R

@@ -118,20 +118,48 @@
 }
 
 @media (max-width: 370px) {
-    .form-container {
-        padding: 30px;
+    // .form-container {
+    //     padding: 30px;
+    // }
+    // .form-header {
+    //     font-size: 30px;
+    // }
+    // .form-group label {
+    //     font-size: 14px;
+    // }
+    // .form-input {
+    //     font-size: 12px;
+    // }
+    // .submit-btn {
+    //     font-size: 16px;
+    // }
+}
+// R
+@media (max-width : 480px) {
+    .form-container{
+        margin: 0 auto;
+        padding: 15px;
+        width: 73%;
+    }
+
+    .submit-btn {
+        
+        height: 30px;
+        margin-top: 0px;
+        line-height: 0px;
     }
     .form-header {
-        font-size: 30px;
+        font-size: 26px;
     }
     .form-group label {
         font-size: 14px;
     }
     .form-input {
+        padding: 5px;
         font-size: 12px;
     }
     .submit-btn {
         font-size: 16px;
     }
 }
-
+// R
