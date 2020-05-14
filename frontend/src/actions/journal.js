@@ -5,7 +5,7 @@ import {
     REQUEST_JOURNAL_DATA,
     REQUEST_JOURNAL_DATA_FINISHED,
     SET_JOURNAL_DATE,
-    SET_JOURNAL_STUDENTS, SET_JOURNAL_USER
+    SET_JOURNAL_STUDENTS, SET_JOURNAL_USER, SET_LATEST_JOURNALS
 } from "./types";
 import Axios from "axios";
 import { store } from 'react-notifications-component';
@@ -42,6 +42,13 @@ const journalUser = journalUser => {
     return {
         type: SET_JOURNAL_USER,
         payload: journalUser
+    }
+}
+
+const latestJournal = latestJournal => {
+    return {
+        type: SET_LATEST_JOURNALS,
+        payload: latestJournal
     }
 }
 
@@ -126,5 +133,18 @@ export const addTaskByDate = taskData => dispatch => {
                     showIcon: true
                 }
             });
+        })
+}
+
+export const setLatestJournal = () => dispatch => {
+    dispatch(requestJournalData())
+    Axios.get('api/journal/latest')
+        .then( res => {
+            dispatch(latestJournal(res.data))
+            dispatch(requestJournalDataFinished())
+        })
+        .catch( err => {
+            dispatch(requestJournalDataFinished())
+            console.log(err.response.data)
         })
 }

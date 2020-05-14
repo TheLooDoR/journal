@@ -8,7 +8,7 @@ import {
     getSubjectsData,
     getSubjectTypesData, setJournalData,
     setJournalParameters,
-    getUserScheduleData, GET_GROUPS
+    getUserScheduleData, GET_GROUPS, setLatestJournal
 } from "../../actions";
 import MainButton from '../../components/UI/MainButton/MainButton'
 import Journal from "../../components/Journal/Journal";
@@ -42,6 +42,7 @@ class Home extends Component {
         dispatch(getSubjectTypesData())
         dispatch(getSubjectsData())
         if (this.props.user.role === 'admin') {
+            dispatch(setLatestJournal())
              Axios.get('api/statistics/faculty')
                 .then(res => {
                     const { present, miss, unsatisfactory, satisfactory, good, excellent} = res.data
@@ -140,6 +141,35 @@ class Home extends Component {
         this.setShowModal()
     }
 
+    latestJournalClickHandler(params) {
+        const { dispatch } = this.props
+        const { user } = this.props
+        dispatch(setJournalParameters({
+            group: {
+                name: params.group
+            },
+            department: {
+                name: params.department
+            },
+            subject: {
+                name: params.name
+            },
+            subjectType: {
+                name: params.subject_type
+            }
+        }))
+        const isAdmin = user.role === 'admin'
+        const journalParameters = {
+            group_id: params.group_id,
+            subject_id: params.subject_id,
+            type_id: params.type_id,
+            user_id: user.userId,
+            isAdmin
+        }
+        dispatch(setJournalData(journalParameters))
+        this.setShowModal()
+    }
+
     setShowModal() {
         this.setState({
             showModal: !this.state.showModal
@@ -163,6 +193,73 @@ class Home extends Component {
                 isLoading={this.props.isLoading}
             />
         )
+    }
+
+    renderLatestJournals() {
+        const { latestJournals } = this.props
+        if ( latestJournals.length !== 0) {
+            return (
+                <div className='Home__latest-journals-table admin-table__wrap'>
+                    <div className="admin-table">
+                        <div className="admin-table__head">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th style={{ fontSize: 24 }} className='admin-table__number'>№</th>
+                                    <th className='admin-table__department-cell'>Кафедра</th>
+                                    <th>Группа</th>
+                                    <th>Дисциплина</th>
+                                    <th>Преподаватель</th>
+                                    <th width={100}>Вид занятия</th>
+                                    <th className='admin-table__open-btn'/>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div className="admin-table__body" ref={this.tableRef} onScroll={this.scrollHandler}>
+                            <table>
+                                <tbody>
+                                { latestJournals.map((el, index) => {
+                                    return (
+                                        <tr key={index}>
+                                            <td className='admin-table__number'>{ index + 1 }</td>
+                                            <td>{ el.department }</td>
+                                            <td>{ el.group }</td>
+                                            <td>{ el.subject }</td>
+                                            <td>{`${el.surname} ${el.name.substr(0, 1)}. ${el.patronymic.substr(0, 1)}.`}</td>
+                                            <td width={100}>{ el.subject_type.substr(0, 1) }.</td>
+                                            <td className='admin-table__open-btn'>
+                                                <MainButton
+                                                    onClick={ () => this.latestJournalClickHandler(el) }
+                                                >
+                                                    Открыть
+                                                </MainButton>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="admin-table__footer">
+                            <table>
+                                <tbody>
+                                <tr>
+                                    <td className='admin-table__number'/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td width={100}/>
+                                    <td className='admin-table__open-btn'/>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
     }
 
     renderHomeFooter() {
@@ -195,7 +292,7 @@ class Home extends Component {
                                 width={300}
                             />
                         </div>
-                        <p className='home-footer__statistics-title'>Успеваемость факультета за неделю</p>
+                        <p className='home-footer__statistics-title'>Посещаемость факультета за неделю</p>
                     </div>
                     <div className="home-footer__diagram-wrap">
                         <div className="home-footer__score-statistics">
@@ -205,7 +302,7 @@ class Home extends Component {
                                 height={200}
                             />
                         </div>
-                        <p className='home-footer__statistics-title'>Посещаемость факультета за неделю</p>
+                        <p className='home-footer__statistics-title'>Успеваемость факультета за неделю</p>
                     </div>
                 </div>
             </div>
@@ -213,9 +310,9 @@ class Home extends Component {
     }
 
     render() {
-        const {entities, user, scheduleLoading} = this.props
+        const {entities, user, scheduleLoading, journalLoading} = this.props
         const {journalData} = this.state
-        if ((!entities.subjectTypes || !entities.groups || !entities.subjects || !entities.departments) || scheduleLoading ) {
+        if ((!entities.subjectTypes || !entities.groups || !entities.subjects || !entities.departments) || scheduleLoading || journalLoading ) {
             return (<Loader/>)
         }
         if (user.role === 'admin' && (this.state.randomUsers.length === 0 || isEmpty(this.state.statisticsData ))) {
@@ -271,6 +368,7 @@ class Home extends Component {
                             Найти
                         </MainButton>
                     </div>
+                    { this.props.user.role === 'admin' && this.renderLatestJournals() }
                     { this.props.user.role === 'admin' ? this.renderHomeFooter() : <UserSchedule schedule={this.props.schedule}/> }
                     {this.renderModal()}
                 </div>
@@ -287,12 +385,14 @@ function mapStateToProps(state) {
         journalDate: state.journal.journalDate,
         journalStudents: state.journal.journalStudents,
         journalUser: state.journal.journalUser,
+        journalLoading: state.journal.journalLoading,
         user: state.auth.user,
         errors: state.errors,
         isLoading: state.journal.isLoading,
         groupsLoading: state.entities.groupsLoading,
         schedule: state.schedule,
-        scheduleLoading: state.schedule.scheduleLoading
+        scheduleLoading: state.schedule.scheduleLoading,
+        latestJournals: state.journal.latestJournals
     }
 }
 

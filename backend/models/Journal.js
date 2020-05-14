@@ -69,6 +69,8 @@ const Journal = db.define('journal', {
         },
         primaryKey: true
     }
+}, {
+    timestamps: false
 })
 
 

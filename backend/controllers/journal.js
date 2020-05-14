@@ -3,8 +3,86 @@ const Students = require('../models/Students')
 const Date = require('../models/Date')
 const Time = require('../models/Time')
 const User = require('../models/User')
+const Group = require('../models/Group')
+const Department = require('../models/Department')
+const SubjectType = require('../models/SubjectType')
+const Subject = require('../models/Subject')
 const { Op } = require("sequelize");
 const Sequelize = require('sequelize')
+
+module.exports.getLatestJournals = async (req, res) => {
+
+    await Journal.findAll({
+        attributes: [
+            [Sequelize.fn('DISTINCT', Sequelize.col('students.group_id')), 'group_id'],
+            [Sequelize.fn('MAX', Sequelize.col('journal.updated_at')), 'updated_at'],
+            'subject_id',
+            'type_id',
+            [Sequelize.col('students->groups.name'), 'group'],
+            [Sequelize.col('students->groups->departments.name'), 'department'],
+            [Sequelize.col('subjects.name'), 'subject'],
+            [Sequelize.col('subject_types.name'), 'subject_type'],
+            [Sequelize.col('users.name'), 'name'],
+            [Sequelize.col('users.surname'), 'surname'],
+            [Sequelize.col('users.patronymic'), 'patronymic'],
+        ],
+        include: [
+            {
+                model: Students,
+                attributes: [],
+                required: true,
+                include: [{
+                    model: Group,
+                    attributes: [],
+                    required: true,
+                    include: [{
+                        model: Department,
+                        attributes: [],
+                        required: true
+                    }]
+                }]
+            },
+            {
+                model: Subject,
+                attributes: [],
+                required: true
+            },
+            {
+                model: SubjectType,
+                attributes: [],
+                required: true
+            },
+            {
+                model: User,
+                attributes: [],
+                required: true
+            }
+        ],
+        group: [
+            [Sequelize.col('students.group_id')],
+            'subject_id',
+            'type_id',
+            [Sequelize.col('students->groups.name')],
+            [Sequelize.col('students->groups->departments.name')],
+            [Sequelize.col('subjects.name')],
+            [Sequelize.col('subject_types.name')],
+            [Sequelize.col('users.name')],
+            [Sequelize.col('users.surname')],
+            [Sequelize.col('users.patronymic')],
+        ],
+        order: [[Sequelize.fn('MAX', Sequelize.col('journal.updated_at')), 'DESC' ]],
+        raw: true,
+        subQuery: false,
+        limit: 10
+    })
+        .then(latest => {
+            res.status(200).json(latest)
+        })
+        .catch(err => {
+            console.log(err.message)
+            res.status(400).json(err.message)
+        })
+}
 
 module.exports.getData = async (req, res) => {
     try {
@@ -169,7 +247,7 @@ module.exports.updateStudentData = async (req, res) => {
                     time_id: req.body.time_id
                 }
             }
-        ).catch(e => {
+        ).catch( () => {
             error.message = 'Ошибка обновления'
         })
         if (error.message) {
@@ -209,6 +287,9 @@ module.exports.addTaskByDate = async (req, res) => {
         for(let i = 0; i < studentsGroup.length; i++) {
             studentsGroup_ids.push(studentsGroup[i].id)
         }
+        if (studentsGroup_ids.length === 0) {
+            error.message = 'Группа не имеет студентов'
+        }
         //get all students from journal
         const studentsJournal = await Journal.findAll({
             attributes: ['student_id'],
@@ -230,29 +311,22 @@ module.exports.addTaskByDate = async (req, res) => {
         if (!checker(studentsJournal_ids, studentsGroup_ids)) {
             //get all dates from journal
             const journalDates = await Journal.findAll({
-                attributes: ['date_id'],
-                group: ['date_id']
+                attributes: ['date_id', 'time_id'],
+                where: {
+                    student_id: {
+                        [Op.in]: studentsJournal_ids
+                    },
+                    subject_id: req.body.subject_id,
+                    type_id: req.body.type_id
+                },
+                group: ['date_id', 'time_id']
             })
-            //filter only students which doesnt consist in all tasks
+            //filter only students which doesn`t consist in all tasks
             const filtered_ids = studentsGroup_ids.filter(i => !studentsJournal_ids.includes(i))
             //insert student in all existing tasks
             journalDates.map(date => {
                 filtered_ids.map(async student_id => {
                     try {
-                        //find time of the current task
-                        const time_id = await Journal.findAll({
-                            attributes: ['time_id'],
-                            where: {
-                                student_id: {
-                                    [Op.in]: studentsJournal_ids
-                                },
-                                date_id: date.date_id,
-                                subject_id: req.body.subject_id,
-                                type_id: req.body.type_id
-                            },
-                            group: ['date_id'],
-                            raw: true
-                        })
                         //insert missing student in past tasks
                         await Journal.create({
                             user_id: req.body.user_id,
@@ -264,7 +338,7 @@ module.exports.addTaskByDate = async (req, res) => {
                             date_id: date.date_id,
                             type_id: req.body.type_id,
                             valid_miss: false,
-                            time_id: time_id[0].time_id,
+                            time_id: date.time_id,
                         })
                     } catch (e) {
                         console.log(e.message)
