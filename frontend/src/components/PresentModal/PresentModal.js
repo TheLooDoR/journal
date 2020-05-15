@@ -17,10 +17,9 @@ class PresentModal extends Component{
         this.state = {
             grade: null,
             note: '',
-            miss: ''
+            miss: '',
         }
     }
-
     componentDidUpdate(prevProps, prevState, snapshot) {
         const { student } = this.props
         if (prevProps !== this.props) {
@@ -112,11 +111,13 @@ class PresentModal extends Component{
     }
 
     render() {
+        
         const { student } = this.props
         //check if student is not null
         if (isEmpty(student)) {
             return null
         }
+     
         return (
             <Modal onClose={this.props.onHide} open={this.props.show} modalId={'present-modal'} center={this.props.center}>
                 <form className="PresentModal" onSubmit={e => this.submitHandler(e)}>
@@ -145,10 +146,13 @@ class PresentModal extends Component{
                         </div>
                     </div>
                     <h4 className="PresentModal__grades-title">Успеваемость</h4>
+                    
                     <div className="PresentModal__grades grades">
                         <div className="grades__inputs">
                             <div className="grades__grade-wrap">
                                 <p className='grades__grade-title'>Оценка</p>
+                                 <br></br>
+                  
                                 <Number
                                     className='grades__grade-value'
                                     min={1}
@@ -157,7 +161,7 @@ class PresentModal extends Component{
                                     value={this.state.grade}
                                     disabled={this.state.miss !== 'is-present'}
                                 />
-                            </div>
+                            </div> 
                             <div className="grades__comment-wrap">
                                 <label className='grades__comment-title' htmlFor="note">Комментарий</label>
                                 <textarea
@@ -169,7 +173,9 @@ class PresentModal extends Component{
                                 />
                             </div>
                         </div>
-                        <table className="grades__marks">
+                        {/* R */}
+                        <span className="grades__marks-btn"  > Шкала баллов</span>
+                        <table className="grades__marks" >                 
                             <thead>
                                 <tr>
                                     <th>Мин. балл</th>
@@ -220,7 +226,7 @@ class PresentModal extends Component{
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
+                        </div>
                     <h4 className="PresentModal__attendance-title">Посещаемость</h4>
                     <div className="PresentModal__attendance">
                         <Radio
