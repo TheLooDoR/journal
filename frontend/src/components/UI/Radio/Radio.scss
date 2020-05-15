@@ -11,6 +11,9 @@
   font-size: 16px;
   font-weight: 500;
   color: #1D3B55;
+  @media (max-width: 420px) {
+    font-size: 12px;
+  }
   input {
     position: absolute;
     opacity: 0;
