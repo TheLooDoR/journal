@@ -4,7 +4,8 @@ import Number from "../UI/Number/Number"
 import Radio from "../UI/Radio/Radio"
 import MainButton from "../UI/MainButton/MainButton"
 import {connect} from "react-redux"
-import {setJournalData, updateStudentData} from "../../actions"
+import Axios from "axios";
+import {requestJournalData, setJournalData} from "../../actions"
 import isEmpty from "../../common-js/isEmpty"
 import formatDate from "../../common-js/formatDate"
 import formatTime from "../../common-js/formatTime";
@@ -65,7 +66,7 @@ class PresentModal extends Component{
 
     submitHandler(e) {
         e.preventDefault()
-        const { student, dispatch } = this.props
+        const { student } = this.props
         let present, valid_miss
         //convert state values to DB values
         switch (this.state.miss) {
@@ -97,19 +98,30 @@ class PresentModal extends Component{
             present,
             valid_miss
         }
-        updateStudentData(studentData)
-        //update redux store after post
+        this.updateStudentData(studentData)
+    }
+
+    updateStudentData = (studentData) => {
+        const { dispatch } = this.props
         const journalParameters = {
             group_id: this.props.journalParameters.group.id,
             user_id: studentData.user_id,
             subject_id: studentData.subject_id,
             type_id: studentData.type_id
         }
-        dispatch(setJournalData(journalParameters))
         //close modal window
         this.props.onHide(this.props.student)
-        //save scrollbar position
-        this.props.scrollHandler()
+        dispatch(requestJournalData())
+        Axios.post('api/journal/update-student-data', studentData)
+            .then(() => {
+                //update redux store after post
+                dispatch(setJournalData(journalParameters))
+                //save scrollbar position
+                this.props.scrollHandler()
+            })
+            .catch(err => {
+                console.log(err.message)
+            })
     }
 
     render() {

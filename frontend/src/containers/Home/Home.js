@@ -152,7 +152,7 @@ class Home extends Component {
                 name: params.department
             },
             subject: {
-                name: params.name
+                name: params.subject
             },
             subjectType: {
                 name: params.subject_type

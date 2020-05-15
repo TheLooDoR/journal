@@ -132,6 +132,8 @@
     flex-flow: column;
     justify-content: space-between;
     margin: 0 auto;
+    position: relative;
+    min-height: 200px;
   }
   &__statistics-title {
     text-align: center;

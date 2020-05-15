@@ -54,6 +54,9 @@ class PersonalPage extends Component {
         this.setState({
             editData: !this.state.editData
         })
+        if (this.state.editData) {
+            this.getUserData()
+        }
     }
 
     inputChangeHandler(e) {

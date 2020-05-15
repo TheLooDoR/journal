@@ -157,12 +157,17 @@ class AdminGroups extends Component {
 
     rowClickHandler(group) {
         let groupData = this.state.groupData
+        const { studentData } = this.state
         if (groupData.id !== group.id) {
             this.setState({
                 groupData: {
                     ...groupData,
                     id: group.id,
                     name: group.name
+                },
+                studentData: {
+                    ...studentData,
+                    group
                 }
             })
             const { dispatch } = this.props
@@ -321,7 +326,6 @@ class AdminGroups extends Component {
                 name: '',
                 surname: '',
                 patronymic: '',
-                group: {},
                 budget: {},
                 email: '',
                 phone_number: ''
@@ -444,7 +448,7 @@ class AdminGroups extends Component {
                                         <tr
                                             key={el.id}
                                             className={el.id === this.state.groupData.id ? 'AdminGroups__selected-row' : 'AdminGroups__row'}
-                                            onClick={ () => this.rowClickHandler({id: el.id, name: el.name}) }
+                                            onClick={ () => this.rowClickHandler(el) }
                                         >
                                             <td className='admin-table__number'>{ index + 1 }</td>
                                             <td>{ el.name }</td>
@@ -678,6 +682,7 @@ class AdminGroups extends Component {
                                 isSearchable
                                 changeHandler={(value) => this.groupChangeHandler(value)}
                                 placeholder=''
+                                defaultValue={this.state.studentData.group}
                             />
                         </div>
                         <div className="admin-post__input">

@@ -52,7 +52,7 @@ const latestJournal = latestJournal => {
     }
 }
 
-const requestJournalData = () => {
+export const requestJournalData = () => {
     return {
         type: REQUEST_JOURNAL_DATA,
         payload: true
@@ -92,17 +92,6 @@ export const setJournalData = (journalParameters) => dispatch => {
         })
 }
 
-
-
-export const updateStudentData = (studentData) => {
-    Axios.post('api/journal/update-student-data', studentData)
-        .then(() => {
-            console.log('UPDATED')
-        })
-        .catch(err => {
-            console.log(err.message)
-        })
-}
 
 export const addTaskByDate = taskData => dispatch => {
     const {user_id, subject_id, type_id, group_id, time_id} = taskData
