@@ -5,7 +5,7 @@ import Radio from "../UI/Radio/Radio"
 import MainButton from "../UI/MainButton/MainButton"
 import {connect} from "react-redux"
 import Axios from "axios";
-import {requestJournalData, setJournalData} from "../../actions"
+import {requestJournalData, requestJournalDataFinished, setJournalData} from "../../actions"
 import isEmpty from "../../common-js/isEmpty"
 import formatDate from "../../common-js/formatDate"
 import formatTime from "../../common-js/formatTime";
@@ -120,6 +120,7 @@ class PresentModal extends Component{
                 this.props.scrollHandler()
             })
             .catch(err => {
+                dispatch(requestJournalDataFinished())
                 console.log(err.message)
             })
     }

@@ -59,7 +59,7 @@ export const requestJournalData = () => {
     }
 }
 
-const requestJournalDataFinished = () => {
+export const requestJournalDataFinished = () => {
     return {
         type: REQUEST_JOURNAL_DATA_FINISHED,
         payload: false
