@@ -227,6 +227,10 @@ $hamburger-spacing:6px;
 
     }
     @media (min-width: 480px) {
+      .bm-burger-button {
+        width: 30px;
+        height: 25px;
+    }
         .menu-open{
             display: none;
         }
@@ -258,7 +262,12 @@ $hamburger-spacing:6px;
     top: 33px;
     transform: translateY(-50%);
 }
-
+@media (max-width: 480px) {
+  .bm-burger-button {
+    width: 30px;
+    height: 25px;
+}
+}
 /* Color/shape of burger icon bars */
 .bm-burger-bars {
     background: #fff;
