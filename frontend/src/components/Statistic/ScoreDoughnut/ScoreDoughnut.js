@@ -13,6 +13,19 @@ const ScoreDoughnut = props => {
         }
     }
 
+    if (props.marksAmount.every(item => item === 0)) {
+        return (
+            <div style={{
+                position: "absolute",
+                left: '50%',
+                top: '50%',
+                transform: 'translate(-50%, -50%)',
+                fontSize: 20
+            }}>
+                Оценки отсутствуют
+            </div>
+        )
+    }
     return (
         <Doughnut
             height={props.height}
