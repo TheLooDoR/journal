@@ -78,7 +78,7 @@ export const setJournalData = (journalParameters) => dispatch => {
             dispatch(journalData(res.data.journal))
             dispatch(journalDate(res.data.dates))
             dispatch(journalStudents(res.data.students))
-            dispatch(journalUser(res.data.user))
+            dispatch(journalUser(res.data.user.name))
             dispatch(requestJournalDataFinished())
         })
         .catch(err => {
