@@ -27,8 +27,44 @@
       }
     }
   }
+  &__delete-dropdown {
+    &:focus {
+      outline: none;
+    }
+    button {
+      color: #1D3B55;
+      background: transparent;
+      padding: 0;
+      border: none;
+      font-size: 16px;
+      font-weight: 700;
+      &:hover {
+        color: #1D3B55;
+        background: transparent;
+        border: none;
+      }
+      &:after {
+        display: none;
+      }
+      &:focus {
+        box-shadow: none !important;
+      }
+    }
+  }
+  .show {
+    button {
+      color: #1D3B55;
+    }
+  }
+  &__date-column {
+    transition: all ease-in-out .1s;
+    &:hover {
+      background: rgba(136, 35, 255, .1);
+      cursor: default;
+    }
+  }
   .btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active, .show>.btn-primary.dropdown-toggle {
-    color: transparent;
+    color: #1D3B55;
     border: none;
     background: transparent;
   }
@@ -71,6 +107,7 @@
   }
   &__presents {
     height: 49px;
+    transition: all ease-in-out .1s;
     &:hover {
       background: rgba(136, 35, 255, .1);
       cursor: default;
