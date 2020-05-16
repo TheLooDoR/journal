@@ -22,9 +22,7 @@ module.exports.getLatestJournals = async (req, res) => {
             [Sequelize.col('students->groups->departments.name'), 'department'],
             [Sequelize.col('subjects.name'), 'subject'],
             [Sequelize.col('subject_types.name'), 'subject_type'],
-            [Sequelize.col('users.name'), 'name'],
-            [Sequelize.col('users.surname'), 'surname'],
-            [Sequelize.col('users.patronymic'), 'patronymic'],
+            [Sequelize.literal('string_agg(DISTINCT concat(users.surname, \' \', substr(users.name, 1, 1), \'. \', substr(users.patronymic, 1, 1), \'.\'), \', \')'), 'user']
         ],
         include: [
             {
@@ -66,9 +64,6 @@ module.exports.getLatestJournals = async (req, res) => {
             [Sequelize.col('students->groups->departments.name')],
             [Sequelize.col('subjects.name')],
             [Sequelize.col('subject_types.name')],
-            [Sequelize.col('users.name')],
-            [Sequelize.col('users.surname')],
-            [Sequelize.col('users.patronymic')],
         ],
         order: [[Sequelize.fn('MAX', Sequelize.col('journal.updated_at')), 'DESC' ]],
         raw: true,
@@ -183,19 +178,16 @@ module.exports.getData = async (req, res) => {
             ]
         })
         const user = await Journal.findOne({
-            attributes: ['user_id', [Sequelize.literal('"users"."surname"'), 'surname'],
-                [Sequelize.literal('"users"."name"'), 'name'], [Sequelize.literal('"users"."patronymic"'), 'patronymic']],
+            attributes: [
+                [Sequelize.literal('string_agg(DISTINCT concat(users.surname, \' \', substr(users.name, 1, 1), \'.' +
+                    ' \', substr(users.patronymic, 1, 1), \'.\'), \', \')'), 'name']
+            ],
             where: where,
             include: [
                 {
-                    model: Date,
+                    model: Students,
                     attributes: [],
-                    required: true
-                },
-                {
-                    model: Time,
-                    attributes: [],
-                    required: true
+                    required: true,
                 },
                 {
                     model: User,
@@ -203,11 +195,13 @@ module.exports.getData = async (req, res) => {
                     required: true
                 }
             ],
-            order: [
-                ['dates', 'date', 'ASC'],
-                ['times', 'time', 'ASC']
+            group: [
+                [Sequelize.col('students.group_id')],
+                'subject_id',
+                'type_id',
             ],
-            group: ['user_id', 'dates.id', 'subject_id', 'times.id', 'users.surname', 'users.name', 'users.patronymic']
+            raw: true,
+            subQuery: false
         })
         if (Array.isArray(journal) && journal.length === 0) {
             errors.search = 'Журнал не найден'

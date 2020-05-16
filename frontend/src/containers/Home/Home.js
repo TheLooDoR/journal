@@ -226,7 +226,7 @@ class Home extends Component {
                                             <td>{ el.department }</td>
                                             <td>{ el.group }</td>
                                             <td>{ el.subject }</td>
-                                            <td>{`${el.surname} ${el.name.substr(0, 1)}. ${el.patronymic.substr(0, 1)}.`}</td>
+                                            <td>{ el.user }</td>
                                             <td width={100}>{ el.subject_type.substr(0, 1) }.</td>
                                             <td className='admin-table__open-btn'>
                                                 <MainButton

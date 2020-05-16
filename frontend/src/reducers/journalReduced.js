@@ -14,7 +14,7 @@ const initialState = {
     journalData: {},
     journalDate: {},
     journalStudents: {},
-    journalUser: {},
+    journalUser: '',
     latestJournals: [],
     isLoading: false
 }

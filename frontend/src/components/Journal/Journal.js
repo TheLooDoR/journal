@@ -354,7 +354,7 @@ class Journal extends Component {
                         :
                         <div className="Journal">
                             <div className="Journal__title">
-                                {user.role === 'admin' ? (`${journalUser.surname} ${journalUser.name.substr(0, 1)}. ${journalUser.patronymic.substr(0, 1)}./`) : null}
+                                {user.role === 'admin' ? (`${journalUser} `) : null}
                                 {group.name}/{subjectType.name}/{subject.name}
                                 <DropdownButton
                                     title={<img src={dropdownIcon} alt="More"/>}
