@@ -4,6 +4,12 @@
   flex-flow: column;
   &__title {
     display: flex;
+    @media (max-width: 420px) {
+      flex-direction: column;
+      &__student-wrap {
+        margin-left: 0;
+      }
+  }
   }
   &__date-wrap {
     font-weight: 500;
@@ -23,10 +29,9 @@
   &__student-wrap {
     margin-left: 30px;
     font-weight: 500;
-  }
-  &__student {
-    font-weight: bold;
-    color: #8823FF;
+    @media (max-width: 420px) {
+        margin-left: 0;
+    }
   }
   &__grades-title {
     font-weight: 500;
@@ -60,6 +65,9 @@
   border: 1px solid #2B9CFF;
   border-radius: 10px;
   padding-left: 15px;
+  @media (max-width: 420px) {
+    justify-content: space-around;
+  }
   &__inputs {
     display: flex;
     flex-flow: column;
@@ -68,6 +76,10 @@
     max-width: 345px;
     text-align: center;
     vertical-align: middle;
+    @media (max-width: 420px) {
+        display:none;
+
+    }
     th {
       font-size: 12px;
       border: 1px solid #2B9CFF;
@@ -81,9 +93,29 @@
       border-right: none;
       font-weight: 500;
     }
+    &-btn{
+      display:none;
+   }
+    @media (max-width: 420px) {
+      &-btn{
+        display:inline-block;
+        font-size: 10px;
+        line-height: 12px;
+        color: #1D3B55;
+        padding-top: 23px;
+        white-space:nowrap;
+        border-bottom: 1px solid ;
+        height: 37px;
+      }
+    }
   }
   &__grade-wrap {
     padding: 23px 0 30px 0;
+    @media (min-width: 420px) {
+      & br{
+        display: none;
+      }}
+
   }
   &__comment-wrap {
     display: flex;
@@ -93,15 +125,25 @@
   }
   &__grade-title {
     display: inline-block;
+    @media (max-width: 420px) {
+      margin-bottom: 0.5rem;
+      }
   }
   &__grade-value {
     margin-left: 10px;
+    @media (max-width: 420px) {
+      margin: 0;
+    }
   }
   &__comment-title {
 
   }
   &__comment-value {
-
+    @media (max-width: 420px) {
+      margin: 0;
+      width: 198px;
+      height: 40px;
+      }
   }
 }
 
@@ -121,3 +163,8 @@
 #present-modal {
   max-width: 800px;
 }
+// @media(max-width:420px){
+//   .statistic-modal__table{
+//     width: 100%;
+//   }
+// }

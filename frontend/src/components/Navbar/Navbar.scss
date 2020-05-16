@@ -30,6 +30,11 @@
         border-right: 1px solid white;
         font-size: 16px;
         font-weight: bold;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
         p {
             color: white;
             margin-bottom: 0;
@@ -61,8 +66,11 @@
     }
     &__guest-link {
         font-size: 11px;
-        &:last-child {
-            display: block;
+
+
+        &-icon{
+        visibility: hidden;
+        display: none;
         }
     }
     &__square {
@@ -98,7 +106,163 @@
     .show>.btn-primary.dropdown-toggle {
         box-shadow: none !important;
     }
+
+    // Edits
+    @media (max-width : 480px) {
+
+        height: 61px;
+        // Burger
+        .Navbar__guest-link{
+              width: 20px;
+            & p{
+           display: none;
+        }
+             &-icon{
+            color: #40ffff;
+            visibility: visible;
+            display:inline-block;
+        }
+    }
+//vars
+$fg:#2B9CFF;
+$pi:3.14;
+
+//config
+$menu-items:4;
+$open-distance:45px;
+$opening-angle:$pi*2;
+
+%goo{
+  filter:url('#shadowed-goo');
+  // debug
+  //background:rgba(255,0,0,0.2);
+}
+%ball{
+  background:$fg;
+  border: none;
+  border-radius:100%;
+  width:36px;
+  height:36px;
+  margin-left:-40px;
+  position:absolute;
+  color:white;
+  text-align:center;
+  line-height:76px;
+  transform:translate3d(0,0,0);
+  transition:transform ease-out 200ms;
+}
+
+.menu-open{
+  display:none;
+}
+.menu-item{
+  @extend %ball;
+}
+.menu-item a{
+    margin-top: -20px;
+}
+.hamburger{
+  $width:14px;
+  $height:2px;
+  width:$width;
+  height:$height;
+  background:#40ffff;
+  display:block;
+  position:absolute;
+  top:50%;
+  left:50%;
+  margin-left:-$width/2;
+  margin-top:-$height/2;
+  transition:transform 200ms;
+}
+$hamburger-spacing:6px;
+.hamburger-1{
+  transform:translate3d(0,-$hamburger-spacing,0);
+}
+.hamburger-2{
+  transform:translate3d(0,0,0);
+}
+.hamburger-3{
+  transform:translate3d(0,$hamburger-spacing,0);
+}
+.menu-open:checked+.menu-open-button{
+  .hamburger-1{
+    transform:translate3d(0,0,0) rotate(45deg);
+  }
+  .hamburger-2{
+    transform:translate3d(0,0,0) scale(0.1,1);
+  }
+  .hamburger-3{
+    transform:translate3d(0,0,0) rotate(-45deg);
+  }
+}
+// .menu{
+//   @extend %goo;
+//   $width:650px;
+//   $height:150px;
+//   position:absolute;
+//   left:50%;
+//   margin-left:-80px;
+//   padding-top:20px;
+//   padding-left:80px;
+//   width:$width;
+//   height:$height;
+//   box-sizing:border-box;
+//   font-size:20px;
+//   text-align:left;
+// }
+
+
+.menu-item{
+  &:hover{
+    background:white;
+    color:$fg;
+  }
+  @for $i from 1 through $menu-items{
+    &:nth-child(#{$i+2}){
+      transition-duration:180ms;
+    }
+  }
+}
+
+.menu-open-button{
+  @extend %ball;
+  z-index:2;
+  transition-timing-function:cubic-bezier(0.175, 0.885, 0.320, 1.275);
+  transition-duration:400ms;
+  transform:scale(1.1,1.1) translate3d(0,0,0);
+  cursor:pointer;
+}
+.menu-open-button:hover{
+  transform:scale(1.2,1.2) translate3d(0,0,0);
+}
+.menu-open:checked+.menu-open-button{
+  transition-timing-function:linear;
+  transition-duration:200ms;
+  transform:scale(0.8,0.8) translate3d(0,0,0);
+}
+
+.menu-open:checked~.menu-item{
+  transition-timing-function:cubic-bezier(0.165, 0.840, 0.440, 1.000);
+  @for $i from 1 through $menu-items{
+
+    &:nth-child(#{$i+2}){
+      transition-duration:90ms+(100ms*$i);
+      transform:translate3d(-50px*$i,0,0);
+    }
+  }
+}
+
+
+    }
     @media (min-width: 480px) {
+      .bm-burger-button {
+        width: 30px;
+        height: 25px;
+    }
+        .menu-open{
+            display: none;
+        }
         &__logo {
             img {
                 width: 118px;
@@ -107,13 +271,15 @@
         &__guest-link {
             font-size: 16px;
         }
-    }
-    @media (min-width: 1024px) {
-        &__link {
-            font-size: 14px;
+        &:last-child {
+            padding-right: 35px;
+            border:none;
         }
-    }
 
+
+
+
+    }
 }
 
 /* Position and sizing of burger button */
@@ -122,10 +288,15 @@
     width: 36px;
     height: 30px;
     right: 36px;
-    top: 40px;
+    top: 33px;
     transform: translateY(-50%);
 }
-
+@media (max-width: 480px) {
+  .bm-burger-button {
+    width: 30px;
+    height: 25px;
+}
+}
 /* Color/shape of burger icon bars */
 .bm-burger-bars {
     background: #fff;
@@ -134,7 +305,7 @@
 
 /* Color/shape of burger icon bars on hover*/
 .bm-burger-bars-hover {
-    background: #a90000;
+    background: #40ffff;
 }
 
 /* Position and sizing of clickable cross button */

@@ -194,12 +194,12 @@ class Journal extends Component {
         return (
             <thead>
                 <tr className='journal-content__title'>
-                    <th height={98}  style={{top: 56, borderBottom: 'none'}} className='fixed-row number-row'>№</th>
-                    <th height={98} style={{top: 56, borderBottom: 'none'}} className='fixed-row name-row'>ФИО</th>
+                    <th height={98}  style={{ borderBottom: 'none'}} className='fixed-row number-row'>№</th>
+                    <th height={98} style={{ borderBottom: 'none'}} className='fixed-row name-row'>ФИО</th>
                     {
                         this.props.journalDate.map(el => {
                             return (
-                                    <th height={97} id={`date-${el.date_id} time-${el.time_id}`} key={`${el.date_id}-${el.time_id}`} className='Journal__date-column'>
+                                    <th height={98} id={`date-${el.date_id} time-${el.time_id}`} key={`${el.date_id}-${el.time_id}`} className='Journal__date-column'>
                                         <DropdownButton
                                             title={formatDate(el.date)}
                                             className='Journal__delete-dropdown'
@@ -215,7 +215,7 @@ class Journal extends Component {
                     }
                     <th
                         height={98}
-                        style={{top: 56, borderBottom: 'none'}}
+                        style={{ borderBottom: 'none'}}
                         className='fixed-row budget-row'
                     >
                         Б/К
@@ -226,24 +226,25 @@ class Journal extends Component {
                         className='fixed-row add-row'
                     >
                         {this.props.user.role !== 'admin' && <div className="journal-content__add-btn" onClick={() => this.hideDateModal()}>Добавить</div>}
+                        <svg onClick={() => this.hideDateModal()} aria-hidden="true" focusable="false" data-prefix="fas" data-icon="plus" className="svg-inline--fa fa-plus fa-w-14 journal-content__add-btn-icon " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"></path></svg>
                     </th>
                     <th
                         height={98}
-                        style={{top: 56, borderBottom: 'none'}}
+                        style={{ borderBottom: 'none'}}
                         className='fixed-row miss-row'
                     >
                         Всего пропусков
                     </th>
                     <th
                         height={98}
-                        style={{top: 56, borderBottom: 'none'}}
+                        style={{ borderBottom: 'none'}}
                         className='fixed-row valid-miss-row'
                     >
                         Пропусков по ув.причине
                     </th>
                     <th
                         height={98}
-                        style={{top: 56, borderBottom: 'none'}}
+                        style={{ borderBottom: 'none'}}
                         className='fixed-row total-grades-row'
                     >
                         Итоговые оценки
@@ -271,7 +272,7 @@ class Journal extends Component {
                             {/*Student Name*/}
                             <td
                                 className='fixed-row name-row'
-                                style={{minWidth: 200}}
+                                // style={{minWidth: 200}}
                             >
                                 {`${student.surname} ${student.name.substr(0, 1)}. ${student.patronymic.substr(0, 1)}.`}
                             </td>
@@ -354,17 +355,17 @@ class Journal extends Component {
             return null
         }
         //Adaptive table slider
-        let ml = 247, mr = 517
-        if (journalDate.length === 2) {
-            ml += 3
-            mr += 2
-        } else if ((journalDate.length >= 3) && journalDate.length < 6) {
-            ml += 4
-            mr += 3
-        } else if (journalDate.length >= 6) {
-            mr += 4
-            ml += 4
-        }
+        // let ml = 27.2, mr = 34.2
+        // if (journalDate.length === 2) {
+        //     ml += 3
+        //     mr += 2
+        // } else if ((journalDate.length >= 3) && journalDate.length < 6) {
+        //     ml += 4
+        //     mr += 3
+        // } else if (journalDate.length >= 6) {
+        //     mr += 4
+        //     ml += 4
+        // }
         let missAmount = 0
         let validMissAmount = 0
         return (
@@ -397,7 +398,7 @@ class Journal extends Component {
                                     <Dropdown.Item eventKey={'attendance'}>Статистика посещаемости студентов</Dropdown.Item>
                                 </DropdownButton>
                             </div>
-                            <div ref={this.tableRef} className="Journal__content journal-content" style={{marginLeft: ml, marginRight: mr}} onScroll={this.scrollHandler}>
+                            <div ref={this.tableRef} className="Journal__content journal-content" onScroll={this.scrollHandler}>
                                 <Table bordered className='journal-content__table'>
                                     {this.renderTableHead()}
                                     {this.renderTableBody()}

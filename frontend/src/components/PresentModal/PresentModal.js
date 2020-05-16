@@ -174,6 +174,8 @@ class PresentModal extends Component{
                         <div className="grades__inputs">
                             <div className="grades__grade-wrap">
                                 <p className='grades__grade-title'>Оценка</p>
+                                 <br/>
+
                                 <Number
                                     className='grades__grade-value'
                                     min={1}
@@ -196,7 +198,9 @@ class PresentModal extends Component{
                                 />
                             </div>
                         </div>
-                        <table className="grades__marks">
+                        {/* R */}
+                        <span className="grades__marks-btn"  > Шкала баллов</span>
+                        <table className="grades__marks" >
                             <thead>
                                 <tr>
                                     <th>Мин. балл</th>
