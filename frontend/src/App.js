@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import { store as Notification } from 'react-notifications-component'
 import 'react-notifications-component/dist/theme.css'
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.scss'
 import Navbar from './components/Navbar/Navbar';
 import Register from './containers/Register/Register';
 import Login from './containers/Login/Login';
@@ -27,7 +28,6 @@ import AdminCorps from "./containers/AdminCorps/AdminCorps";
 import AdminDepartments from "./containers/AdminDepartments/AdminDepartments";
 import AdminSchedule from "./containers/AdminSchedule/AdminSchedule";
 import PersonalPage from "./containers/PersonalPage/PersonalPage";
-import './App.scss'
 
 if(localStorage.jwtToken) {
     setAuthToken(localStorage.jwtToken);
