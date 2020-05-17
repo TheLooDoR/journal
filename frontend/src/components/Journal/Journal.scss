@@ -11,43 +11,16 @@
     right: 40px;
     float: right;
     button {
-      background: transparent;
       transition: none;
-      padding: 0;
-      border: none;
-      &:hover {
-        background: transparent;
-        border: none;
-      }
-      &:after {
-        display: none;
-      }
-      &:focus {
-        box-shadow: none !important;
-      }
     }
   }
   &__delete-dropdown {
-    &:focus {
-      outline: none;
-    }
     button {
       color: #1D3B55;
-      background: transparent;
-      padding: 0;
-      border: none;
       font-size: 16px;
       font-weight: 700;
       &:hover {
         color: #1D3B55;
-        background: transparent;
-        border: none;
-      }
-      &:after {
-        display: none;
-      }
-      &:focus {
-        box-shadow: none !important;
       }
     }
   }

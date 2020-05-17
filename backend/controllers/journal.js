@@ -388,3 +388,30 @@ module.exports.addTaskByDate = async (req, res) => {
         console.log(e.message)
     }
 }
+
+module.exports.deleteTaskByDate = async (req, res) => {
+    const { group_id, type_id, date_id, subject_id, time_id } = req.query
+    Journal.destroy({
+        where: {
+            type_id,
+            date_id,
+            time_id,
+            subject_id
+        },
+        include: [{
+            model: Students,
+            attributes: [],
+            where: {
+                group_id
+            },
+            required: true
+        }]
+    })
+        .then(() => {
+            res.status(200).json('Удаление успешно')
+        })
+        .catch(err => {
+            console.log(err.message)
+            res.status(401).json(err.message)
+        })
+}

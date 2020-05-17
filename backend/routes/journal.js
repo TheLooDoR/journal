@@ -7,5 +7,6 @@ router.get('/latest', passport.authenticate('jwt', { session: false }), controll
 router.post('/', passport.authenticate('jwt', { session: false }), controller.getData)
 router.post('/update-student-data', passport.authenticate('jwt', { session: false }), controller.updateStudentData)
 router.post('/create-task-by-date', passport.authenticate('jwt', { session: false }), controller.addTaskByDate)
+router.delete('/delete-task-by-date', passport.authenticate('jwt', { session: false }), controller.deleteTaskByDate)
 
 module.exports = router
