@@ -1,0 +1,30 @@
+.dropdown {
+  .btn-primary {
+    &:disabled {
+      color: #1D3B55;
+      background: transparent;
+      border: none;
+    }
+  }
+  .btn {
+    &:disabled {
+      opacity: 1;
+    }
+  }
+  button {
+    background: transparent;
+    padding: 0;
+    border: none;
+    &:hover {
+      background: transparent;
+      border: none;
+    }
+    &:after {
+      display: none;
+    }
+    &:focus {
+      box-shadow: none !important;
+      outline: none;
+    }
+  }
+}

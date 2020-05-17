@@ -11,24 +11,33 @@
     right: 40px;
     float: right;
     button {
-      background: transparent;
       transition: none;
-      padding: 0;
-      border: none;
+    }
+  }
+  &__delete-dropdown {
+    button {
+      color: #1D3B55;
+      font-size: 16px;
+      font-weight: 700;
       &:hover {
-        background: transparent;
-        border: none;
-      }
-      &:after {
-        display: none;
-      }
-      &:focus {
-        box-shadow: none !important;
+        color: #1D3B55;
       }
     }
   }
+  .show {
+    button {
+      color: #1D3B55;
+    }
+  }
+  &__date-column {
+    transition: all ease-in-out .1s;
+    &:hover {
+      background: rgba(136, 35, 255, .1);
+      cursor: default;
+    }
+  }
   .btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active, .show>.btn-primary.dropdown-toggle {
-    color: transparent;
+    color: #1D3B55;
     border: none;
     background: transparent;
   }
@@ -71,6 +80,7 @@
   }
   &__presents {
     height: 49px;
+    transition: all ease-in-out .1s;
     &:hover {
       background: rgba(136, 35, 255, .1);
       cursor: default;

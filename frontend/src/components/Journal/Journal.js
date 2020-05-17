@@ -7,7 +7,13 @@ import PresentModal from "../PresentModal/PresentModal";
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import MainButton from "../UI/MainButton/MainButton";
-import {addTaskByDate, getTimeData} from "../../actions";
+import {
+    addTaskByDate,
+    getTimeData,
+    requestJournalData,
+    requestJournalDataFinished,
+    setJournalData
+} from "../../actions";
 import {connect} from 'react-redux'
 import isEmpty from "../../common-js/isEmpty";
 import formatDate from "../../common-js/formatDate";
@@ -17,6 +23,7 @@ import CustomSelect from "../UI/Select/CustomSelect";
 import AttendanceDoughnut from "../Statistic/AttendanceDoughnut/AttendanceDoughnut";
 import ScoreDoughnut from "../Statistic/ScoreDoughnut/ScoreDoughnut";
 import formatTime from "../../common-js/formatTime";
+import Axios from "axios";
 import './Journal.scss'
 
 class Journal extends Component {
@@ -27,6 +34,7 @@ class Journal extends Component {
             showModal: false,
             showDateModal: false,
             showStatisticModal: false,
+            showDeleteTaskModal: false,
             statisticType: null,
             date: new Date(),
             currentStudent: {},
@@ -41,7 +49,8 @@ class Journal extends Component {
                 satisfactory: null,
                 good: null,
                 excellent: null
-            }
+            },
+            deleteTaskData: {}
         }
     }
 
@@ -162,6 +171,49 @@ class Journal extends Component {
         this.hideDateModal()
     }
 
+    hideDeleteTaskModal(data=null) {
+        if (!this.state.showDeleteTaskModal) {
+            this.setState({
+                deleteTaskData: data
+            })
+        }
+        this.setState({
+            showDeleteTaskModal: !this.state.showDeleteTaskModal
+        })
+    }
+
+    deleteTaskHandler(e) {
+        e.preventDefault()
+
+        const { dispatch, group, subjectType, subject, user } = this.props
+        const { date_id, time_id } = this.state.deleteTaskData
+        const params = {
+            group_id: group.id,
+            subject_id: subject.id,
+            type_id: subjectType.id,
+            date_id,
+            time_id
+        }
+        this.hideDeleteTaskModal()
+        dispatch(requestJournalData())
+        Axios.delete('api/journal/delete-task-by-date', { params })
+            .then(() => {
+                const isAdmin = user.role === 'admin'
+                const journalParameters = {
+                    group_id: group.id,
+                    subject_id: subject.id,
+                    type_id: subjectType.id,
+                    user_id: user.userId,
+                    isAdmin
+                }
+                dispatch(setJournalData(journalParameters))
+            })
+            .catch(err => {
+                dispatch(requestJournalDataFinished())
+                console.log(err.response.data)
+            })
+    }
+
     calculateTotalGrades(grades) {
         let sum = 0
         for (let i = 0; i < grades.length; i++) {
@@ -179,7 +231,18 @@ class Journal extends Component {
                     {
                         this.props.journalDate.map(el => {
                             return (
-                                <th height={97} id={`date-${el.date_id} time-${el.time_id}`} key={`${el.date_id}-${el.time_id}`}>{formatDate(el.date)}</th>
+                                    <th height={97} id={`date-${el.date_id} time-${el.time_id}`} key={`${el.date_id}-${el.time_id}`} className='Journal__date-column'>
+                                        <DropdownButton
+                                            title={formatDate(el.date)}
+                                            className='Journal__delete-dropdown'
+                                            alignRight
+                                            id='journal-dropdown-btn'
+                                            onSelect={() => this.hideDeleteTaskModal(el)}
+                                            disabled={this.props.user.role === 'admin'}
+                                        >
+                                            <Dropdown.Item eventKey={'score'}>Удалить</Dropdown.Item>
+                                        </DropdownButton>
+                                    </th>
                             )
                         })
                     }
@@ -441,7 +504,7 @@ class Journal extends Component {
                                                 <td>
                                                     {`${student.surname} ${student.name} ${student.patronymic}`}
                                                 </td>
-                                                {journalData.map((el, index) => {
+                                                {journalData.map((el) => {
                                                     if (el.student_id === student.id) {
                                                         //Counting miss amount
                                                         if (!el.present) {
@@ -466,6 +529,24 @@ class Journal extends Component {
                         </div>
                         : null}
                 </Modal>
+                { !isEmpty(this.state.deleteTaskData) &&
+                    <Modal onClose={ () => this.hideDeleteTaskModal() } open={this.state.showDeleteTaskModal} center animationDuration={250} showCloseIcon={false}>
+                        <form className="admin-delete" onSubmit={ e => this.deleteTaskHandler(e) }>
+                            <p className='admin-delete__text'>
+                                Вы уверенны что хотите удалить занятие
+                                <span>{`${formatDate(this.state.deleteTaskData.date)}, ${formatTime(this.state.deleteTaskData.time)}, 
+                                ${this.props.subjectType.name}, ${this.props.subject.full_name}, ${this.props.group.name}`}?</span>
+                            </p>
+                            <div className="admin-delete__buttons">
+                                <button className="admin-delete__btn" onClick={(e) => {
+                                    e.preventDefault()
+                                    this.hideDeleteTaskModal()
+                                }}>Нет</button>
+                                <button className="admin-delete__btn" type='submit'>Да</button>
+                            </div>
+                        </form>
+                    </Modal>
+                    }
             </Modal>
         )
     }
