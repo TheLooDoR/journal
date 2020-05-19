@@ -102,3 +102,29 @@ export const getRatingDataByUser = (page, pageSize, user_id) => dispatch => {
             console.log(err.response.data)
         })
 }
+
+export const getStatisticDataByDepartment = department_id => dispatch => {
+    dispatch(requestStatistic())
+    Axios.get(`api/statistics/department/${department_id}`)
+        .then(res => {
+            dispatch(statisticData(res.data))
+            dispatch(requestStatisticFinished())
+        })
+        .catch(err => {
+            dispatch(requestStatisticFinished())
+            console.log(err.response.data)
+        })
+}
+
+export const getRatingDataByDepartment = (page, pageSize, department_id) => dispatch => {
+    dispatch(requestRating())
+    Axios.get('api/statistics/rating/by-department/', { params: { page, pageSize, department_id}})
+        .then(res => {
+            dispatch(ratingData(res.data, page))
+            dispatch(requestRatingFinished())
+        })
+        .catch(err => {
+            dispatch(requestRatingFinished())
+            console.log(err.response.data)
+        })
+}
