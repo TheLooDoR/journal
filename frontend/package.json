@@ -61,6 +61,7 @@
     "react-dom": "^16.11.0",
     "react-input-mask": "^2.0.4",
     "react-notifications-component": "^2.4.0",
+    "react-paginate": "^6.3.2",
     "react-redux": "^7.1.1",
     "react-responsive-modal": "^4.0.1",
     "react-router-dom": "^5.1.2",

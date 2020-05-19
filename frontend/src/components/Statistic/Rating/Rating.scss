@@ -1,0 +1,52 @@
+.rating {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  &__table {
+    margin: 0 auto;
+    table-layout: fixed;
+  }
+  &__table-loading {
+    th, td {
+      border-color: gray!important;
+      color: gray;
+    }
+  }
+  td, th {
+    text-align: center;
+    border: 1px solid #2B9CFF;
+    padding: 15px;
+  }
+  .pagination {
+    margin-top: 20px;
+    padding: 15px 20px;
+    background: #f0f8ff;
+    li {
+      margin: 0 5px;
+      font-size: 16px;
+      a {
+        text-decoration: none;
+        color: #2B9CFF;
+        transition: all ease-in-out .3s;
+        &:focus {
+          outline: none;
+        }
+        &:hover {
+          color: #9610FF;
+        }
+      }
+      &:hover {
+        cursor: pointer;
+      }
+    }
+    .active {
+      border: 1px solid #9610FF;
+      border-radius: 2px;
+      padding: 0 5px;
+      a {
+        color: #9610FF;
+        font-weight: bold;
+      }
+    }
+  }
+}

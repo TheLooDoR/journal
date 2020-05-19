@@ -190,9 +190,12 @@
     font-weight: 500;
     line-height: 23px;
     margin-left: 25px;
+    color: #1D3B55;
+    transition: all ease-in-out .3s;
     &:hover {
       opacity: .8;
       cursor: pointer;
+      text-decoration: none;
     }
   }
 }

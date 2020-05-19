@@ -3,6 +3,19 @@ import { Doughnut } from 'react-chartjs-2';
 import '../../../chart-plugins/centeredLabel'
 
 const AttendanceDoughnut = props => {
+    if (props.miss === 0 && props.present === 0) {
+        return (
+            <div style={{
+                position: "absolute",
+                left: '50%',
+                top: '50%',
+                transform: 'translate(-50%, -50%)',
+                fontSize: 20
+            }}>
+                Данные отсутствуют
+            </div>
+        )
+    }
     return (
         <Doughnut
             height={props.height}

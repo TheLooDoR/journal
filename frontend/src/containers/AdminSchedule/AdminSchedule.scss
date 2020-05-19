@@ -31,8 +31,10 @@
   }
   &__select {
     padding: 0 10px;
-    height: 45px;
     font-weight: normal;
+    .react-select__control {
+      height: 45px;
+    }
   }
   &__department-select {
     margin-right: 10px;
