@@ -294,7 +294,7 @@ class Users extends Component {
                                     <tbody>
                                     {users.map((el, index) => {
                                         return (
-                                            <tr key={el.id} id={`user-${el.id}`}>
+                                            <tr key={index} id={`user-${el.id}`}>
                                                 <td className='admin-table__number'>{ index + 1 }.</td>
                                                 <td style={{ textAlign: 'left', paddingLeft: 20, paddingRight: 20 }}>{`${el.surname} ${el.name} ${el.patronymic}`}</td>
                                                 <td style={{ width: 100 }}>{el.department}</td>

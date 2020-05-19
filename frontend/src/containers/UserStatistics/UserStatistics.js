@@ -20,7 +20,7 @@ class UserStatistics extends Component {
         this.state = {
             user: {},
             initialPage: 0,
-            pageSize: 5
+            pageSize: 8
         }
     }
 
