@@ -23,7 +23,7 @@ const Rating = props => {
                                     <tr key={index}>
                                         <td>{index + 1 + props.currentPage * props.pageSize}.</td>
                                         <td>{`${el.surname} ${el.name.substr(0, 1)}. ${el.patronymic.substr(0, 1)}.`}</td>
-                                        <td>{el.score ? el.score : ''}</td>
+                                        <td>{el.score ? Math.round(el.score) : ''}</td>
                                         <td>{el.total_miss}</td>
                                     </tr>
                                 )
