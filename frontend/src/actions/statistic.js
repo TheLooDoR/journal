@@ -64,9 +64,35 @@ export const getStatisticDataByGroup = (group_id) => dispatch => {
         })
 }
 
-export const getRatingDataBuGroup = (page, pageSize, group_id) => dispatch => {
+export const getRatingDataByGroup = (page, pageSize, group_id) => dispatch => {
     dispatch(requestRating())
-    Axios.get('api/statistics/rating-by-group/', { params: { page, pageSize, group_id}})
+    Axios.get('api/statistics/rating/by-group/', { params: { page, pageSize, group_id}})
+        .then(res => {
+            dispatch(ratingData(res.data, page))
+            dispatch(requestRatingFinished())
+        })
+        .catch(err => {
+            dispatch(requestRatingFinished())
+            console.log(err.response.data)
+        })
+}
+
+export const getStatisticDataByUser = user_id => dispatch => {
+    dispatch(requestStatistic())
+    Axios.get(`api/statistics/user/${user_id}`)
+        .then(res => {
+            dispatch(statisticData(res.data))
+            dispatch(requestStatisticFinished())
+        })
+        .catch(err => {
+            dispatch(requestStatisticFinished())
+            console.log(err.response.data)
+        })
+}
+
+export const getRatingDataByUser = (page, pageSize, user_id) => dispatch => {
+    dispatch(requestRating())
+    Axios.get('api/statistics/rating/by-user/', { params: { page, pageSize, user_id}})
         .then(res => {
             dispatch(ratingData(res.data, page))
             dispatch(requestRatingFinished())

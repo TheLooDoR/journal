@@ -255,7 +255,7 @@ class Journal extends Component {
                     </th>
                     <th
                         height={98}
-                        style={{top: 56, borderBottom: 'none'}}
+                        style={{borderBottom: 'none'}}
                         className='fixed-row add-row'
                     >
                         {this.props.user.role !== 'admin' && <div className="journal-content__add-btn" onClick={() => this.hideDateModal()}>Добавить</div>}
