@@ -30,6 +30,7 @@ import AdminSchedule from "./containers/AdminSchedule/AdminSchedule";
 import PersonalPage from "./containers/PersonalPage/PersonalPage";
 import GroupStatistics from "./containers/GroupStatistics/GroupStatistics";
 import UserStatistics from "./containers/UserStatistics/UserStatistics";
+import DepartmentStatistic from "./containers/DepartmentStatistics/DepartmentStatistics";
 
 if(localStorage.jwtToken) {
     setAuthToken(localStorage.jwtToken);
@@ -101,6 +102,7 @@ class App extends Component {
                                 <Route path='/admin-departments' component={ PrivateRoute(AdminDepartments, true) }/>
                                 <Route path='/me' component={ PrivateRoute(PersonalPage) } />
                                 <Route path='/group-statistics' component={ PrivateRoute(GroupStatistics) } />
+                                <Route path='/department-statistics' component={ PrivateRoute(DepartmentStatistic)}/>
                                 <Route path='/user-statistics' component={PrivateRoute(UserStatistics)} />
                                 <Route exact path="/register" component={ Register } />
                                 <Route exact path="/login" component={ Login } />

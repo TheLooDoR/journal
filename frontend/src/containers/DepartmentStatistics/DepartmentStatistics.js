@@ -1,24 +1,23 @@
 import React, {Component} from "react";
 import { connect } from 'react-redux'
 import CustomSelect from "../../components/UI/Select/CustomSelect";
-import {
-    GET_STATISTIC_DATA,
-    getRatingDataByUser,
-    getSelectUsersData,
-    getStatisticDataByUser
-} from "../../actions";
-import isEmpty from "../../common-js/isEmpty";
 import MainButton from "../../components/UI/MainButton/MainButton";
+import isEmpty from "../../common-js/isEmpty";
 import Loader from "../../components/UI/Loader/Loader";
 import Statistic from "../../components/Statistic/Statistic";
-import './UserStatistics.scss'
+import {
+    GET_STATISTIC_DATA,
+    getDepartmentsData, getRatingDataByDepartment,
+    getRatingDataByUser, getStatisticDataByDepartment,
+} from "../../actions";
+import './DepartmentStatistics.scss'
 
-class UserStatistics extends Component {
+class DepartmentStatistics extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            user: {},
+            department: {},
             initialPage: 0,
             pageSize: 5
         }
@@ -26,7 +25,7 @@ class UserStatistics extends Component {
 
     componentDidMount() {
         const { dispatch } = this.props
-        dispatch(getSelectUsersData())
+        dispatch(getDepartmentsData())
     }
 
     componentWillUnmount() {
@@ -36,44 +35,44 @@ class UserStatistics extends Component {
         })
     }
 
-    userChangeHandler(value) {
+    departmentChangeHandler(value) {
         this.setState({
-            user: value
+            department: value
         })
     }
 
     showStatistics = () => {
         const { dispatch } = this.props
-        const { initialPage, pageSize, user } = this.state
-        dispatch(getStatisticDataByUser(this.state.user.id))
-        dispatch(getRatingDataByUser(initialPage, pageSize, user.id))
+        const { initialPage, pageSize, department } = this.state
+        dispatch(getStatisticDataByDepartment(this.state.department.id))
+        dispatch(getRatingDataByDepartment(initialPage, pageSize, department.id))
     }
 
     handlePageClick = data => {
         const { dispatch } = this.props
-        dispatch(getRatingDataByUser(data.selected, this.state.pageSize, this.state.user.id))
+        dispatch(getRatingDataByDepartment(data.selected, this.state.pageSize, this.state.department.id))
     }
 
     render() {
-        const { users, statistic, rating, statisticLoading, ratingLoading } = this.props
-        const { user } = this.state
+        const { departments, statistic, rating, statisticLoading, ratingLoading } = this.props
+        const { department } = this.state
         return (
-            <div className='UserStatistics'>
+            <div className='DepartmentStatistics'>
                 <div className="container">
-                    <div className="UserStatistics__title">Статистика по преподавателям</div>
-                    <div className="UserStatistics__selects">
+                    <div className="DepartmentStatistics__title">Статистика по кафедрам</div>
+                    <div className="DepartmentStatistics__selects">
                         <CustomSelect
-                            className='UserStatistics__select'
-                            label={el => `${el.surname} ${el.name} ${el.patronymic}`}
+                            className='DepartmentStatistics__select'
+                            label={el => el.name}
                             value={el => el}
-                            options={users}
+                            options={departments}
                             isSearchable
-                            changeHandler={(value) => this.userChangeHandler(value)}
-                            placeholder='Преподаватель'
+                            changeHandler={(value) => this.departmentChangeHandler(value)}
+                            placeholder='Кафедра'
                         />
                         <MainButton
-                            className='GroupStatistics__btn'
-                            disabled={isEmpty(user)}
+                            className='DepartmentStatistics__btn'
+                            disabled={isEmpty(department)}
                             onClick={this.showStatistics}
                         >
                             Показать
@@ -99,7 +98,7 @@ class UserStatistics extends Component {
 
 function mapStateToProps(state) {
     return {
-        users: state.users.users,
+        departments: state.entities.departments,
         statistic: state.statistic.statisticData,
         rating: state.statistic.ratingData,
         statisticLoading: state.statistic.statisticLoading,
@@ -107,4 +106,4 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(UserStatistics)
+export default connect(mapStateToProps)(DepartmentStatistics)
