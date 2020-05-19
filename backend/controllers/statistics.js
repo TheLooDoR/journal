@@ -15,7 +15,7 @@ module.exports.ratingByGroup = async (req, res) => {
             [Sequelize.col('students.name'), 'name'],
             [Sequelize.col('students.patronymic'), 'patronymic'],
             [Sequelize.literal('SUM ( CASE WHEN present = \'f\' THEN 1 WHEN present = \'t\' THEN 0 END )'), 'total_miss'],
-            [Sequelize.literal('round( SUM ( journal.score ) / COUNT ( journal.score ) :: FLOAT )'), 'score']
+            [Sequelize.literal('SUM ( journal.score :: FLOAT ) / COUNT ( journal.score :: FLOAT )'), 'score']
         ],
         include: [{
             model: Student,
@@ -80,7 +80,7 @@ module.exports.ratingByUser = async (req, res) => {
             [Sequelize.col('students.name'), 'name'],
             [Sequelize.col('students.patronymic'), 'patronymic'],
             [Sequelize.literal('SUM ( CASE WHEN present = \'f\' THEN 1 WHEN present = \'t\' THEN 0 END )'), 'total_miss'],
-            [Sequelize.literal('round( SUM ( journal.score ) / COUNT ( journal.score ) :: FLOAT )'), 'score']
+            [Sequelize.literal('SUM ( journal.score :: FLOAT ) / COUNT ( journal.score :: FLOAT )'), 'score']
         ],
         where: { user_id },
         include: [{
@@ -141,7 +141,7 @@ module.exports.ratingByDepartment = async (req, res) => {
             [Sequelize.col('students.name'), 'name'],
             [Sequelize.col('students.patronymic'), 'patronymic'],
             [Sequelize.literal('SUM ( CASE WHEN present = \'f\' THEN 1 WHEN present = \'t\' THEN 0 END )'), 'total_miss'],
-            [Sequelize.literal('round( SUM ( journal.score ) / COUNT ( journal.score ) :: FLOAT )'), 'score']
+            [Sequelize.literal('SUM ( journal.score :: FLOAT ) / COUNT ( journal.score :: FLOAT )'), 'score']
         ],
         include: [{
             model: Student,

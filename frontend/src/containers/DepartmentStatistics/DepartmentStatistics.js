@@ -8,7 +8,7 @@ import Statistic from "../../components/Statistic/Statistic";
 import {
     GET_STATISTIC_DATA,
     getDepartmentsData, getRatingDataByDepartment,
-    getRatingDataByUser, getStatisticDataByDepartment,
+    getStatisticDataByDepartment,
 } from "../../actions";
 import './DepartmentStatistics.scss'
 
