@@ -13,6 +13,7 @@ import userStatisticsLogo from '../../assets/admin/user-statistics.png'
 import departmentStatisticsLogo from '../../assets/admin/department-statistics.png'
 import facultyStatisticsLogo from '../../assets/admin/faculty-statistics.png'
 import './PersonalPage.scss'
+import {Link} from "react-router-dom";
 
 
 class PersonalPage extends Component {
@@ -256,19 +257,19 @@ class PersonalPage extends Component {
             <div className='PersonalPage__admin-statistics admin-statistics'>
                 <div className="admin-statistics__link-wrap">
                     <img src={groupStatisticsLogo} alt="Группы"/>
-                    <span className='admin-statistics__link'>Перейти к просмотру статистики по группам</span>
+                    <Link to='/group-statistics' className='admin-statistics__link'>Перейти к просмотру статистики по группам</Link>
                 </div>
                 <div className="admin-statistics__link-wrap">
                     <img src={userStatisticsLogo} alt="Группы"/>
-                    <span className='admin-statistics__link'>Перейти к просмотру статистики по препадователям</span>
+                    <Link to='/user-statistics' className='admin-statistics__link'>Перейти к просмотру статистики по преподавателям</Link>
                 </div>
                 <div className="admin-statistics__link-wrap">
                     <img src={departmentStatisticsLogo} alt="Группы"/>
-                    <span className='admin-statistics__link'>Перейти к просмотру статистики по кафедре</span>
+                    <Link to='/department-statistics' className='admin-statistics__link'>Перейти к просмотру статистики по кафедре</Link>
                 </div>
                 <div className="admin-statistics__link-wrap">
                     <img src={facultyStatisticsLogo} alt="Группы"/>
-                    <span className='admin-statistics__link'>Перейти к просмотру статистики по факультету</span>
+                    <Link to='faculty-statistics' className='admin-statistics__link'>Перейти к просмотру статистики по факультету</Link>
                 </div>
             </div>
         )

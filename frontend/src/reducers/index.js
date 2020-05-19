@@ -5,6 +5,7 @@ import entitiesReducer from "./entitiesReducer";
 import journalReduced from "./journalReduced";
 import scheduleReducer from "./scheduleReducer";
 import usersReducer from "./usersReducer";
+import statisticReducer from "./statisticReducer";
 
 export default combineReducers({
     errors: errorReducer,
@@ -12,5 +13,6 @@ export default combineReducers({
     entities: entitiesReducer,
     journal: journalReduced,
     schedule: scheduleReducer,
-    users: usersReducer
+    users: usersReducer,
+    statistic: statisticReducer
 });

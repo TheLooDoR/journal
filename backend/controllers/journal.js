@@ -305,7 +305,7 @@ module.exports.addTaskByDate = async (req, res) => {
         if (!checker(studentsJournal_ids, studentsGroup_ids)) {
             //get all dates from journal
             const journalDates = await Journal.findAll({
-                attributes: ['date_id', 'time_id'],
+                attributes: ['date_id', 'time_id', 'user_id'],
                 where: {
                     student_id: {
                         [Op.in]: studentsJournal_ids
@@ -313,7 +313,7 @@ module.exports.addTaskByDate = async (req, res) => {
                     subject_id: req.body.subject_id,
                     type_id: req.body.type_id
                 },
-                group: ['date_id', 'time_id']
+                group: ['date_id', 'time_id', 'user_id']
             })
             //filter only students which doesn`t consist in all tasks
             const filtered_ids = studentsGroup_ids.filter(i => !studentsJournal_ids.includes(i))
@@ -323,7 +323,7 @@ module.exports.addTaskByDate = async (req, res) => {
                     try {
                         //insert missing student in past tasks
                         await Journal.create({
-                            user_id: req.body.user_id,
+                            user_id: date.user_id,
                             subject_id: req.body.subject_id,
                             student_id: student_id,
                             present: true,
