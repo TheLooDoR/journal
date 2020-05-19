@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import {
     GET_STATISTIC_DATA,
     getDepartmentsData,
-    getGroupsDataByDepartment, getRatingDataBuGroup,
+    getGroupsDataByDepartment, getRatingDataByGroup,
     getStatisticDataByGroup
 } from "../../actions";
 import CustomSelect from "../../components/UI/Select/CustomSelect";
@@ -56,16 +56,16 @@ class GroupStatistics extends Component {
         })
     }
 
-    handleClick = () => {
+    showStatistics = () => {
         const { dispatch } = this.props
         const { initialPage, pageSize, group } = this.state
         dispatch(getStatisticDataByGroup(this.state.group.id))
-        dispatch(getRatingDataBuGroup(initialPage, pageSize, group.id))
+        dispatch(getRatingDataByGroup(initialPage, pageSize, group.id))
     }
 
     handlePageClick = data => {
         const { dispatch } = this.props
-        dispatch(getRatingDataBuGroup(data.selected, this.state.pageSize, this.state.group.id))
+        dispatch(getRatingDataByGroup(data.selected, this.state.pageSize, this.state.group.id))
     };
 
     render() {
@@ -99,7 +99,7 @@ class GroupStatistics extends Component {
                         <MainButton
                             className='GroupStatistics__btn'
                             disabled={isEmpty(group) || isEmpty(department)}
-                            onClick={this.handleClick}
+                            onClick={this.showStatistics}
                         >
                             Показать
                         </MainButton>
@@ -116,7 +116,6 @@ class GroupStatistics extends Component {
                             ratingLoading={ratingLoading}
                         />
                     }
-
                 </div>
             </div>
         )

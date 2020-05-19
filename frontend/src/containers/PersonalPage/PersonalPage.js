@@ -269,7 +269,7 @@ class PersonalPage extends Component {
                 </div>
                 <div className="admin-statistics__link-wrap">
                     <img src={facultyStatisticsLogo} alt="Группы"/>
-                    <Link to='faculty-statistics' className='admin-statistics__link'>Перейти к просмотру статистики по факультету</Link>
+                    <Link to='/faculty-statistics' className='admin-statistics__link'>Перейти к просмотру статистики по факультету</Link>
                 </div>
             </div>
         )
