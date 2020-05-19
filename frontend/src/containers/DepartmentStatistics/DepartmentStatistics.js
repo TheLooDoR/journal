@@ -19,7 +19,7 @@ class DepartmentStatistics extends Component {
         this.state = {
             department: {},
             initialPage: 0,
-            pageSize: 5
+            pageSize: 8
         }
     }
 

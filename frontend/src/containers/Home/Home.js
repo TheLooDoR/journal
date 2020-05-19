@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import Loader from "../../components/UI/Loader/Loader";
 import {connect} from "react-redux";
-import Axios from "axios";
 import {
     getDepartmentsData,
     getGroupsDataByDepartment,
     getSubjectsData,
     getSubjectTypesData, setJournalData,
     setJournalParameters,
-    getUserScheduleData, GET_GROUPS, setLatestJournal
+    getUserScheduleData, GET_GROUPS, setLatestJournal, getStatisticDataByFaculty, getRandomUsers
 } from "../../actions";
 import MainButton from '../../components/UI/MainButton/MainButton'
 import Journal from "../../components/Journal/Journal";
@@ -30,8 +29,6 @@ class Home extends Component {
                 subjectType: {},
                 subject: {}
             },
-            statisticsData: {},
-            randomUsers: [],
             showModal: false
         }
     }
@@ -43,28 +40,8 @@ class Home extends Component {
         dispatch(getSubjectsData())
         if (this.props.user.role === 'admin') {
             dispatch(setLatestJournal())
-             Axios.get('api/statistics/faculty')
-                .then(res => {
-                    const { present, miss, unsatisfactory, satisfactory, good, excellent} = res.data
-                    this.setState({
-                        statisticsData: {
-                            present,
-                            miss,
-                            unsatisfactory,
-                            satisfactory,
-                            good,
-                            excellent
-                        }
-                    })
-                })
-                .catch(err => console.log(err.message))
-            Axios.get('api/users/random-users')
-                .then(res => {
-                    this.setState({
-                        randomUsers: res.data
-                    })
-                })
-                .catch(err => console.log(err.message))
+            dispatch(getStatisticDataByFaculty())
+            dispatch(getRandomUsers())
         } else {
             dispatch(getUserScheduleData(this.props.user.userId))
         }
@@ -263,13 +240,13 @@ class Home extends Component {
     }
 
     renderHomeFooter() {
-        const { present, miss, unsatisfactory, satisfactory, good, excellent } = this.state.statisticsData
+        const { present, miss, unsatisfactory, satisfactory, good, excellent } = this.props.statisticData
         return (
             <div className='Home__home-footer home-footer'>
                 <div className="home-footer__users-wrap">
                     <h3 className="home-footer__users-title">Пользователи</h3>
                     <div className="home-footer__users">
-                        {this.state.randomUsers.map((el, index) => {
+                        {this.props.users.users.map((el, index) => {
                             return (
                                 <div className="home-footer__user footer-user" key={index}>
                                     <div className="footer-user__circle"/>
@@ -310,12 +287,12 @@ class Home extends Component {
     }
 
     render() {
-        const {entities, user, scheduleLoading, journalLoading} = this.props
+        const {entities, user, scheduleLoading, journalLoading, statisticLoading} = this.props
         const {journalData} = this.state
         if ((!entities.subjectTypes || !entities.groups || !entities.subjects || !entities.departments) || scheduleLoading || journalLoading ) {
             return (<Loader/>)
         }
-        if (user.role === 'admin' && (this.state.randomUsers.length === 0 || isEmpty(this.state.statisticsData ))) {
+        if (user.role === 'admin' && ( statisticLoading || this.props.users.isLoading )) {
             return (<Loader/>)
         }
         return (
@@ -392,7 +369,10 @@ function mapStateToProps(state) {
         groupsLoading: state.entities.groupsLoading,
         schedule: state.schedule,
         scheduleLoading: state.schedule.scheduleLoading,
-        latestJournals: state.journal.latestJournals
+        latestJournals: state.journal.latestJournals,
+        statisticData: state.statistic.statisticData,
+        statisticLoading: state.statistic.statisticLoading,
+        users: state.users
     }
 }
 

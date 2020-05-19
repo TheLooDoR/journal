@@ -128,3 +128,29 @@ export const getRatingDataByDepartment = (page, pageSize, department_id) => disp
             console.log(err.response.data)
         })
 }
+
+export const getStatisticDataByFaculty = () => dispatch => {
+    dispatch(requestStatistic())
+    Axios.get(`api/statistics/faculty`)
+        .then(res => {
+            dispatch(statisticData(res.data))
+            dispatch(requestStatisticFinished())
+        })
+        .catch(err => {
+            dispatch(requestStatisticFinished())
+            console.log(err.response.data)
+        })
+}
+
+export const getRatingDataByFaculty = (page, pageSize) => dispatch => {
+    dispatch(requestRating())
+    Axios.get('api/statistics/rating', { params: { page, pageSize}})
+        .then(res => {
+            dispatch(ratingData(res.data, page))
+            dispatch(requestRatingFinished())
+        })
+        .catch(err => {
+            dispatch(requestRatingFinished())
+            console.log(err.response.data)
+        })
+}

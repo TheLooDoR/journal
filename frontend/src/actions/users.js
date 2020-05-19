@@ -37,3 +37,16 @@ export const getSelectUsersData = () => dispatch => {
             dispatch(usersData(res.data.users))
         })
 }
+
+export const getRandomUsers = () => dispatch => {
+    dispatch(requestUsersData())
+    Axios.get('api/users/random-users')
+        .then(res => {
+            dispatch(usersData(res.data))
+            dispatch(requestUsersDataFinished())
+        })
+        .catch(err => {
+            dispatch(requestUsersDataFinished())
+            console.log(err.message)
+        })
+}

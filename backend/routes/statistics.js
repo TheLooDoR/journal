@@ -10,5 +10,6 @@ router.get('/department/:department_id', passport.authenticate('jwt', { session:
 router.get('/rating/by-group', passport.authenticate('jwt', { session: false }), controller.ratingByGroup)
 router.get('/rating/by-user', passport.authenticate('jwt', { session: false }), controller.ratingByUser)
 router.get('/rating/by-department', passport.authenticate('jwt', { session: false }), controller.ratingByDepartment)
+router.get('/rating', passport.authenticate('jwt', { session: false }), controller.facultyRating)
 
 module.exports = router

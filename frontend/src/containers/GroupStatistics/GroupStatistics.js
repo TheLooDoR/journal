@@ -21,7 +21,7 @@ class GroupStatistics extends Component {
             department: {},
             group: {},
             initialPage: 0,
-            pageSize: 5
+            pageSize: 8
         }
     }
 
