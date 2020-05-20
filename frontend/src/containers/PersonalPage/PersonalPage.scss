@@ -54,6 +54,7 @@
     height: 100px;
     background: #4D70FF;
     border-radius: 50%;
+    margin: 10px 0;
     img {
       position: absolute;
       top: 50%;
@@ -63,24 +64,25 @@
   }
   &__name-wrap {
     display: flex;
+    flex-flow: row wrap;
     align-items: center;
     justify-content: center;
   }
   &__fio {
-    margin-left: 20px;
     font-size: 18px;
     border: 1px solid #2B9CFF;
     border-radius: 10px;
     padding: 10px 20px;
-  }
-  &__edit-fio {
-    margin-left: 20px;
   }
   &__university-data-wrap {
     display: flex;
     align-items: center;
     justify-content: center;
     margin-top: 40px;
+  }
+  &__edit-university-data {
+    max-width: 450px;
+    width: 100%;
   }
   &__contacts-wrap {
     display: flex;
@@ -98,6 +100,21 @@
     max-width: 280px;
     width: 100%;
     padding: 10px 0;
+  }
+  @media (min-width: 500px) {
+    &__fio {
+      margin-left: 20px;
+    }
+  }
+  @media (min-width: 560px) {
+    &__edit-fio {
+      margin-left: 20px;
+    }
+  }
+  @media (min-width: 700px) {
+    &__user-logo {
+      margin: 0;
+    }
   }
 }
 
@@ -140,13 +157,25 @@
   }
   &__name {
     border-radius: 10px 10px 0 0;
+    input {
+      width: 100%;
+      max-width: 200px;
+    }
   }
   &__surname {
     border-top: none;
     border-bottom: none;
+    input {
+      width: 100%;
+      max-width: 200px;
+    }
   }
   &__patronymic {
     border-radius: 0 0 10px 10px;
+    input {
+      width: 100%;
+      max-width: 200px;
+    }
   }
   &__department {
     border-radius: 10px 10px 0 0;
@@ -154,6 +183,10 @@
   &__position {
     border-top: none  ;
     border-radius: 0 0 10px 10px;
+    select {
+      width: 100%;
+      max-width: 290px;
+    }
   }
   &__phone-number {
     border-radius: 10px 10px 0 0;
