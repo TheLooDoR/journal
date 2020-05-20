@@ -52,10 +52,10 @@ class Navbar extends Component {
     render() {
         const {isAuthenticated, user} = this.props.auth;
         let authLinks = null
-        if (this.props.isDesktop) {
+        if (this.props.isDesktop || user.role === 'admin') {
             authLinks = (
                 <>
-                    {this.renderAuthLinks()}
+                    { user.role !== 'admin' && this.renderAuthLinks() }
                     <DropdownButton
                         id='user-dropdown-btn'
                         className='Navbar__dropdown'
@@ -71,12 +71,6 @@ class Navbar extends Component {
                         <Dropdown.Item as={Link} to='/me'>Личный кабинет</Dropdown.Item>
                         <Dropdown.Item onClick={this.onLogout.bind(this)}>Выйти</Dropdown.Item>
                     </DropdownButton>
-                    {/*<div className={'Navbar__link'}>*/}
-                    {/*    <img src={userLogo} alt=""/>*/}
-                    {/*    <button className="Navbar__logout-btn" onClick={this.onLogout.bind(this)}>*/}
-                    {/*        {user.name}*/}
-                    {/*    </button>*/}
-                    {/*</div>*/}
                 </>
             )
         }
@@ -94,16 +88,16 @@ class Navbar extends Component {
         return (
             <header>
                 <section className={'header'} >
-                    {this.props.isDesktop || !isAuthenticated || user.role === 'admin' ?  null :
+                    { ((!this.props.isDesktop && isAuthenticated) && user.role !== 'admin')  &&
                         <Menu right>
-                            {this.renderAuthLinks()}
+                            { user.role !== 'admin' && this.renderAuthLinks() }
                             <DropdownButton
                                 id='user-dropdown-btn-mobile'
                                 className='Navbar__dropdown'
                                 title={
                                     <div className={'Navbar__link'} style={{ flexDirection: 'row'}}>
                                         <img src={userLogo} alt=""/>
-                                        <div className="Navbar__logout-btn">
+                                        <div className="Navbar__burger-logout-btn">
                                             {user.name}
                                         </div>
                                     </div>
