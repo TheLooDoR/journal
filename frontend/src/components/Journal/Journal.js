@@ -11,7 +11,7 @@ import {
     addTaskByDate,
     getTimeData,
     requestJournalData,
-    requestJournalDataFinished,
+    requestJournalDataFinished, SET_JOURNAL_PARAMETERS,
     setJournalData
 } from "../../actions";
 import {connect} from 'react-redux'
@@ -89,6 +89,10 @@ class Journal extends Component {
     }
 
     hideJournalModal = () => {
+        this.props.dispatch({
+            type: SET_JOURNAL_PARAMETERS,
+            payload: {}
+        })
         this.setState({
             scrollValue: 0
         })
