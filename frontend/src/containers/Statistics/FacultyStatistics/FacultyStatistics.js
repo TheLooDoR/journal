@@ -1,9 +1,9 @@
 import React, {Component} from "react";
 import { connect } from 'react-redux'
-import isEmpty from "../../common-js/isEmpty";
-import Loader from "../../components/UI/Loader/Loader";
-import Statistic from "../../components/Statistic/Statistic";
-import {GET_STATISTIC_DATA, getRatingDataByFaculty, getStatisticDataByFaculty} from "../../actions";
+import isEmpty from "../../../common-js/isEmpty";
+import Loader from "../../../components/UI/Loader/Loader";
+import Statistic from "../../../components/Statistic/Statistic";
+import {GET_STATISTIC_DATA, getRatingDataByFaculty, getStatisticDataByFaculty} from "../../../actions";
 import './FacultyStatistics.scss'
 
 class FacultyStatistics extends Component {

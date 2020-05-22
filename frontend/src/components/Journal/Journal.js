@@ -255,7 +255,7 @@ class Journal extends Component {
                     </th>
                     <th
                         height={98}
-                        style={{borderBottom: 'none'}}
+                        style={{borderBottom: 'none', top: 56}}
                         className='fixed-row add-row'
                     >
                         {this.props.user.role !== 'admin' && <div className="journal-content__add-btn" onClick={() => this.hideDateModal()}>Добавить</div>}
@@ -533,7 +533,7 @@ class Journal extends Component {
                     <Modal onClose={ () => this.hideDeleteTaskModal() } open={this.state.showDeleteTaskModal} center animationDuration={250} showCloseIcon={false}>
                         <form className="admin-delete" onSubmit={ e => this.deleteTaskHandler(e) }>
                             <p className='admin-delete__text'>
-                                Вы уверенны что хотите удалить занятие
+                                Вы уверены что хотите удалить занятие
                                 <span>{`${formatDate(this.state.deleteTaskData.date)}, ${formatTime(this.state.deleteTaskData.time)}, 
                                 ${this.props.subjectType.name}, ${this.props.subject.full_name}, ${this.props.group.name}`}?</span>
                             </p>

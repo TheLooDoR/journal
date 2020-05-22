@@ -79,6 +79,240 @@ module.exports.getLatestJournals = async (req, res) => {
         })
 }
 
+module.exports.getJournalsByType = async (req, res) => {
+    const { type_id, user_id, isAdmin } = req.body
+    let where = {}
+    isAdmin ?
+        where = {
+            type_id
+        } :
+        where = {
+            user_id,
+            type_id
+        }
+    await Journal.findAll({
+        attributes: [
+            [Sequelize.fn('DISTINCT', Sequelize.col('students.group_id')), 'group_id'],
+            [Sequelize.fn('MAX', Sequelize.col('journal.updated_at')), 'updated_at'],
+            'subject_id',
+            'type_id',
+            [Sequelize.col('students->groups.name'), 'group'],
+            [Sequelize.col('students->groups->departments.name'), 'department'],
+            [Sequelize.col('subjects.name'), 'subject'],
+            [Sequelize.col('subject_types.name'), 'subject_type'],
+            [Sequelize.literal('string_agg(DISTINCT concat(users.surname, \' \', substr(users.name, 1, 1), \'. \', substr(users.patronymic, 1, 1), \'.\'), \', \')'), 'user']
+        ],
+        where,
+        include: [
+            {
+                model: Students,
+                attributes: [],
+                required: true,
+                include: [{
+                    model: Group,
+                    attributes: [],
+                    required: true,
+                    include: [{
+                        model: Department,
+                        attributes: [],
+                        required: true
+                    }]
+                }]
+            },
+            {
+                model: Subject,
+                attributes: [],
+                required: true
+            },
+            {
+                model: SubjectType,
+                attributes: [],
+                required: true
+            },
+            {
+                model: User,
+                attributes: [],
+                required: true
+            }
+        ],
+        group: [
+            [Sequelize.col('students.group_id')],
+            'subject_id',
+            'type_id',
+            [Sequelize.col('students->groups.name')],
+            [Sequelize.col('students->groups->departments.name')],
+            [Sequelize.col('subjects.name')],
+            [Sequelize.col('subject_types.name')],
+        ],
+        order: [[Sequelize.fn('MAX', Sequelize.col('journal.updated_at')), 'DESC' ]],
+        raw: true,
+        subQuery: false
+    })
+        .then(latest => {
+            res.status(200).json(latest)
+        })
+        .catch(err => {
+            console.log(err.message)
+            res.status(400).json(err.message)
+        })
+}
+
+module.exports.getJournalsBySubject = async (req, res) => {
+    const { subject_id, user_id, isAdmin } = req.body
+    let where = {}
+    isAdmin ?
+        where = {
+            subject_id
+        } :
+        where = {
+            user_id,
+            subject_id
+        }
+    await Journal.findAll({
+        attributes: [
+            [Sequelize.fn('DISTINCT', Sequelize.col('students.group_id')), 'group_id'],
+            [Sequelize.fn('MAX', Sequelize.col('journal.updated_at')), 'updated_at'],
+            'subject_id',
+            'type_id',
+            [Sequelize.col('students->groups.name'), 'group'],
+            [Sequelize.col('students->groups->departments.name'), 'department'],
+            [Sequelize.col('subjects.name'), 'subject'],
+            [Sequelize.col('subject_types.name'), 'subject_type'],
+            [Sequelize.literal('string_agg(DISTINCT concat(users.surname, \' \', substr(users.name, 1, 1), \'. \', substr(users.patronymic, 1, 1), \'.\'), \', \')'), 'user']
+        ],
+        where,
+        include: [
+            {
+                model: Students,
+                attributes: [],
+                required: true,
+                include: [{
+                    model: Group,
+                    attributes: [],
+                    required: true,
+                    include: [{
+                        model: Department,
+                        attributes: [],
+                        required: true
+                    }]
+                }]
+            },
+            {
+                model: Subject,
+                attributes: [],
+                required: true
+            },
+            {
+                model: SubjectType,
+                attributes: [],
+                required: true
+            },
+            {
+                model: User,
+                attributes: [],
+                required: true
+            }
+        ],
+        group: [
+            [Sequelize.col('students.group_id')],
+            'subject_id',
+            'type_id',
+            [Sequelize.col('students->groups.name')],
+            [Sequelize.col('students->groups->departments.name')],
+            [Sequelize.col('subjects.name')],
+            [Sequelize.col('subject_types.name')],
+        ],
+        order: [[Sequelize.fn('MAX', Sequelize.col('journal.updated_at')), 'DESC' ]],
+        raw: true,
+        subQuery: false
+    })
+        .then(latest => {
+            res.status(200).json(latest)
+        })
+        .catch(err => {
+            console.log(err.message)
+            res.status(400).json(err.message)
+        })
+}
+
+module.exports.getJournalsByGroup = async (req, res) => {
+    const { group_id, user_id, isAdmin } = req.body
+    let where = {}
+    isAdmin ?
+        where = {} :
+        where = {
+            user_id,
+        }
+    await Journal.findAll({
+        attributes: [
+            [Sequelize.fn('DISTINCT', Sequelize.col('students.group_id')), 'group_id'],
+            [Sequelize.fn('MAX', Sequelize.col('journal.updated_at')), 'updated_at'],
+            'subject_id',
+            'type_id',
+            [Sequelize.col('students->groups.name'), 'group'],
+            [Sequelize.col('students->groups->departments.name'), 'department'],
+            [Sequelize.col('subjects.name'), 'subject'],
+            [Sequelize.col('subject_types.name'), 'subject_type'],
+            [Sequelize.literal('string_agg(DISTINCT concat(users.surname, \' \', substr(users.name, 1, 1), \'. \', substr(users.patronymic, 1, 1), \'.\'), \', \')'), 'user']
+        ],
+        where,
+        include: [
+            {
+                model: Students,
+                attributes: [],
+                required: true,
+                include: [{
+                    model: Group,
+                    attributes: [],
+                    required: true,
+                    where: {
+                      id: group_id
+                    },
+                    include: [{
+                        model: Department,
+                        attributes: [],
+                        required: true
+                    }]
+                }]
+            },
+            {
+                model: Subject,
+                attributes: [],
+                required: true
+            },
+            {
+                model: SubjectType,
+                attributes: [],
+                required: true
+            },
+            {
+                model: User,
+                attributes: [],
+                required: true
+            }
+        ],
+        group: [
+            [Sequelize.col('students.group_id')],
+            'subject_id',
+            'type_id',
+            [Sequelize.col('students->groups.name')],
+            [Sequelize.col('students->groups->departments.name')],
+            [Sequelize.col('subjects.name')],
+            [Sequelize.col('subject_types.name')],
+        ],
+        order: [[Sequelize.fn('MAX', Sequelize.col('journal.updated_at')), 'DESC' ]],
+        raw: true,
+        subQuery: false
+    })
+        .then(latest => {
+            res.status(200).json(latest)
+        })
+        .catch(err => {
+            console.log(err.message)
+            res.status(400).json(err.message)
+        })
+}
+
 module.exports.getData = async (req, res) => {
     try {
         const errors = {}

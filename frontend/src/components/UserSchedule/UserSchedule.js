@@ -130,7 +130,7 @@ const UserSchedule = props => {
     return (
         <div className="time-table__wrap">
             <div className="Home__time-table time-table">
-                <h2 className="time-table__title">Рассписание на сегодня ({formatDate(todayDate)})</h2>
+                <h2 className="time-table__title">Расписание на сегодня ({formatDate(todayDate)})</h2>
                 <div className="time-table__border">
                     <table>
                         <thead>
@@ -155,7 +155,7 @@ const UserSchedule = props => {
             </div>
             {!props.todayOnly &&
                 <div className="Home__time-table time-table">
-                    <h2 className="time-table__title">Рассписание на завтра ({formatDate(tomorrowDate)})</h2>
+                    <h2 className="time-table__title">Расписание на завтра ({formatDate(tomorrowDate)})</h2>
                     <div className="time-table__border">
                         <table>
                             <thead>

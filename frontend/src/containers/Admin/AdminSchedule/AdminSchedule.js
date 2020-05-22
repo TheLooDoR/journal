@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux'
-import FilterSearch from "../../components/UI/FilterSearch/FilterSearch";
-import MainButton from "../../components/UI/MainButton/MainButton";
-import CustomSelect from "../../components/UI/Select/CustomSelect";
+import FilterSearch from "../../../components/UI/FilterSearch/FilterSearch";
+import MainButton from "../../../components/UI/MainButton/MainButton";
+import CustomSelect from "../../../components/UI/Select/CustomSelect";
 import Modal from 'react-responsive-modal';
 import {
     GET_GROUPS,
@@ -12,14 +12,14 @@ import {
     getScheduleData,
     getSelectUsersData,
     getSubjectsData, getSubjectTypesData, getTimeData, getWeekDaysData, requestScheduleData, requestScheduleDataFinished
-} from "../../actions";
+} from "../../../actions";
 import Axios from "axios";
 import { store} from 'react-notifications-component'
-import editLogo from "../../assets/admin/edit.png";
-import deleteLogo from "../../assets/admin/delete.png";
-import isEmpty from "../../common-js/isEmpty";
-import Checkbox from "../../components/UI/CheckBox/CheckBox";
-import Loader from "../../components/UI/Loader/Loader";
+import editLogo from "../../../assets/admin/edit.png";
+import deleteLogo from "../../../assets/admin/delete.png";
+import isEmpty from "../../../common-js/isEmpty";
+import Checkbox from "../../../components/UI/CheckBox/CheckBox";
+import Loader from "../../../components/UI/Loader/Loader";
 import './AdminSchedule.scss'
 
 class AdminSchedule extends Component {
@@ -906,7 +906,7 @@ class AdminSchedule extends Component {
                     className='admin-delete'
                 >
                     <p className='admin-delete__text'>
-                        Вы уверенны что хотите удалить занятие
+                        Вы уверены что хотите удалить занятие
                         <span>{`${group}, ${subjectType}, ${subject}, ${time}`}</span>
                     </p>
                     <div className="admin-delete__buttons">

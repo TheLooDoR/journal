@@ -112,7 +112,7 @@ class Login extends Component {
                             </div>)}
                         </div>
                         <div className="form-group">
-                            <label htmlFor="password">Почтовый адрес*</label>
+                            <label htmlFor="password">Пароль*</label>
                             <input
                                 type="password"
                                 placeholder="Пароль"

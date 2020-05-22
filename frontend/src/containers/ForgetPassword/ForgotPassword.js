@@ -49,7 +49,7 @@ class ForgotPassword extends Component {
         const { errors } = this.state;
         return (
             <div className='form-container'>
-                <h2 className="form-header">Востановление пароля</h2>
+                <h2 className="form-header">Восстановление пароля</h2>
                 <form className={'login-form'} onSubmit={ this.sendEmail }>
                     <div className="form-group">
                         <div className="form-label">

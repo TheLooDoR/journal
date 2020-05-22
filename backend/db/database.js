@@ -15,8 +15,13 @@ require('dotenv').config()
 //     operatorsAliases: Sequelize.Op
 // }); // Создаём подключение
 
-module.exports = new Sequelize( `${process.env.DATABASE_URL}`, {
+module.exports = new Sequelize( `${config.DATABASE_URL}`, {
     dialect: 'postgres',
+    pool: {
+        max: 9,
+        min: 0,
+        idle: 10000
+    },
     dialectOptions: {
         multipleStatements: true,
         ssl: {

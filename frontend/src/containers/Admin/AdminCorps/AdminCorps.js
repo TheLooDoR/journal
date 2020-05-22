@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import { connect } from 'react-redux'
 import Axios from "axios";
 import Modal from 'react-responsive-modal';
-import FilterSearch from "../../components/UI/FilterSearch/FilterSearch";
-import MainButton from "../../components/UI/MainButton/MainButton";
-import {getCorpsData, requestCorps} from "../../actions";
-import Loader from "../../components/UI/Loader/Loader";
-import editLogo from "../../assets/admin/edit.png";
-import deleteLogo from "../../assets/admin/delete.png";
+import FilterSearch from "../../../components/UI/FilterSearch/FilterSearch";
+import MainButton from "../../../components/UI/MainButton/MainButton";
+import {getCorpsData, requestCorps} from "../../../actions";
+import Loader from "../../../components/UI/Loader/Loader";
+import editLogo from "../../../assets/admin/edit.png";
+import deleteLogo from "../../../assets/admin/delete.png";
 import './AdminCorps.scss'
 
 class AdminCorps extends Component{
@@ -333,7 +333,7 @@ class AdminCorps extends Component{
             >
                 <form className="admin-delete" onSubmit={ e => this.deleteCorpHandler(e) }>
                     <p className='admin-delete__text'>
-                        Вы уверенны что хотите удалить корпус
+                        Вы уверены что хотите удалить корпус
                         <span>{this.state.corpData.name}?</span>
                         <span className="admin-delete__warning">Внимание! Данное действие приведёт к удалению всех связанных данных с выбранной записью.</span>
                     </p>

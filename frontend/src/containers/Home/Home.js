@@ -7,7 +7,7 @@ import {
     getSubjectsData,
     getSubjectTypesData, setJournalData,
     setJournalParameters,
-    getUserScheduleData, GET_GROUPS, setLatestJournal, getStatisticDataByFaculty, getRandomUsers
+    getUserScheduleData, GET_GROUPS, setLatestJournal, getStatisticDataByFaculty, getRandomUsers, GET_STATISTIC_DATA
 } from "../../actions";
 import MainButton from '../../components/UI/MainButton/MainButton'
 import Journal from "../../components/Journal/Journal";
@@ -59,6 +59,12 @@ class Home extends Component {
             type: GET_GROUPS,
             payload: []
         })
+        if (this.props.user.role === 'admin') {
+            this.props.dispatch({
+                type: GET_STATISTIC_DATA,
+                payload: {}
+            })
+        }
     }
 
     departmentChangeHandler(value) {

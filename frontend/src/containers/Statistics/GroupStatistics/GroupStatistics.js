@@ -5,13 +5,13 @@ import {
     getDepartmentsData,
     getGroupsDataByDepartment, getRatingDataByGroup,
     getStatisticDataByGroup
-} from "../../actions";
-import CustomSelect from "../../components/UI/Select/CustomSelect";
+} from "../../../actions";
+import CustomSelect from "../../../components/UI/Select/CustomSelect";
 import './GroupStatistics.scss'
-import isEmpty from "../../common-js/isEmpty";
-import MainButton from "../../components/UI/MainButton/MainButton";
-import Statistic from "../../components/Statistic/Statistic";
-import Loader from "../../components/UI/Loader/Loader";
+import isEmpty from "../../../common-js/isEmpty";
+import MainButton from "../../../components/UI/MainButton/MainButton";
+import Statistic from "../../../components/Statistic/Statistic";
+import Loader from "../../../components/UI/Loader/Loader";
 
 class GroupStatistics extends Component {
 

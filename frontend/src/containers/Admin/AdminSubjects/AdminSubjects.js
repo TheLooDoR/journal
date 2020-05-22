@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Axios from "axios";
 import Modal from 'react-responsive-modal';
-import FilterSearch from "../../components/UI/FilterSearch/FilterSearch";
-import MainButton from "../../components/UI/MainButton/MainButton";
-import Loader from "../../components/UI/Loader/Loader";
-import {getSubjectsData, getSubjectTypesData, requestSubjects, requestSubjectTypes} from "../../actions";
-import editLogo from "../../assets/admin/edit.png";
-import deleteLogo from "../../assets/admin/delete.png";
+import FilterSearch from "../../../components/UI/FilterSearch/FilterSearch";
+import MainButton from "../../../components/UI/MainButton/MainButton";
+import Loader from "../../../components/UI/Loader/Loader";
+import {getSubjectsData, getSubjectTypesData, requestSubjects, requestSubjectTypes} from "../../../actions";
+import editLogo from "../../../assets/admin/edit.png";
+import deleteLogo from "../../../assets/admin/delete.png";
 import './AdminSubjects.scss'
 
 class AdminSubjects extends Component {
@@ -648,7 +648,7 @@ class AdminSubjects extends Component {
                     className='admin-delete'
                 >
                     <p className='admin-delete__text'>
-                        Вы уверенны что хотите удалить дисциплину
+                        Вы уверены что хотите удалить дисциплину
                         <span>{this.state.subjectData.full_name}?</span>
                         <span className="admin-delete__warning">Внимание! Данное действие приведёт к удалению всех связанных данных с выбранной записью.</span>
                     </p>
@@ -678,7 +678,7 @@ class AdminSubjects extends Component {
                     className='admin-delete'
                 >
                     <p className='admin-delete__text'>
-                        Вы уверенны что хотите удалить тип занятий
+                        Вы уверены что хотите удалить тип занятий
                         <span>{this.state.subjectTypeData.name}?</span>
                         <span className="admin-delete__warning">Внимание! Данное действие приведёт к удалению всех связанных данных с выбранной записью.</span>
                     </p>
