@@ -202,7 +202,7 @@ class PresentModal extends Component{
                                     <th>Мин. балл</th>
                                     <th>Макс. балл</th>
                                     <th>ECTS</th>
-                                    <th>Национальная диференциальная шкала</th>
+                                    <th>Национальная диффиринциальная шкала</th>
                                 </tr>
                             </thead>
                             <tbody>

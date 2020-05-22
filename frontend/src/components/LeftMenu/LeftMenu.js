@@ -21,7 +21,7 @@ class LeftMenu extends Component {
                 {to: '/admin-schedule', logo: scheduleLogo, exact: false},
                 {to: '/admin-subjects', logo: subjectsLogo, exact: false},
                 {to: '/admin-corps', logo: corpsLogo, exact: false},
-                {to: 'admin-departments', logo: departmentLogo, exact: false}
+                {to: '/admin-departments', logo: departmentLogo, exact: false}
             ]
         }
     }

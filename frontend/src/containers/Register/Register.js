@@ -97,22 +97,6 @@ class Register extends Component {
         })
     }
 
-    // selectDepartmentOptions(entity) {
-    //     return entity.map((el) => {
-    //         return (
-    //             <option key={el.id} value={JSON.stringify(el)}>{el.full_name}</option>
-    //         )
-    //     })
-    // }
-    //
-    // selectPositionOptions(entity) {
-    //     return entity.map((el) => {
-    //         return (
-    //             <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-    //         )
-    //     })
-    // }
-
     render() {
         const { departments, positions, auth } = this.props
         const { errors } = this.state;
@@ -234,7 +218,7 @@ class Register extends Component {
                     <div className="form-group" style={{ alignItems: 'center' }}>
                         {auth.isSigningUp ? <Loader/> :
                             <button type="submit" className="submit-btn" disabled={isEmpty(this.state.department) || isEmpty(this.state.position)}>
-                                Зарегестрироваться
+                                Зарегистрироваться
                             </button>
                         }
                     </div>

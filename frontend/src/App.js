@@ -21,17 +21,20 @@ import ForgotPassword from "./containers/ForgetPassword/ForgotPassword";
 import ResetPassword from "./containers/ResetPassword/ResetPassword";
 import LeftMenu from "./components/LeftMenu/LeftMenu";
 import NotFound from "./containers/NotFound/NotFound";
-import Users from "./containers/Users/Users";
-import AdminGroups from "./containers/AdminGroups/AdminGroups";
-import AdminSubjects from "./containers/AdminSubjects/AdminSubjects";
-import AdminCorps from "./containers/AdminCorps/AdminCorps";
-import AdminDepartments from "./containers/AdminDepartments/AdminDepartments";
-import AdminSchedule from "./containers/AdminSchedule/AdminSchedule";
+import Users from "./containers/Admin/Users/Users";
+import AdminGroups from "./containers/Admin/AdminGroups/AdminGroups";
+import AdminSubjects from "./containers/Admin/AdminSubjects/AdminSubjects";
+import AdminCorps from "./containers/Admin/AdminCorps/AdminCorps";
+import AdminDepartments from "./containers/Admin/AdminDepartments/AdminDepartments";
+import AdminSchedule from "./containers/Admin/AdminSchedule/AdminSchedule";
 import PersonalPage from "./containers/PersonalPage/PersonalPage";
-import GroupStatistics from "./containers/GroupStatistics/GroupStatistics";
-import UserStatistics from "./containers/UserStatistics/UserStatistics";
-import DepartmentStatistic from "./containers/DepartmentStatistics/DepartmentStatistics";
-import FacultyStatistics from "./containers/FacultyStatistics/FacultyStatistics";
+import GroupStatistics from "./containers/Statistics/GroupStatistics/GroupStatistics";
+import UserStatistics from "./containers/Statistics/UserStatistics/UserStatistics";
+import DepartmentStatistic from "./containers/Statistics/DepartmentStatistics/DepartmentStatistics";
+import FacultyStatistics from "./containers/Statistics/FacultyStatistics/FacultyStatistics";
+import JournalsByType from "./containers/UserJournals/JournalsByType/JournalsByType";
+import JournalsBySubject from "./containers/UserJournals/JournalsBySubject/JournalsBySubject";
+import JournalsByGroup from "./containers/UserJournals/JournalsByGroup/JournalsByGroup";
 
 if(localStorage.jwtToken) {
     setAuthToken(localStorage.jwtToken);
@@ -101,11 +104,14 @@ class App extends Component {
                                 <Route path='/admin-subjects' component={ PrivateRoute(AdminSubjects, true) }/>
                                 <Route path='/admin-corps' component={ PrivateRoute(AdminCorps, true) }/>
                                 <Route path='/admin-departments' component={ PrivateRoute(AdminDepartments, true) }/>
-                                <Route path='/me' component={ PrivateRoute(PersonalPage) } />
+                                <Route exact path='/me' component={ PrivateRoute(PersonalPage) } />
                                 <Route path='/group-statistics' component={ PrivateRoute(GroupStatistics) } />
                                 <Route path='/department-statistics' component={ PrivateRoute(DepartmentStatistic)}/>
                                 <Route path='/user-statistics' component={PrivateRoute(UserStatistics)} />
                                 <Route path='/faculty-statistics' component={PrivateRoute(FacultyStatistics)} />
+                                <Route path='/journals-by-type' component={PrivateRoute(JournalsByType)}/>
+                                <Route path='/journals-by-subject' component={PrivateRoute(JournalsBySubject)}/>
+                                <Route path='/journals-by-group' component={PrivateRoute(JournalsByGroup)}/>
                                 <Route exact path="/register" component={ Register } />
                                 <Route exact path="/login" component={ Login } />
                                 <Route exact path="/" component={ PrivateRoute(Home) } />

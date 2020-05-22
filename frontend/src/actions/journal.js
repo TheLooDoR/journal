@@ -5,7 +5,12 @@ import {
     REQUEST_JOURNAL_DATA,
     REQUEST_JOURNAL_DATA_FINISHED,
     SET_JOURNAL_DATE,
-    SET_JOURNAL_STUDENTS, SET_JOURNAL_USER, SET_LATEST_JOURNALS
+    SET_JOURNAL_STUDENTS,
+    SET_JOURNAL_USER,
+    SET_LATEST_JOURNALS,
+    SET_JOURNALS_BY_FILTER,
+    REQUEST_JOURNAL_LIST,
+    REQUEST_JOURNAL_LIST_FINISHED
 } from "./types";
 import Axios from "axios";
 import { store } from 'react-notifications-component';
@@ -52,6 +57,13 @@ const latestJournal = latestJournal => {
     }
 }
 
+const journalsByFilter = journalsByFilter => {
+    return {
+        type: SET_JOURNALS_BY_FILTER,
+        payload: journalsByFilter
+    }
+}
+
 export const requestJournalData = () => {
     return {
         type: REQUEST_JOURNAL_DATA,
@@ -62,6 +74,20 @@ export const requestJournalData = () => {
 export const requestJournalDataFinished = () => {
     return {
         type: REQUEST_JOURNAL_DATA_FINISHED,
+        payload: false
+    }
+}
+
+export const requestJournalList = () => {
+    return {
+        type: REQUEST_JOURNAL_LIST,
+        payload: true
+    }
+}
+
+export const requestJournalListFinished = () => {
+    return {
+        type: REQUEST_JOURNAL_LIST_FINISHED,
         payload: false
     }
 }
@@ -134,6 +160,45 @@ export const setLatestJournal = () => dispatch => {
         })
         .catch( err => {
             dispatch(requestJournalDataFinished())
+            console.log(err.response.data)
+        })
+}
+
+export const setJournalsByType = journalParameters => dispatch => {
+    dispatch(requestJournalList())
+    Axios.post('api/journal/by-subject-type', journalParameters)
+        .then( res => {
+            dispatch(journalsByFilter(res.data))
+            dispatch(requestJournalListFinished())
+        })
+        .catch( err => {
+            dispatch(requestJournalListFinished())
+            console.log(err.response.data)
+        })
+}
+
+export const setJournalsBySubject = journalParameters => dispatch => {
+    dispatch(requestJournalList())
+    Axios.post('api/journal/by-subject', journalParameters)
+        .then( res => {
+            dispatch(journalsByFilter(res.data))
+            dispatch(requestJournalListFinished())
+        })
+        .catch( err => {
+            dispatch(requestJournalListFinished())
+            console.log(err.response.data)
+        })
+}
+
+export const setJournalsByGroup = journalParameters => dispatch => {
+    dispatch(requestJournalList())
+    Axios.post('api/journal/by-group', journalParameters)
+        .then( res => {
+            dispatch(journalsByFilter(res.data))
+            dispatch(requestJournalListFinished())
+        })
+        .catch( err => {
+            dispatch(requestJournalListFinished())
             console.log(err.response.data)
         })
 }

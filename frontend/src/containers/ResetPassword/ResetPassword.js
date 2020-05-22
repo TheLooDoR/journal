@@ -25,7 +25,7 @@ class ResetPassword extends Component {
             })
             .catch((err) => {
                 store.addNotification({
-                    title: 'Востановление пароля',
+                    title: 'Восстановление пароля',
                     message: err.response.data.msg,
                     type: "danger",
                     insert: "top",
@@ -73,7 +73,7 @@ class ResetPassword extends Component {
         console.log(this.state)
         return (
             <div className='form-container'>
-                <h2 className="form-header">Востановление пароля</h2>
+                <h2 className="form-header">Восстановление пароля</h2>
                 <form className={'login-form'} onSubmit={ this.updatePassword }>
                     <div className="form-group">
                         <label htmlFor="Пароль">Пароль*</label>
@@ -101,7 +101,7 @@ class ResetPassword extends Component {
                     </div>
                     <div className="form-group">
                         <button type="submit" className="submit-btn">
-                            Востановить
+                            Восстановить
                         </button>
                     </div>
                 </form>

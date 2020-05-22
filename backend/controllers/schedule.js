@@ -287,9 +287,9 @@ module.exports.createSchedule = async (req, res) => {
         })
         if (candidate) {
             if (req.body.first_week && candidate.first_week) {
-                res.status(400).json({ msg: 'Вы не можете добавить два занатия в одно время' })
+                res.status(400).json({ msg: 'Вы не можете добавить два занятия в одно время' })
             } else if (req.body.second_week && candidate.second_week) {
-                res.status(400).json({ msg: 'Вы не можете добавить два занатия в одно время' })
+                res.status(400).json({ msg: 'Вы не можете добавить два занятия в одно время' })
             } else {
                 await Schedule.create({
                     user_id, subject_id, group_id, type_id, week_day_id, time_id, corps_id, hall, first_week, second_week

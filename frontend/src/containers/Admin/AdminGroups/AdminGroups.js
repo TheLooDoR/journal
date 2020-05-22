@@ -7,16 +7,16 @@ import {
     getStudentsData,
     requestGroups,
     requestStudents
-} from "../../actions";
-import Loader from "../../components/UI/Loader/Loader";
+} from "../../../actions";
+import Loader from "../../../components/UI/Loader/Loader";
 import Modal from 'react-responsive-modal';
 import InputMask from "react-input-mask";
-import isEmpty from "../../common-js/isEmpty";
-import FilterSearch from "../../components/UI/FilterSearch/FilterSearch";
-import MainButton from "../../components/UI/MainButton/MainButton";
-import CustomSelect from "../../components/UI/Select/CustomSelect";
-import editLogo from '../../assets/admin/edit.png'
-import deleteLogo from '../../assets/admin/delete.png'
+import isEmpty from "../../../common-js/isEmpty";
+import FilterSearch from "../../../components/UI/FilterSearch/FilterSearch";
+import MainButton from "../../../components/UI/MainButton/MainButton";
+import CustomSelect from "../../../components/UI/Select/CustomSelect";
+import editLogo from '../../../assets/admin/edit.png'
+import deleteLogo from '../../../assets/admin/delete.png'
 import './AdminGroups.scss'
 
 
@@ -905,7 +905,7 @@ class AdminGroups extends Component {
                     className='admin-delete'
                 >
                     <p className='admin-delete__text'>
-                        Вы уверенны что хотите удалить группу
+                        Вы уверены что хотите удалить группу
                         <span>{this.state.groupData.name}?</span>
                         <span className="admin-delete__warning">Внимание! Данное действие приведёт к удалению всех связанных данных с выбранной записью.</span>
                     </p>

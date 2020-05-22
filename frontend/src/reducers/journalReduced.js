@@ -2,7 +2,12 @@ import {
     SET_JOURNAL_PARAMETERS,
     SET_JOURNAL_DATA,
     REQUEST_JOURNAL_DATA,
-    REQUEST_JOURNAL_DATA_FINISHED, SET_JOURNAL_DATE, SET_JOURNAL_STUDENTS, SET_JOURNAL_USER, SET_LATEST_JOURNALS
+    REQUEST_JOURNAL_DATA_FINISHED,
+    SET_JOURNAL_DATE,
+    SET_JOURNAL_STUDENTS,
+    SET_JOURNAL_USER,
+    SET_LATEST_JOURNALS,
+    SET_JOURNALS_BY_FILTER, REQUEST_JOURNAL_LIST, REQUEST_JOURNAL_LIST_FINISHED
 } from "../actions";
 
 const initialState = {
@@ -16,7 +21,9 @@ const initialState = {
     journalStudents: {},
     journalUser: '',
     latestJournals: [],
-    isLoading: false
+    journalsByFilter: [],
+    isLoading: false,
+    listLoading: false
 }
 
 export default (state = initialState, action) => {
@@ -51,6 +58,11 @@ export default (state = initialState, action) => {
                 ...state,
                 latestJournals: action.payload
             }
+        case SET_JOURNALS_BY_FILTER:
+            return {
+                ...state,
+                journalsByFilter: action.payload
+            }
         case REQUEST_JOURNAL_DATA:
             return {
                 ...state,
@@ -60,6 +72,16 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: action.payload
+            }
+        case REQUEST_JOURNAL_LIST:
+            return {
+                ...state,
+                listLoading: action.payload
+            }
+        case REQUEST_JOURNAL_LIST_FINISHED:
+            return {
+                ...state,
+                listLoading: action.payload
             }
         default:
             return state

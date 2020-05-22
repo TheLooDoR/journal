@@ -1,14 +1,14 @@
 import React, {Component} from "react";
 import Axios from "axios";
 import {connect} from 'react-redux'
-import {getDepartmentsData, requestDepartments} from "../../actions";
-import Loader from "../../components/UI/Loader/Loader";
-import editLogo from "../../assets/admin/edit.png";
-import deleteLogo from "../../assets/admin/delete.png";
+import {getDepartmentsData, requestDepartments} from "../../../actions";
+import Loader from "../../../components/UI/Loader/Loader";
+import editLogo from "../../../assets/admin/edit.png";
+import deleteLogo from "../../../assets/admin/delete.png";
 import './AdminDepartments.scss'
 import Modal from "react-responsive-modal";
-import MainButton from "../../components/UI/MainButton/MainButton";
-import FilterSearch from "../../components/UI/FilterSearch/FilterSearch";
+import MainButton from "../../../components/UI/MainButton/MainButton";
+import FilterSearch from "../../../components/UI/FilterSearch/FilterSearch";
 
 class AdminDepartments extends Component {
     constructor(props) {
@@ -360,7 +360,7 @@ class AdminDepartments extends Component {
             >
                 <form className="admin-delete" onSubmit={ e => this.deleteDepartmentHandler(e) }>
                     <p className='admin-delete__text'>
-                        Вы уверенны что хотите удалить кафедру
+                        Вы уверены что хотите удалить кафедру
                         <span>{this.state.departmentData.full_name}?</span>
                         <span className="admin-delete__warning">Внимание! Данное действие приведёт к удалению всех связанных данных с выбранной записью.</span>
                     </p>

@@ -28,7 +28,7 @@
     &__link {
         padding: 0 10px;
         border-right: 1px solid white;
-        font-size: 16px;
+        font-size: 14px;
         font-weight: bold;
         p {
             color: white;
@@ -44,6 +44,9 @@
                 color: #dcdcdc;
                 text-decoration: none;
             }
+        }
+        &:focus {
+            outline: none;
         }
         &:last-child {
             border:none;
@@ -120,6 +123,14 @@
     }
     @media (min-width: 1024px) {
         &__link {
+            font-size: 14px;
+        }
+        &__admin-link {
+            font-size: 12px;
+        }
+    }
+    @media (min-width: 1200px) {
+        &__admin-link {
             font-size: 14px;
         }
     }

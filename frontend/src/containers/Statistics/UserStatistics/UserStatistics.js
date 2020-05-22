@@ -1,16 +1,16 @@
 import React, {Component} from "react";
 import { connect } from 'react-redux'
-import CustomSelect from "../../components/UI/Select/CustomSelect";
+import CustomSelect from "../../../components/UI/Select/CustomSelect";
 import {
     GET_STATISTIC_DATA,
     getRatingDataByUser,
     getSelectUsersData,
     getStatisticDataByUser
-} from "../../actions";
-import isEmpty from "../../common-js/isEmpty";
-import MainButton from "../../components/UI/MainButton/MainButton";
-import Loader from "../../components/UI/Loader/Loader";
-import Statistic from "../../components/Statistic/Statistic";
+} from "../../../actions";
+import isEmpty from "../../../common-js/isEmpty";
+import MainButton from "../../../components/UI/MainButton/MainButton";
+import Loader from "../../../components/UI/Loader/Loader";
+import Statistic from "../../../components/Statistic/Statistic";
 import './UserStatistics.scss'
 
 class UserStatistics extends Component {

@@ -19,11 +19,9 @@ import {Dropdown} from "react-bootstrap";
 import './Navbar.scss'
 
 const authLinks = [
-    {to: '/groups', label: 'Группы', logo: groupLogo, exact: false},
-    {to: '/subjects', label: 'Дисциплины', logo: disciplineLogo, exact: false},
-    {to: '/subject-types', label: 'Вид занятия', logo: typeLogo, exact: false},
-    {to: '#', label: 'Новое занятие', logo: newTask, exact: false},
-    {to: '#', label: 'Рейтинг', logo: rating, exact: false}
+    {to: '/journals-by-group', label: 'По группам', logo: groupLogo, exact: false},
+    {to: '/journals-by-subject', label: 'По дисциплинам', logo: disciplineLogo, exact: false},
+    {to: '/journals-by-type', label: 'По видам занятий', logo: typeLogo, exact: false}
 ]
 
 class Navbar extends Component {
@@ -36,7 +34,7 @@ class Navbar extends Component {
     renderAuthLinks() {
         return authLinks.map((link, index) => {
             return (
-                <div className={'Navbar__link'} key={index}>
+                <div className={`Navbar__link ${this.props.auth.user.role === 'admin' ? 'Navbar__admin-link' : ''}`} key={index}>
                     <NavLink
                         to={link.to}
                         exact={link.exact}
@@ -52,10 +50,10 @@ class Navbar extends Component {
     render() {
         const {isAuthenticated, user} = this.props.auth;
         let authLinks = null
-        if (this.props.isDesktop || user.role === 'admin') {
+        if (this.props.isDesktop) {
             authLinks = (
                 <>
-                    { user.role !== 'admin' && this.renderAuthLinks() }
+                    { this.renderAuthLinks() }
                     <DropdownButton
                         id='user-dropdown-btn'
                         className='Navbar__dropdown'
@@ -78,7 +76,7 @@ class Navbar extends Component {
         const guestLinks = (
             <>
                 <div className="Navbar__link">
-                    <Link className="Navbar__guest-link" to="/register">Зарегестрироваться</Link>
+                    <Link className="Navbar__guest-link" to="/register">Зарегистрироваться</Link>
                 </div>
                 <div className="Navbar__link">
                     <Link className="Navbar__guest-link" to="/login">Войти</Link>
@@ -88,9 +86,9 @@ class Navbar extends Component {
         return (
             <header>
                 <section className={'header'} >
-                    { ((!this.props.isDesktop && isAuthenticated) && user.role !== 'admin')  &&
+                    { (!this.props.isDesktop && isAuthenticated)  &&
                         <Menu right>
-                            { user.role !== 'admin' && this.renderAuthLinks() }
+                            { this.renderAuthLinks() }
                             <DropdownButton
                                 id='user-dropdown-btn-mobile'
                                 className='Navbar__dropdown'
@@ -111,9 +109,9 @@ class Navbar extends Component {
                     <nav className={'Navbar'}>
                         <div className={'Navbar__logo'}>
                             {user.role === 'admin' ? <div className="Navbar__square"/> : null}
-                            <Link to={'/'}>
+                            <NavLink to={'/'} exact>
                                 <img src={logo} alt=""/>
-                            </Link>
+                            </NavLink>
                         </div>
                         <div className={'Navbar__links'}>
                             {isAuthenticated

@@ -1,15 +1,15 @@
 import React, {Component} from "react";
 import { connect } from 'react-redux'
-import CustomSelect from "../../components/UI/Select/CustomSelect";
-import MainButton from "../../components/UI/MainButton/MainButton";
-import isEmpty from "../../common-js/isEmpty";
-import Loader from "../../components/UI/Loader/Loader";
-import Statistic from "../../components/Statistic/Statistic";
+import CustomSelect from "../../../components/UI/Select/CustomSelect";
+import MainButton from "../../../components/UI/MainButton/MainButton";
+import isEmpty from "../../../common-js/isEmpty";
+import Loader from "../../../components/UI/Loader/Loader";
+import Statistic from "../../../components/Statistic/Statistic";
 import {
     GET_STATISTIC_DATA,
     getDepartmentsData, getRatingDataByDepartment,
     getStatisticDataByDepartment,
-} from "../../actions";
+} from "../../../actions";
 import './DepartmentStatistics.scss'
 
 class DepartmentStatistics extends Component {

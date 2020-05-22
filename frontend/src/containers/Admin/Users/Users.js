@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import Axios from "axios";
-import editLogo from '../../assets/admin/edit.png'
-import deleteLogo from '../../assets/admin/delete.png'
-import MainButton from "../../components/UI/MainButton/MainButton";
-import FilterSearch from "../../components/UI/FilterSearch/FilterSearch";
+import editLogo from '../../../assets/admin/edit.png'
+import deleteLogo from '../../../assets/admin/delete.png'
+import MainButton from "../../../components/UI/MainButton/MainButton";
+import FilterSearch from "../../../components/UI/FilterSearch/FilterSearch";
 import Modal from 'react-responsive-modal';
-import CustomSelect from "../../components/UI/Select/CustomSelect";
+import CustomSelect from "../../../components/UI/Select/CustomSelect";
 import { connect } from 'react-redux'
 import {
     getDepartmentsData,
@@ -14,10 +14,10 @@ import {
     getUsersData,
     requestUsersData,
     setError
-} from "../../actions";
+} from "../../../actions";
 import { store } from 'react-notifications-component'
-import Loader from "../../components/UI/Loader/Loader";
-import isEmpty from "../../common-js/isEmpty";
+import Loader from "../../../components/UI/Loader/Loader";
+import isEmpty from "../../../common-js/isEmpty";
 import InputMask from "react-input-mask";
 
 import './Users.scss'
@@ -401,7 +401,6 @@ class Users extends Component {
                                     <p className="admin-post__label">Номер телефона</p>
                                     <InputMask
                                         type="tel"
-                                        // className={`form-input ${errors.phone_number ? 'invalid' : null}`}
                                         className='crud-input-text'
                                         name="phone_number"
                                         onChange={ (e) => this.inputChangeHandler(e) }
