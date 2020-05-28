@@ -325,7 +325,7 @@ module.exports.updateSchedule = async (req, res) => {
     //more then one element consists
     if (candidates.length > 1) {
         //select updating element
-         const updatingElement = await Schedule.findOne({
+        const updatingElement = await Schedule.findOne({
             where: {
                 group_id: id.group_id,
                 week_day_id: id.week_day_id,

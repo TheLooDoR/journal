@@ -86,6 +86,10 @@ class Login extends Component {
         const { errors } = this.state;
         const { auth } = this.props
         return(
+            //  R
+           <div className="form-wrapper"> 
+            <h1 className="login-title">Добро пожаловать!</h1>
+             {/* R */}
                 <div className="form-container" >
                     <h2 className={'form-header'}>Авторизация</h2>
                     <form className={'login-form'} onSubmit={ this.handleSubmit }>
@@ -137,7 +141,7 @@ class Login extends Component {
                         </div>
                     </form>
                 </div>
-
+            </div>
 
         )
     }

@@ -266,7 +266,7 @@ module.exports.getJournalsByGroup = async (req, res) => {
                     attributes: [],
                     required: true,
                     where: {
-                      id: group_id
+                        id: group_id
                     },
                     include: [{
                         model: Department,
