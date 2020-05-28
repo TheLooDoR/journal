@@ -45,3 +45,7 @@ body {
   max-width: 1330px;
   box-sizing: border-box;
 }
+
+input, select:read-only {
+  opacity: 1;
+}
