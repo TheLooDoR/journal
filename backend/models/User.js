@@ -1,5 +1,7 @@
 const Sequelize = require('sequelize')
 const db = require('../db/database')
+const Schedule = require('./Schedule')
+const Journal = require('./Journal')
 
 const User = db.define('user', {
     id: {
@@ -73,5 +75,11 @@ const User = db.define('user', {
         defaultValue: null
     }
 })
+
+Schedule.hasMany(User, {foreignKey: 'id', sourceKey: 'user_id'})
+User.belongsTo(Schedule, {foreignKey: 'id', targetKey: 'user_id'})
+
+Journal.hasMany(User, {foreignKey: 'id', sourceKey: 'user_id'})
+User.belongsTo(Journal, {foreignKey: 'id', targetKey: 'user_id'})
 
 module.exports = User

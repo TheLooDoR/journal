@@ -6,7 +6,7 @@ import {
     REGISTER_FAILURE,
     REGISTER_REQUEST,
     REGISTER_SUCCESS,
-    SET_CURRENT_USER
+    SET_CURRENT_USER, UPDATE_CURRENT_USER
 } from './types';
 import setAuthToken from '../setAuthToken';
 import jwt_decode from 'jwt-decode';
@@ -186,6 +186,13 @@ export const setCurrentUser = decoded => {
     return {
         type: SET_CURRENT_USER,
         payload: decoded
+    }
+}
+
+export const updateCurrentUser = userData => {
+    return {
+        type: UPDATE_CURRENT_USER,
+        payload: userData
     }
 }
 

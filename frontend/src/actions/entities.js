@@ -8,9 +8,9 @@ import {
     GET_STUDENTS,
     GET_SUBJECT_TYPES,
     GET_SUBJECTS,
-    GET_TIME, REQUEST_CORPS, REQUEST_CORPS_FINISHED, REQUEST_DEPARTMENTS, REQUEST_DEPARTMENTS_FINISHED,
+    GET_TIME, GET_WEEK_DAYS, REQUEST_CORPS, REQUEST_CORPS_FINISHED, REQUEST_DEPARTMENTS, REQUEST_DEPARTMENTS_FINISHED,
     REQUEST_GROUPS,
-    REQUEST_GROUPS_FINISHED,
+    REQUEST_GROUPS_FINISHED, REQUEST_POSITIONS, REQUEST_POSITIONS_FINISHED,
     REQUEST_STUDENTS,
     REQUEST_STUDENTS_FINISHED, REQUEST_SUBJECT_TYPES, REQUEST_SUBJECT_TYPES_FINISHED,
     REQUEST_SUBJECTS,
@@ -52,6 +52,13 @@ const timeData = timeData => {
     }
 }
 
+const weekDays = weekDaysData => {
+    return {
+        type: GET_WEEK_DAYS,
+        payload: weekDaysData
+    }
+}
+
 const corpsData = corpsData => {
     return {
         type: GET_CORPS,
@@ -80,86 +87,100 @@ const studentsData = studentsData => {
     }
 }
 
-const requestGroups = () => {
+export const requestGroups = () => {
     return {
         type: REQUEST_GROUPS,
         payload: true
     }
 }
 
-const requestGroupsFinished = () => {
+export  const requestGroupsFinished = () => {
     return {
         type: REQUEST_GROUPS_FINISHED,
         payload: false
     }
 }
 
-const requestStudents = () => {
+export const requestStudents = () => {
     return {
         type: REQUEST_STUDENTS,
         payload: true
     }
 }
 
-const requestStudentsFinished = () => {
+export const requestStudentsFinished = () => {
     return {
         type: REQUEST_STUDENTS_FINISHED,
         payload: false
     }
 }
 
-const requestSubjects = () => {
+export const requestSubjects = () => {
     return {
         type: REQUEST_SUBJECTS,
         payload: true
     }
 }
 
-const requestSubjectsFinished = () => {
+export const requestSubjectsFinished = () => {
     return {
         type: REQUEST_SUBJECTS_FINISHED,
         payload: false
     }
 }
 
-const requestSubjectTypes = () => {
+export const requestSubjectTypes = () => {
     return {
         type: REQUEST_SUBJECT_TYPES,
         payload: true
     }
 }
 
-const requestSubjectTypesFinished = () => {
+export const requestSubjectTypesFinished = () => {
     return {
         type: REQUEST_SUBJECT_TYPES_FINISHED,
         payload: false
     }
 }
 
-const requestCorps = () => {
+export const requestCorps = () => {
     return {
         type: REQUEST_CORPS,
         payload: true
     }
 }
 
-const requestCorpsFinished = () => {
+export const requestCorpsFinished = () => {
     return {
         type: REQUEST_CORPS_FINISHED,
         payload: false
     }
 }
 
-const requestDepartments = () => {
+export const requestDepartments = () => {
     return {
         type: REQUEST_DEPARTMENTS,
         payload: true
     }
 }
 
-const requestDepartmentsFinished = () => {
+export const requestDepartmentsFinished = () => {
     return {
         type: REQUEST_DEPARTMENTS_FINISHED,
+        payload: false
+    }
+}
+
+export const requestPositions = () => {
+    return {
+        type: REQUEST_POSITIONS,
+        payload: true
+    }
+}
+
+export const requestPositionsFinished = () => {
+    return {
+        type: REQUEST_POSITIONS_FINISHED,
         payload: false
     }
 }
@@ -214,6 +235,13 @@ export const getTimeData = () => dispatch => {
         .then(res => dispatch(timeData(res.data.time)))
 }
 
+export const getWeekDaysData = () => dispatch => {
+    axios.get('api/week-days')
+        .then(res => {
+            dispatch(weekDays(res.data.weekDays))
+        })
+}
+
 export const getCorpsData = (filterValue='') => dispatch => {
     dispatch(requestCorps())
     axios.get('api/corps/', {params: {filterValue}})
@@ -229,8 +257,12 @@ export const getRolesData = () => dispatch => {
 }
 
 export const getPositionsData = () => dispatch => {
+    dispatch(requestPositions())
     axios.get('api/positions/')
-        .then(res => dispatch(positionsData(res.data.positions)))
+        .then(res => {
+            dispatch(positionsData(res.data.positions))
+            dispatch(requestPositionsFinished())
+        })
 }
 
 export const getStudentsData = (filterType, filterValue, group_id) => dispatch => {

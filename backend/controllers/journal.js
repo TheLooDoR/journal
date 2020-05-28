@@ -2,14 +2,88 @@ const Journal = require('../models/Journal')
 const Students = require('../models/Students')
 const Date = require('../models/Date')
 const Time = require('../models/Time')
+const User = require('../models/User')
+const Group = require('../models/Group')
+const Department = require('../models/Department')
+const SubjectType = require('../models/SubjectType')
+const Subject = require('../models/Subject')
 const { Op } = require("sequelize");
 const Sequelize = require('sequelize')
+
+module.exports.getLatestJournals = async (req, res) => {
+
+    await Journal.findAll({
+        attributes: [
+            [Sequelize.fn('DISTINCT', Sequelize.col('students.group_id')), 'group_id'],
+            [Sequelize.fn('MAX', Sequelize.col('journal.updated_at')), 'updated_at'],
+            'subject_id',
+            'type_id',
+            [Sequelize.col('students->groups.name'), 'group'],
+            [Sequelize.col('students->groups->departments.name'), 'department'],
+            [Sequelize.col('subjects.name'), 'subject'],
+            [Sequelize.col('subject_types.name'), 'subject_type'],
+            [Sequelize.literal('string_agg(DISTINCT concat(users.surname, \' \', substr(users.name, 1, 1), \'. \', substr(users.patronymic, 1, 1), \'.\'), \', \')'), 'user']
+        ],
+        include: [
+            {
+                model: Students,
+                attributes: [],
+                required: true,
+                include: [{
+                    model: Group,
+                    attributes: [],
+                    required: true,
+                    include: [{
+                        model: Department,
+                        attributes: [],
+                        required: true
+                    }]
+                }]
+            },
+            {
+                model: Subject,
+                attributes: [],
+                required: true
+            },
+            {
+                model: SubjectType,
+                attributes: [],
+                required: true
+            },
+            {
+                model: User,
+                attributes: [],
+                required: true
+            }
+        ],
+        group: [
+            [Sequelize.col('students.group_id')],
+            'subject_id',
+            'type_id',
+            [Sequelize.col('students->groups.name')],
+            [Sequelize.col('students->groups->departments.name')],
+            [Sequelize.col('subjects.name')],
+            [Sequelize.col('subject_types.name')],
+        ],
+        order: [[Sequelize.fn('MAX', Sequelize.col('journal.updated_at')), 'DESC' ]],
+        raw: true,
+        subQuery: false,
+        limit: 10
+    })
+        .then(latest => {
+            res.status(200).json(latest)
+        })
+        .catch(err => {
+            console.log(err.message)
+            res.status(400).json(err.message)
+        })
+}
 
 module.exports.getData = async (req, res) => {
     try {
         const errors = {}
 
-        //Students search by broup
+        //Students search by group
         const studentsGroup = await Students.findAll({
             where: {
                 group_id: req.body.group_id
@@ -20,11 +94,16 @@ module.exports.getData = async (req, res) => {
             students_id.push(studentsGroup[i].id)
         }
 
-        //Students search by journal
-        const studentFromJournal = await Journal.findAll({
-            attributes: ['student_id'],
-            group: ['student_id'],
-            where: {
+        let where
+        req.body.isAdmin ?
+            where = {
+                subject_id: req.body.subject_id,
+                type_id: req.body.type_id,
+                student_id: {
+                    [Op.in]: students_id
+                }
+            } :
+            where = {
                 user_id: req.body.user_id,
                 subject_id: req.body.subject_id,
                 type_id: req.body.type_id,
@@ -32,6 +111,13 @@ module.exports.getData = async (req, res) => {
                     [Op.in]: students_id
                 }
             }
+
+
+        //Students search by journal
+        const studentFromJournal = await Journal.findAll({
+            attributes: ['student_id'],
+            group: ['student_id'],
+            where: where
         })
         let studentsFromJournal_id = []
         for(let i = 0; i < studentFromJournal.length; i++) {
@@ -40,14 +126,7 @@ module.exports.getData = async (req, res) => {
 
         const dates = await Journal.findAll({
             attributes: ['date_id', 'time_id', [Sequelize.literal('"times"."time"'), 'time'], [Sequelize.literal('"dates"."date"'), 'date']],
-            where: {
-                user_id: req.body.user_id,
-                subject_id: req.body.subject_id,
-                type_id: req.body.type_id,
-                student_id: {
-                    [Op.in]: students_id
-                }
-            },
+            where: where,
             group: ['date_id', 'time_id', 'times.time', 'dates.date'],
             include: [
                 {
@@ -62,7 +141,8 @@ module.exports.getData = async (req, res) => {
                 }
             ],
             order: [
-                ['dates', 'date', 'ASC']
+                ['dates', 'date', 'ASC'],
+                ['times', 'time', 'ASC']
             ],
             raw: true
         })
@@ -81,21 +161,47 @@ module.exports.getData = async (req, res) => {
             ]
         })
         const journal = await Journal.findAll({
-            where: {
-                user_id: req.body.user_id,
-                subject_id: req.body.subject_id,
-                type_id: req.body.type_id,
-                student_id: {
-                    [Op.in]: students_id
+            where: where,
+            include: [
+                {
+                    model: Date,
+                    required: true
+                },
+                {
+                    model: Time,
+                    required: true
                 }
-            },
-            include: {
-                model: Date,
-                required: true
-            },
+            ],
             order: [
-                ['dates', 'date', 'ASC']
+                ['dates', 'date', 'ASC'],
+                ['times', 'time', 'ASC']
             ]
+        })
+        const user = await Journal.findOne({
+            attributes: [
+                [Sequelize.literal('string_agg(DISTINCT concat(users.surname, \' \', substr(users.name, 1, 1), \'.' +
+                    ' \', substr(users.patronymic, 1, 1), \'.\'), \', \')'), 'name']
+            ],
+            where: where,
+            include: [
+                {
+                    model: Students,
+                    attributes: [],
+                    required: true,
+                },
+                {
+                    model: User,
+                    attributes: [],
+                    required: true
+                }
+            ],
+            group: [
+                [Sequelize.col('students.group_id')],
+                'subject_id',
+                'type_id',
+            ],
+            raw: true,
+            subQuery: false
         })
         if (Array.isArray(journal) && journal.length === 0) {
             errors.search = 'Журнал не найден'
@@ -104,7 +210,8 @@ module.exports.getData = async (req, res) => {
             res.status(200).json({
                 journal,
                 students,
-                dates
+                dates,
+                user
             })
         }
 
@@ -130,10 +237,11 @@ module.exports.updateStudentData = async (req, res) => {
                     date_id: req.body.date_id,
                     subject_id: req.body.subject_id,
                     student_id: req.body.student_id,
-                    type_id: req.body.type_id
+                    type_id: req.body.type_id,
+                    time_id: req.body.time_id
                 }
             }
-        ).catch(e => {
+        ).catch( () => {
             error.message = 'Ошибка обновления'
         })
         if (error.message) {
@@ -159,8 +267,7 @@ module.exports.addTaskByDate = async (req, res) => {
                 date: req.body.date
             },
             defaults: {
-                date: req.body.date,
-                time: null
+                date: req.body.date
             }
         })
         const studentsGroup = await Students.findAll({
@@ -173,6 +280,9 @@ module.exports.addTaskByDate = async (req, res) => {
         let studentsGroup_ids = []
         for(let i = 0; i < studentsGroup.length; i++) {
             studentsGroup_ids.push(studentsGroup[i].id)
+        }
+        if (studentsGroup_ids.length === 0) {
+            error.message = 'Группа не имеет студентов'
         }
         //get all students from journal
         const studentsJournal = await Journal.findAll({
@@ -195,29 +305,22 @@ module.exports.addTaskByDate = async (req, res) => {
         if (!checker(studentsJournal_ids, studentsGroup_ids)) {
             //get all dates from journal
             const journalDates = await Journal.findAll({
-                attributes: ['date_id'],
-                group: ['date_id']
+                attributes: ['date_id', 'time_id'],
+                where: {
+                    student_id: {
+                        [Op.in]: studentsJournal_ids
+                    },
+                    subject_id: req.body.subject_id,
+                    type_id: req.body.type_id
+                },
+                group: ['date_id', 'time_id']
             })
-            //filter only students which doesnt consist in all tasks
+            //filter only students which doesn`t consist in all tasks
             const filtered_ids = studentsGroup_ids.filter(i => !studentsJournal_ids.includes(i))
             //insert student in all existing tasks
             journalDates.map(date => {
                 filtered_ids.map(async student_id => {
                     try {
-                        //find time of the current task
-                        const time_id = await Journal.findAll({
-                            attributes: ['time_id'],
-                            where: {
-                                student_id: {
-                                    [Op.in]: studentsJournal_ids
-                                },
-                                date_id: date.date_id,
-                                subject_id: req.body.subject_id,
-                                type_id: req.body.type_id
-                            },
-                            group: ['date_id'],
-                            raw: true
-                        })
                         //insert missing student in past tasks
                         await Journal.create({
                             user_id: req.body.user_id,
@@ -229,9 +332,7 @@ module.exports.addTaskByDate = async (req, res) => {
                             date_id: date.date_id,
                             type_id: req.body.type_id,
                             valid_miss: false,
-                            time_id: time_id[0].time_id,
-                            corps_id: req.body.corps_id,
-                            hall: req.body.hall
+                            time_id: date.time_id,
                         })
                     } catch (e) {
                         console.log(e.message)
@@ -270,9 +371,7 @@ module.exports.addTaskByDate = async (req, res) => {
                         date_id: date[0].id,
                         type_id: req.body.type_id,
                         valid_miss: false,
-                        time_id: req.body.time_id,
-                        corps_id: req.body.corps_id,
-                        hall: req.body.hall
+                        time_id: req.body.time_id
                     })
                 } catch (e) {
                     error.message = 'Ошибка добавления'

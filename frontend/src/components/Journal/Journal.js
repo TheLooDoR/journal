@@ -7,16 +7,16 @@ import PresentModal from "../PresentModal/PresentModal";
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import MainButton from "../UI/MainButton/MainButton";
-import {addTaskByDate, getCorpsData, getTimeData} from "../../actions";
+import {addTaskByDate, getTimeData} from "../../actions";
 import {connect} from 'react-redux'
 import isEmpty from "../../common-js/isEmpty";
 import formatDate from "../../common-js/formatDate";
 import dropdownIcon from './assets/dropdown-icon.png'
 import {Dropdown} from "react-bootstrap";
-import Number from "../UI/Number/Number";
-import Select from "../UI/Select/Select";
+import CustomSelect from "../UI/Select/CustomSelect";
 import AttendanceDoughnut from "../Statistic/AttendanceDoughnut/AttendanceDoughnut";
 import ScoreDoughnut from "../Statistic/ScoreDoughnut/ScoreDoughnut";
+import formatTime from "../../common-js/formatTime";
 import './Journal.scss'
 
 class Journal extends Component {
@@ -27,14 +27,13 @@ class Journal extends Component {
             showModal: false,
             showDateModal: false,
             showStatisticModal: false,
+            showDeleteTaskModal: false,
             statisticType: null,
             date: new Date(),
             currentStudent: {},
             scrollValue: 0,
             taskData: {
-                time: {},
-                corp: {},
-                hall: null
+                time: {}
             },
             statisticData: {
                 totalMiss: null,
@@ -43,6 +42,10 @@ class Journal extends Component {
                 satisfactory: null,
                 good: null,
                 excellent: null
+            },
+            deleteTaskData: {
+                date_id: null,
+                time_id: null
             }
         }
     }
@@ -52,7 +55,6 @@ class Journal extends Component {
     componentDidMount() {
         const { dispatch } = this.props
         dispatch(getTimeData())
-        dispatch(getCorpsData())
     }
 
     //set scroll value
@@ -63,19 +65,13 @@ class Journal extends Component {
         }
     }
 
-    changeHandler (e) {
-        if (e.target.value !== '') {
-            let taskData = this.state.taskData
-            this.setState({
-                taskData: {...taskData, [e.target.name]: JSON.parse(e.target.value)}
-            })
-        }
-    }
-
-    hallChangeHandled = (e) => {
-        let taskData = this.state.taskData
+    timeChangeHandler(value) {
+        const { taskData } = this.state
         this.setState({
-            taskData: {...taskData, hall: e}
+            taskData: {
+                ...taskData,
+                time: value
+            }
         })
     }
 
@@ -106,9 +102,7 @@ class Journal extends Component {
         this.setState({
             showDateModal: !this.state.showDateModal,
             taskData: {
-                time: {},
-                corp: {},
-                hall: null
+                time: {}
             }
         })
     }
@@ -167,12 +161,25 @@ class Journal extends Component {
             subject_id: subject.id,
             type_id: subjectType.id,
             group_id: group.id,
-            time_id: this.state.taskData.time.id,
-            corps_id: this.state.taskData.corp.id,
-            hall: this.state.taskData.hall
+            time_id: this.state.taskData.time.id
         }
         dispatch(addTaskByDate(taskData))
         this.hideDateModal()
+    }
+
+    hideDeleteTaskModal(data=null) {
+        if (!this.state.showDeleteTaskModal) {
+            this.setState({
+                deleteTaskData: data
+            })
+        }
+        this.setState({
+            showDeleteTaskModal: !this.state.showDeleteTaskModal
+        })
+    }
+
+    deleteTaskHandler(e) {
+        e.preventDefault()
     }
 
     calculateTotalGrades(grades) {
@@ -192,7 +199,17 @@ class Journal extends Component {
                     {
                         this.props.journalDate.map(el => {
                             return (
-                                <th height={98} id={`date-${el.date_id} time-${el.time_id}`} key={`${el.date_id}-${el.time_id}`}>{formatDate(el.date)}</th>
+                                    <th height={98} id={`date-${el.date_id} time-${el.time_id}`} key={`${el.date_id}-${el.time_id}`} className='Journal__date-column'>
+                                        <DropdownButton
+                                            title={formatDate(el.date)}
+                                            className='Journal__delete-dropdown'
+                                            alignRight
+                                            id='journal-dropdown-btn'
+                                            onSelect={() => this.hideDeleteTaskModal(el)}
+                                        >
+                                            <Dropdown.Item eventKey={'score'}>Удалить</Dropdown.Item>
+                                        </DropdownButton>
+                                    </th>
                             )
                         })
                     }
@@ -205,14 +222,11 @@ class Journal extends Component {
                     </th>
                     <th
                         height={98}
-                        onClick={() => this.hideDateModal()}
-                        style={{ borderBottom: 'none'}}
+                        style={{borderBottom: 'none'}}
                         className='fixed-row add-row'
                     >
-                        <div className="journal-content__add-btn">Добавить 
-                       
-                        </div>
-                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="plus" className="svg-inline--fa fa-plus fa-w-14 journal-content__add-btn-icon " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"></path></svg>
+                        {this.props.user.role !== 'admin' && <div className="journal-content__add-btn" onClick={() => this.hideDateModal()}>Добавить</div>}
+                        <svg onClick={() => this.hideDateModal()} aria-hidden="true" focusable="false" data-prefix="fas" data-icon="plus" className="svg-inline--fa fa-plus fa-w-14 journal-content__add-btn-icon " role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"></path></svg>
                     </th>
                     <th
                         height={98}
@@ -335,7 +349,7 @@ class Journal extends Component {
     }
 
     render() {
-        const {group, subjectType, subject, errors, journalData, journalDate, journalStudents, time, corps} = this.props
+        const {group, subjectType, subject, errors, journalData, journalDate, journalStudents, journalUser, time, user} = this.props
         const {taskData} = this.state
         if (!group || !subjectType || !subject) {
             return null
@@ -366,11 +380,12 @@ class Journal extends Component {
                     isEmpty(journalData) ?
                         <div className='search-error'>
                             <h2>{errors.search}</h2>
-                            <MainButton className='search-error__btn' onClick={() => this.hideDateModal()}>Создать журнал</MainButton>
+                            {user.role !== 'admin' && <MainButton className='search-error__btn' onClick={() => this.hideDateModal()}>Создать журнал</MainButton>}
                         </div>
                         :
                         <div className="Journal">
                             <div className="Journal__title">
+                                {user.role === 'admin' ? (`${journalUser} `) : null}
                                 {group.name}/{subjectType.name}/{subject.name}
                                 <DropdownButton
                                     title={<img src={dropdownIcon} alt="More"/>}
@@ -407,45 +422,21 @@ class Journal extends Component {
                             formatLongDate={(date) => formatDate(date)}
                         />
                         <div className="journal-add-form__place-time">
-                            <Select
+                            <CustomSelect
                                 className='journal-add-form__time'
-                                name='time'
-                                changeHandler={(e) => this.changeHandler(e)}
-                                defaultValue='Время'
+                                label={el => `${formatTime(el.time)}`}
+                                value={el => el}
+                                options={time}
+                                changeHandler={(value) => this.timeChangeHandler(value)}
+                                placeholder='Время'
                                 disabled={time.length === 0}
-                                options={time.map((el) => {
-                                    return (
-                                        <option key={el.id} value={JSON.stringify(el)}>{el.time}</option>
-                                    )
-                                })}
                             />
-                            <Select
-                                className='journal-add-form__corp'
-                                name='corp'
-                                changeHandler={(e) => this.changeHandler(e)}
-                                defaultValue='Корпус'
-                                disabled={corps.length === 0}npm run dev
-                                options={corps.map((el) => {
-                                    return (
-                                        <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-                                    )
-                                })}
-                            />
-                            <div className="journal-add-form__hall filter-select-warp">
-                                <Number
-                                    className='journal-add-form__number'
-                                    placeholder='Аудитория'
-                                    name='hall'
-                                    value={this.state.taskData.hall}
-                                    onChange={ e => this.hallChangeHandled(e) }
-                                />
-                            </div>
 
                         </div>
                         <MainButton
                             className='journal-add-form__btn'
                             type='submit'
-                            disabled={isEmpty(taskData.time) || isEmpty(taskData.corp) || !taskData.hall}
+                            disabled={isEmpty(taskData.time)}
                         >
                             Добавить
                         </MainButton>
@@ -481,7 +472,7 @@ class Journal extends Component {
                                                 <td>
                                                     {`${student.surname} ${student.name} ${student.patronymic}`}
                                                 </td>
-                                                {journalData.map((el, index) => {
+                                                {journalData.map((el) => {
                                                     if (el.student_id === student.id) {
                                                         //Counting miss amount
                                                         if (!el.present) {
@@ -506,6 +497,21 @@ class Journal extends Component {
                         </div>
                         : null}
                 </Modal>
+                <Modal onClose={ () => this.hideDeleteTaskModal() } open={this.state.showDeleteTaskModal} center animationDuration={250} showCloseIcon={false}>
+                    <form className="admin-delete" onSubmit={ e => this.deleteTaskHandler() }>
+                        <p className='admin-delete__text'>
+                            Вы уверенны что хотите удалить занятие
+                            <span>{`${this.state.deleteTaskData.date} ${this.state.deleteTaskData.time}`}?</span>
+                        </p>
+                        <div className="admin-delete__buttons">
+                            <button className="admin-delete__btn" onClick={(e) => {
+                                e.preventDefault()
+                                this.hideDeleteTaskModal()
+                            }}>Нет</button>
+                            <button className="admin-delete__btn" type='submit'>Да</button>
+                        </div>
+                    </form>
+                </Modal>
             </Modal>
         )
     }
@@ -514,8 +520,7 @@ class Journal extends Component {
 function mapStateToProps(state) {
     return {
         user: state.auth.user,
-        time: state.entities.time,
-        corps: state.entities.corps
+        time: state.entities.time
     }
 }
 

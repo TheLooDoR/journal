@@ -1,8 +1,8 @@
 import React from "react";
 import { connect } from 'react-redux'
-import './UserSchedule.scss'
 import formatDate from "../../common-js/formatDate";
 import formatTime from "../../common-js/formatTime";
+import './UserSchedule.scss'
 
 const UserSchedule = props => {
 
@@ -153,30 +153,32 @@ const UserSchedule = props => {
                     </table>
                 </div>
             </div>
-            <div className="Home__time-table time-table">
-                <h2 className="time-table__title">Рассписание на завтра ({formatDate(tomorrowDate)})</h2>
-                <div className="time-table__border">
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>Время</th>
-                            <th>Группа</th>
-                            <th>Дисциплина</th>
-                            <th>Тип занятия</th>
-                            <th>Аудит.</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {
-                            renderTableBody(schedule.tomorrowSchedule)
-                        }
-                        {emptyRows.tomorrow.length === 0 ? null : emptyRows.tomorrow.map((el) => {
-                            return el
-                        })}
-                        </tbody>
-                    </table>
+            {!props.todayOnly &&
+                <div className="Home__time-table time-table">
+                    <h2 className="time-table__title">Рассписание на завтра ({formatDate(tomorrowDate)})</h2>
+                    <div className="time-table__border">
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Время</th>
+                                <th>Группа</th>
+                                <th>Дисциплина</th>
+                                <th>Тип занятия</th>
+                                <th>Аудит.</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {
+                                renderTableBody(schedule.tomorrowSchedule)
+                            }
+                            {emptyRows.tomorrow.length === 0 ? null : emptyRows.tomorrow.map((el) => {
+                                return el
+                            })}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
+            }
         </div>
     )
 }

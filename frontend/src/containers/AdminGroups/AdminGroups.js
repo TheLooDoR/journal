@@ -1,14 +1,20 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux'
 import Axios from "axios";
-import {GET_GROUPS, getDepartmentsData, getGroupsData, getStudentsData} from "../../actions";
+import {
+    getDepartmentsData,
+    getGroupsData,
+    getStudentsData,
+    requestGroups,
+    requestStudents
+} from "../../actions";
 import Loader from "../../components/UI/Loader/Loader";
 import Modal from 'react-responsive-modal';
 import InputMask from "react-input-mask";
 import isEmpty from "../../common-js/isEmpty";
 import FilterSearch from "../../components/UI/FilterSearch/FilterSearch";
 import MainButton from "../../components/UI/MainButton/MainButton";
-import Select from "../../components/UI/Select/Select";
+import CustomSelect from "../../components/UI/Select/CustomSelect";
 import editLogo from '../../assets/admin/edit.png'
 import deleteLogo from '../../assets/admin/delete.png'
 import './AdminGroups.scss'
@@ -38,7 +44,7 @@ class AdminGroups extends Component {
                 surname: '',
                 patronymic: '',
                 group: {},
-                budget: null,
+                budget: {},
                 email: '',
                 phone_number: ''
             },
@@ -50,23 +56,45 @@ class AdminGroups extends Component {
             showCreateStudentModal: false,
             showUpdateStudentModal: false,
             showDeleteStudentModal: false,
+            groupsScrollValue: 0,
+            studentsScrollValue: 0
         }
     }
+
+    groupsTableRef = React.createRef()
+    studentsTableRef = React.createRef()
 
     componentDidMount() {
         const { dispatch } = this.props
         const { filterType, filterValue } = this.state.groupsFilter
         dispatch(getGroupsData(filterType, filterValue))
         dispatch(getDepartmentsData())
-        dispatch(getGroupsData())
     }
 
-    componentWillUnmount() {
-        const { dispatch } = this.props
-        dispatch({
-            type: GET_GROUPS,
-            payload: []
-        })
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const groupsTable = this.groupsTableRef.current
+        const studentsTable = this.studentsTableRef.current
+        if (groupsTable) {
+            groupsTable.scrollTop = this.state.groupsScrollValue
+        }
+        if (studentsTable) {
+            studentsTable.scrollTop = this.state.studentsScrollValue
+        }
+    }
+
+    scrollHandler = () => {
+        const groupsTable = this.groupsTableRef.current
+        const studentsTable = this.studentsTableRef.current
+        if(groupsTable) {
+            this.setState({
+                groupsScrollValue: groupsTable.scrollTop
+            })
+        }
+        if (studentsTable) {
+            this.setState({
+                studentsScrollValue: studentsTable.scrollTop
+            })
+        }
     }
 
     groupsFilterChangeHandler = e => {
@@ -90,18 +118,33 @@ class AdminGroups extends Component {
         })
     }
 
-    groupSelectChangeHandler(e) {
-        let groupData = this.state.groupData
+    departmentChangeHandler(value) {
+        const { groupData } = this.state
         this.setState({
-            groupData: { ...groupData, [e.target.name]: JSON.parse(e.target.value) }
+            groupData: {
+                ...groupData,
+                department: value
+            }
         })
     }
 
-    studentSelectChangeHandler(e) {
-        let studentData = this.state.studentData
-        const value = e.target.name === 'budget' ? e.target.value : JSON.parse(e.target.value)
+    groupChangeHandler(value) {
+        const { studentData } = this.state
         this.setState({
-            studentData: {  ...studentData, [e.target.name]: value }
+            studentData: {
+                ...studentData,
+                group: value
+            }
+        })
+    }
+
+    budgetChangeHandler(value) {
+        const { studentData } = this.state
+        this.setState({
+            studentData: {
+                ...studentData,
+                budget: value
+            }
         })
     }
 
@@ -113,18 +156,24 @@ class AdminGroups extends Component {
     }
 
     rowClickHandler(group) {
-
         let groupData = this.state.groupData
-        this.setState({
-            groupData: {
-                ...groupData,
-                id: group.id,
-                name: group.name
-            }
-        })
-        const { dispatch } = this.props
-        const { studentsFilter } = this.state
-        dispatch(getStudentsData(studentsFilter.filterType, studentsFilter.filterValue, group.id))
+        const { studentData } = this.state
+        if (groupData.id !== group.id) {
+            this.setState({
+                groupData: {
+                    ...groupData,
+                    id: group.id,
+                    name: group.name
+                },
+                studentData: {
+                    ...studentData,
+                    group
+                }
+            })
+            const { dispatch } = this.props
+            const { studentsFilter } = this.state
+            dispatch(getStudentsData(studentsFilter.filterType, studentsFilter.filterValue, group.id))
+        }
     }
 
     groupsFilterSubmit = () => {
@@ -149,9 +198,10 @@ class AdminGroups extends Component {
             name,
             department_id: department.id
         }
+        this.hideCreateGroupModal()
+        dispatch(requestGroups())
         Axios.post('api/groups/', params)
             .then(() => {
-                this.hideCreateGroupModal()
                 dispatch(getGroupsData(filterType, filterValue))
             })
             .catch(err => {
@@ -167,11 +217,12 @@ class AdminGroups extends Component {
         const params = {
             name, surname, patronymic, email, phone_number,
             group_id: group.id,
-            budget: budget === 'true'
+            budget: budget.value
         }
+        this.hideCreateStudentModal()
+        dispatch(requestStudents())
         Axios.post('api/students/', params)
             .then(() => {
-                this.hideCreateStudentModal()
                 dispatch(getStudentsData(filterType, filterValue, this.state.groupData.id))
             })
     }
@@ -185,9 +236,10 @@ class AdminGroups extends Component {
             id, name,
             department_id: department.id
         }
+        this.hideUpdateGroupModal()
+        dispatch(requestGroups())
         Axios.patch('api/groups/', params)
             .then(() => {
-                this.hideUpdateGroupModal()
                 dispatch(getGroupsData(filterType, filterValue))
             })
             .catch(err => {
@@ -203,11 +255,12 @@ class AdminGroups extends Component {
         const params = {
             id, name, surname, patronymic, email, phone_number,
             group_id: group.id,
-            budget: budget === 'true'
+            budget: budget.value
         }
+        this.hideUpdateStudentModal()
+        dispatch(requestStudents())
         Axios.patch('api/students/', params)
             .then(() => {
-                this.hideUpdateStudentModal()
                 dispatch(getStudentsData(filterType, filterValue, this.state.groupData.id))
             })
             .catch(err => {
@@ -220,10 +273,18 @@ class AdminGroups extends Component {
         const { dispatch } = this.props
         const { id } = this.state.groupData
         const { filterType, filterValue } = this.state.groupsFilter
+        this.hideDeleteGroupModal()
+        dispatch(requestGroups())
         Axios.delete(`api/groups/${id}`)
             .then(() => {
-                this.hideDeleteGroupModal()
                 dispatch(getGroupsData(filterType, filterValue))
+                this.setState({
+                    groupData: {
+                        id: null,
+                        name: '',
+                        department: {}
+                    }
+                })
             })
             .catch(err => console.log(err.response.data))
     }
@@ -233,9 +294,10 @@ class AdminGroups extends Component {
         const { dispatch } = this.props
         const { id } = this.state.studentData
         const { filterType, filterValue } = this.state.studentsFilter
+        this.hideDeleteStudentModal()
+        dispatch(requestStudents())
         Axios.delete(`api/students/${id}`)
             .then(() => {
-                this.hideDeleteStudentModal()
                 dispatch(getStudentsData(filterType, filterValue, this.state.groupData.id))
             })
             .catch(err => console.log(err.response.data))
@@ -264,8 +326,7 @@ class AdminGroups extends Component {
                 name: '',
                 surname: '',
                 patronymic: '',
-                group: {},
-                budget: null,
+                budget: {},
                 email: '',
                 phone_number: ''
             }
@@ -307,6 +368,12 @@ class AdminGroups extends Component {
             Axios.get(`api/students/${id}`)
                 .then(res => {
                     let studentData = this.state.studentData
+                    let budget
+                    if (res.data.budget) {
+                        budget = {name: 'Бюджет', value: true}
+                    } else {
+                        budget =  {name: 'Контракт', value: false}
+                    }
                     this.setState({
                         studentData: {
                             ...studentData,
@@ -314,7 +381,7 @@ class AdminGroups extends Component {
                             name: res.data.name,
                             surname: res.data.surname,
                             patronymic: res.data.patronymic,
-                            budget: res.data.budget.toString(),
+                            budget: budget,
                             email: res.data.email,
                             phone_number: res.data.phone_number,
                             group: res.data.groups[0]
@@ -373,7 +440,7 @@ class AdminGroups extends Component {
                                 </thead>
                             </table>
                         </div>
-                        <div className="admin-table__body">
+                        <div className="admin-table__body" ref={this.groupsTableRef} onScroll={this.scrollHandler}>
                             <table>
                                 <tbody>
                                 { groups.map((el, index) => {
@@ -381,7 +448,7 @@ class AdminGroups extends Component {
                                         <tr
                                             key={el.id}
                                             className={el.id === this.state.groupData.id ? 'AdminGroups__selected-row' : 'AdminGroups__row'}
-                                            onClick={ () => this.rowClickHandler({id: el.id, name: el.name}) }
+                                            onClick={ () => this.rowClickHandler(el) }
                                         >
                                             <td className='admin-table__number'>{ index + 1 }</td>
                                             <td>{ el.name }</td>
@@ -452,7 +519,7 @@ class AdminGroups extends Component {
                                     </thead>
                                 </table>
                             </div>
-                            <div className="admin-table__body">
+                            <div className="admin-table__body" ref={this.studentsTableRef} onScroll={this.scrollHandler}>
                                 <table>
                                     <tbody>
                                     { students.map((el, index) => {
@@ -531,27 +598,26 @@ class AdminGroups extends Component {
                                 name='name'
                                 value={this.state.groupData.name}
                                 onChange={ e => this.groupTextChangeHandler(e) }
+                                required
                             />
                         </div>
                         <div className="admin-post__input">
                             <p className="admin-post__label">Кафедра</p>
-                            <Select
-                                name='department'
-                                changeHandler={ e => this.groupSelectChangeHandler(e) }
-                                defaultValue={'Выберите кафедру'}
-                                options={
-                                    departments.map(el => {
-                                        return (
-                                            <option key={el.id} value={JSON.stringify(el)}>{el.full_name}</option>
-                                        )
-                                    })
-                                }
+                            <CustomSelect
+                                className='admin-post__select'
+                                label={el => `${el.full_name}`}
+                                value={el => el}
+                                options={departments}
+                                isSearchable
+                                changeHandler={(value) => this.departmentChangeHandler(value)}
+                                placeholder=''
                             />
                         </div>
                     </div>
                     <MainButton
                         type='submit'
                         className='admin-post__submit'
+                        disabled={isEmpty(this.state.groupData.department) || this.state.groupData.name === '' }
                     >
                         Сохранить
                     </MainButton>
@@ -562,6 +628,7 @@ class AdminGroups extends Component {
 
     renderCreateStudentModal() {
         const { groups } = this.props
+        const { name, surname, patronymic, group, budget } = this.state.studentData
         return (
             <Modal
                 onClose={ () => this.hideCreateStudentModal() }
@@ -580,6 +647,7 @@ class AdminGroups extends Component {
                                 name='name'
                                 value={this.state.studentData.name}
                                 onChange={ e => this.studentTextChangeHandler(e) }
+                                required
                             />
                         </div>
                         <div className="admin-post__input">
@@ -590,6 +658,7 @@ class AdminGroups extends Component {
                                 name='surname'
                                 value={this.state.studentData.surname}
                                 onChange={ e => this.studentTextChangeHandler(e) }
+                                required
                             />
                         </div>
                         <div className="admin-post__input">
@@ -600,36 +669,32 @@ class AdminGroups extends Component {
                                 name='patronymic'
                                 value={this.state.studentData.patronymic}
                                 onChange={ e => this.studentTextChangeHandler(e) }
+                                required
                             />
                         </div>
                         <div className="admin-post__input">
                             <p className="admin-post__label">Группа</p>
-                            <Select
-                                name='group'
-                                changeHandler={ e => this.studentSelectChangeHandler(e) }
-                                defaultValue={ 'Выберите группу' }
-                                options={
-                                    groups.map(el => {
-                                        return (
-                                            <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-                                        )
-                                    })
-                                }
+                            <CustomSelect
+                                className='admin-post__select'
+                                label={el => `${el.name}`}
+                                value={el => el}
+                                options={groups}
+                                isSearchable
+                                changeHandler={(value) => this.groupChangeHandler(value)}
+                                placeholder=''
+                                defaultValue={this.state.studentData.group}
                             />
                         </div>
                         <div className="admin-post__input">
                             <p className="admin-post__label">Бюджет</p>
-                            <Select
-                                name='budget'
-                                changeHandler={ e => this.studentSelectChangeHandler(e) }
-                                defaultValue={ 'Бюджет/контракт' }
-                                options={
-                                    [{name: 'Бюджет', value: true}, {name: 'Контракт', value: false}].map((el, index) => {
-                                        return (
-                                            <option key={index} value={el.value}>{el.name}</option>
-                                        )
-                                    })
-                                }
+                            <CustomSelect
+                                className='admin-post__select'
+                                label={el => `${el.name}`}
+                                value={el => el.value}
+                                options={[{name: 'Бюджет', value: true}, {name: 'Контракт', value: false}]}
+                                isSearchable
+                                changeHandler={(value) => this.budgetChangeHandler(value)}
+                                placeholder=''
                             />
                         </div>
                         <div className="admin-post__input">
@@ -657,7 +722,8 @@ class AdminGroups extends Component {
                     <MainButton
                         type='submit'
                         className='admin-post__submit'
-                    >
+                        disabled={ isEmpty(group) || isEmpty(budget) || (name === '' || surname === '' || patronymic === '')}
+                        >
                         Сохранить
                     </MainButton>
                 </form>
@@ -688,22 +754,20 @@ class AdminGroups extends Component {
                                     name='name'
                                     value={this.state.groupData.name}
                                     onChange={ e => this.groupTextChangeHandler(e) }
+                                    required
                                 />
                             </div>
                             <div className="admin-post__input">
                                 <p className="admin-post__label">Кафедра</p>
-                                <Select
-                                    name='department'
-                                    changeHandler={ e => this.groupSelectChangeHandler(e) }
-                                    defaultValue={ JSON.stringify(this.state.groupData.department) }
-                                    placeholder
-                                    options={
-                                        departments.map(el => {
-                                            return (
-                                                <option key={el.id} value={JSON.stringify(el)}>{el.full_name}</option>
-                                            )
-                                        })
-                                    }
+                                <CustomSelect
+                                    className='admin-post__select'
+                                    label={el => `${el.full_name}`}
+                                    value={el => el}
+                                    options={departments}
+                                    isSearchable
+                                    changeHandler={(value) => this.departmentChangeHandler(value)}
+                                    placeholder=''
+                                    defaultValue={this.state.groupData.department}
                                 />
                             </div>
                         </div>
@@ -742,6 +806,7 @@ class AdminGroups extends Component {
                                     name='name'
                                     value={this.state.studentData.name}
                                     onChange={ e => this.studentTextChangeHandler(e) }
+                                    required
                                 />
                             </div>
                             <div className="admin-post__input">
@@ -752,6 +817,7 @@ class AdminGroups extends Component {
                                     name='surname'
                                     value={this.state.studentData.surname}
                                     onChange={ e => this.studentTextChangeHandler(e) }
+                                    required
                                 />
                             </div>
                             <div className="admin-post__input">
@@ -762,38 +828,33 @@ class AdminGroups extends Component {
                                     name='patronymic'
                                     value={this.state.studentData.patronymic}
                                     onChange={ e => this.studentTextChangeHandler(e) }
+                                    required
                                 />
                             </div>
                             <div className="admin-post__input">
                                 <p className="admin-post__label">Группа</p>
-                                <Select
-                                    name='group'
-                                    changeHandler={ e => this.studentSelectChangeHandler(e) }
-                                    defaultValue={ JSON.stringify(this.state.studentData.group) }
-                                    placeholder
-                                    options={
-                                        groups.map(el => {
-                                            return (
-                                                <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-                                            )
-                                        })
-                                    }
+                                <CustomSelect
+                                    className='admin-post__select'
+                                    label={el => `${el.name}`}
+                                    value={el => el}
+                                    options={groups}
+                                    isSearchable
+                                    changeHandler={(value) => this.groupChangeHandler(value)}
+                                    placeholder=''
+                                    defaultValue={this.state.studentData.group}
                                 />
                             </div>
                             <div className="admin-post__input">
                                 <p className="admin-post__label">Бюджет</p>
-                                <Select
-                                    name='budget'
-                                    changeHandler={ e => this.studentSelectChangeHandler(e) }
-                                    defaultValue={ this.state.studentData.budget }
-                                    placeholder
-                                    options={
-                                        [{name: 'Бюджет', value: true}, {name: 'Контракт', value: false}].map((el, index) => {
-                                            return (
-                                                <option key={index} value={el.value}>{el.name}</option>
-                                            )
-                                        })
-                                    }
+                                <CustomSelect
+                                    className='admin-post__select'
+                                    label={el => `${el.name}`}
+                                    value={el => el.value}
+                                    options={[{name: 'Бюджет', value: true}, {name: 'Контракт', value: false}]}
+                                    isSearchable
+                                    changeHandler={(value) => this.budgetChangeHandler(value)}
+                                    placeholder=''
+                                    defaultValue={this.state.studentData.budget}
                                 />
                             </div>
                             <div className="admin-post__input">
@@ -845,7 +906,8 @@ class AdminGroups extends Component {
                 >
                     <p className='admin-delete__text'>
                         Вы уверенны что хотите удалить группу
-                        <span>{this.state.groupData.name}</span>
+                        <span>{this.state.groupData.name}?</span>
+                        <span className="admin-delete__warning">Внимание! Данное действие приведёт к удалению всех связанных данных с выбранной записью.</span>
                     </p>
                     <div className="admin-delete__buttons">
                         <button className="admin-delete__btn" onClick={(e) => {
@@ -874,7 +936,8 @@ class AdminGroups extends Component {
                 >
                     <p className='admin-delete__text'>
                         Вы уверенны что хотите удалить студента
-                        <span>{`${this.state.studentData.surname} ${this.state.studentData.name}  ${this.state.studentData.patronymic}`}</span>
+                        <span>{`${this.state.studentData.surname} ${this.state.studentData.name}  ${this.state.studentData.patronymic}`}?</span>
+                        <span className="admin-delete__warning">Внимание! Данное действие приведёт к удалению всех связанных данных с выбранной записью.</span>
                     </p>
                     <div className="admin-delete__buttons">
                         <button className="admin-delete__btn" onClick={(e) => {

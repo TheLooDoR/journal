@@ -13,6 +13,11 @@ const WeekDay = db.define('week_day', {
         type: Sequelize.TEXT,
         allowNull: false,
         unique: true
+    },
+    short_name: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+        unique: true
     }
 })
 

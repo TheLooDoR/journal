@@ -8,14 +8,14 @@ const usersData = usersData => {
     }
 }
 
-const requestUsersData = () => {
+export const requestUsersData = () => {
     return {
         type: REQUEST_USERS_DATA,
         payload: true
     }
 }
 
-const requestUsersDataFinished = () => {
+export const requestUsersDataFinished = () => {
     return {
         type: REQUEST_USERS_DATA_FINISHED,
         payload: false
@@ -28,5 +28,12 @@ export const getUsersData = (filterType, filterValue, currentUserId ) => dispatc
         .then(res => {
             dispatch(usersData(res.data))
             dispatch(requestUsersDataFinished())
+        })
+}
+
+export const getSelectUsersData = () => dispatch => {
+    Axios.get('api/users/users-select')
+        .then(res => {
+            dispatch(usersData(res.data.users))
         })
 }

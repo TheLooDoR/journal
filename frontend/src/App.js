@@ -17,9 +17,6 @@ import Register from './containers/Register/Register';
 import Login from './containers/Login/Login';
 import Home from './containers/Home/Home';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute'
-import Groups from './containers/Groups/Groups'
-import Subjects from './containers/Subjects/Subjects'
-import SubjectTypes from './containers/SubjectTypes/SubjectTypes'
 import EmailConfirm from "./components/EmailConfirm/EmailConfirm";
 import ForgotPassword from "./containers/ForgetPassword/ForgotPassword";
 import ResetPassword from "./containers/ResetPassword/ResetPassword";
@@ -31,6 +28,8 @@ import './App.scss'
 import AdminSubjects from "./containers/AdminSubjects/AdminSubjects";
 import AdminCorps from "./containers/AdminCorps/AdminCorps";
 import AdminDepartments from "./containers/AdminDepartments/AdminDepartments";
+import AdminSchedule from "./containers/AdminSchedule/AdminSchedule";
+import PersonalPage from "./containers/PersonalPage/PersonalPage";
 
 if(localStorage.jwtToken) {
     setAuthToken(localStorage.jwtToken);
@@ -94,14 +93,13 @@ class App extends Component {
                                 <Route exact path='/email-confirm/:id' component={EmailConfirm}/>
                                 <Route exact path='/reset/:token' component={ResetPassword}/>
                                 <Route exact path='/forgot-password' component={ForgotPassword}/>
-                                <Route path="/groups" component={ PrivateRoute(Groups) } />
-                                <Route path="/subjects" component={ PrivateRoute(Subjects) } />
-                                <Route path="/subject-types" component={ PrivateRoute(SubjectTypes) } />
                                 <Route path='/users' component={ PrivateRoute(Users, true) }/>
                                 <Route path='/admin-groups' component={ PrivateRoute(AdminGroups, true) }/>
+                                <Route path='/admin-schedule' component={ PrivateRoute(AdminSchedule, true) }/>
                                 <Route path='/admin-subjects' component={ PrivateRoute(AdminSubjects, true) }/>
                                 <Route path='/admin-corps' component={ PrivateRoute(AdminCorps, true) }/>
                                 <Route path='/admin-departments' component={ PrivateRoute(AdminDepartments, true) }/>
+                                <Route path='/me' component={ PrivateRoute(PersonalPage) } />
                                 <Route exact path="/register" component={ Register } />
                                 <Route exact path="/login" component={ Login } />
                                 <Route exact path="/" component={ PrivateRoute(Home) } />

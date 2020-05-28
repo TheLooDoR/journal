@@ -4,7 +4,7 @@ import Axios from "axios";
 import Modal from 'react-responsive-modal';
 import FilterSearch from "../../components/UI/FilterSearch/FilterSearch";
 import MainButton from "../../components/UI/MainButton/MainButton";
-import {getCorpsData} from "../../actions";
+import {getCorpsData, requestCorps} from "../../actions";
 import Loader from "../../components/UI/Loader/Loader";
 import editLogo from "../../assets/admin/edit.png";
 import deleteLogo from "../../assets/admin/delete.png";
@@ -25,13 +25,32 @@ class AdminCorps extends Component{
             corpLoading: false,
             showCreateCorpModal: false,
             showUpdateCorpModal: false,
-            showDeleteCorpModal: false
+            showDeleteCorpModal: false,
+            scrollValue: 0
         }
     }
+
+    tableRef = React.createRef()
 
     componentDidMount() {
         const { dispatch } = this.props
         dispatch(getCorpsData(this.state.corpsFilter.filterValue))
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        const table = this.tableRef.current
+        if(table) {
+            table.scrollTop = this.state.scrollValue
+        }
+    }
+
+    scrollHandler = () => {
+        const table = this.tableRef.current
+        if(table) {
+            this.setState({
+                scrollValue: table.scrollTop
+            })
+        }
     }
 
     corpsFilterChangeHandler = e => {
@@ -66,9 +85,10 @@ class AdminCorps extends Component{
         const { name } = this.state.corpData
         const { filterValue } = this.state.corpsFilter
         const data = { name }
+        this.hideCreateCorpModal()
+        dispatch(requestCorps())
         Axios.post('api/corps', data)
             .then(() => {
-                this.hideCreateCorpModal()
                 dispatch(getCorpsData(filterValue))
             })
             .catch(err => {
@@ -82,9 +102,10 @@ class AdminCorps extends Component{
         const { id, name } = this.state.corpData
         const { filterValue } = this.state.corpsFilter
         const params = { id, name }
+        this.hideUpdateCorpModal()
+        dispatch(requestCorps())
         Axios.patch('api/corps/', params)
             .then(() => {
-                this.hideUpdateCorpModal()
                 dispatch(getCorpsData(filterValue))
             })
             .catch(err => {
@@ -97,9 +118,10 @@ class AdminCorps extends Component{
         const { dispatch } = this.props
         const { id } = this.state.corpData
         const { filterValue } = this.state.corpsFilter
+        this.hideDeleteCorpModal()
+        dispatch(requestCorps())
         Axios.delete(`api/corps/${id}`)
             .then(() => {
-                this.hideDeleteCorpModal()
                 dispatch(getCorpsData(filterValue))
             })
             .catch(err => console.log(err.response.data))
@@ -181,7 +203,7 @@ class AdminCorps extends Component{
                                 </thead>
                             </table>
                         </div>
-                        <div className="admin-table__body">
+                        <div className="admin-table__body" ref={this.tableRef} onScroll={this.scrollHandler}>
                             <table>
                                 <tbody>
                                     { corps.map((el, index) => {
@@ -248,6 +270,7 @@ class AdminCorps extends Component{
                                 name='name'
                                 value={this.state.corpData.name}
                                 onChange={ e => this.corpTextChangeHandler(e) }
+                                required
                             />
                         </div>
                     </div>
@@ -283,6 +306,7 @@ class AdminCorps extends Component{
                                     name='name'
                                     value={this.state.corpData.name}
                                     onChange={ e => this.corpTextChangeHandler(e) }
+                                    required
                                 />
                             </div>
                         </div>
@@ -310,7 +334,8 @@ class AdminCorps extends Component{
                 <form className="admin-delete" onSubmit={ e => this.deleteCorpHandler(e) }>
                     <p className='admin-delete__text'>
                         Вы уверенны что хотите удалить корпус
-                        <span>{this.state.corpData.name}</span>
+                        <span>{this.state.corpData.name}?</span>
+                        <span className="admin-delete__warning">Внимание! Данное действие приведёт к удалению всех связанных данных с выбранной записью.</span>
                     </p>
                     <div className="admin-delete__buttons">
                         <button className="admin-delete__btn" onClick={(e) => {

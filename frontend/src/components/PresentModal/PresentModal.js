@@ -4,11 +4,12 @@ import Number from "../UI/Number/Number"
 import Radio from "../UI/Radio/Radio"
 import MainButton from "../UI/MainButton/MainButton"
 import {connect} from "react-redux"
-import {setJournalData, updateStudentData} from "../../actions"
+import Axios from "axios";
+import {requestJournalData, requestJournalDataFinished, setJournalData} from "../../actions"
 import isEmpty from "../../common-js/isEmpty"
 import formatDate from "../../common-js/formatDate"
+import formatTime from "../../common-js/formatTime";
 import './PresentModal.scss'
-
 
 class PresentModal extends Component{
 
@@ -17,9 +18,10 @@ class PresentModal extends Component{
         this.state = {
             grade: null,
             note: '',
-            miss: '',
+            miss: ''
         }
     }
+
     componentDidUpdate(prevProps, prevState, snapshot) {
         const { student } = this.props
         if (prevProps !== this.props) {
@@ -64,7 +66,7 @@ class PresentModal extends Component{
 
     submitHandler(e) {
         e.preventDefault()
-        const { student, dispatch } = this.props
+        const { student } = this.props
         let present, valid_miss
         //convert state values to DB values
         switch (this.state.miss) {
@@ -92,42 +94,64 @@ class PresentModal extends Component{
             date_id: student.date_id,
             note: this.state.note,
             score: this.state.grade,
+            time_id: student.time_id,
             present,
             valid_miss
         }
-        updateStudentData(studentData)
-        //update redux store after post
+        this.updateStudentData(studentData)
+    }
+
+    updateStudentData = (studentData) => {
+        const { dispatch } = this.props
         const journalParameters = {
             group_id: this.props.journalParameters.group.id,
             user_id: studentData.user_id,
             subject_id: studentData.subject_id,
             type_id: studentData.type_id
         }
-        dispatch(setJournalData(journalParameters))
         //close modal window
         this.props.onHide(this.props.student)
-        //save scrollbar position
-        this.props.scrollHandler()
+        dispatch(requestJournalData())
+        Axios.post('api/journal/update-student-data', studentData)
+            .then(() => {
+                //update redux store after post
+                dispatch(setJournalData(journalParameters))
+                //save scrollbar position
+                this.props.scrollHandler()
+            })
+            .catch(err => {
+                dispatch(requestJournalDataFinished())
+                console.log(err.message)
+            })
     }
 
     render() {
-        
-        const { student } = this.props
+        const { student, user } = this.props
         //check if student is not null
         if (isEmpty(student)) {
             return null
         }
-     
         return (
-            <Modal onClose={this.props.onHide} open={this.props.show} modalId={'present-modal'} center={this.props.center}>
+            <Modal onClose={this.props.onHide} open={this.props.show} modalId={'present-modal'} center={this.props.center} animationDuration={250}>
                 <form className="PresentModal" onSubmit={e => this.submitHandler(e)}>
                     <div className="PresentModal__title">
                         <div className="PresentModal__date-wrap">
                             Число:
                             <span className="PresentModal__date">
                                 {this.props.journalDate.map(el => {
-                                    if (el.date_id === student.date_id) {
+                                    if (el.date_id === student.date_id && el.time_id === student.time_id) {
                                         return (` ${formatDate(el.date)}`)
+                                    }
+                                    return null
+                                })}
+                            </span>
+                        </div>
+                        <div className="PresentModal__time-wrap">
+                            Время:
+                            <span className="PresentModal__time">
+                                {this.props.journalDate.map(el => {
+                                    if (el.date_id === student.date_id && el.time_id === student.time_id) {
+                                        return (` ${formatTime(el.time)}`)
                                     }
                                     return null
                                 })}
@@ -146,13 +170,12 @@ class PresentModal extends Component{
                         </div>
                     </div>
                     <h4 className="PresentModal__grades-title">Успеваемость</h4>
-                    
                     <div className="PresentModal__grades grades">
                         <div className="grades__inputs">
                             <div className="grades__grade-wrap">
                                 <p className='grades__grade-title'>Оценка</p>
-                                 <br></br>
-                  
+                                 <br/>
+
                                 <Number
                                     className='grades__grade-value'
                                     min={1}
@@ -160,8 +183,9 @@ class PresentModal extends Component{
                                     onChange={this.gradeChangeHandler}
                                     value={this.state.grade}
                                     disabled={this.state.miss !== 'is-present'}
+                                    readOnly={user.role === 'admin'}
                                 />
-                            </div> 
+                            </div>
                             <div className="grades__comment-wrap">
                                 <label className='grades__comment-title' htmlFor="note">Комментарий</label>
                                 <textarea
@@ -170,12 +194,13 @@ class PresentModal extends Component{
                                     rows={3}
                                     value={this.state.note}
                                     onChange={event => this.changeHandler(event)}
+                                    readOnly={user.role === 'admin'}
                                 />
                             </div>
                         </div>
                         {/* R */}
                         <span className="grades__marks-btn"  > Шкала баллов</span>
-                        <table className="grades__marks" >                 
+                        <table className="grades__marks" >
                             <thead>
                                 <tr>
                                     <th>Мин. балл</th>
@@ -226,7 +251,7 @@ class PresentModal extends Component{
                                 </tr>
                             </tbody>
                         </table>
-                        </div>
+                    </div>
                     <h4 className="PresentModal__attendance-title">Посещаемость</h4>
                     <div className="PresentModal__attendance">
                         <Radio
@@ -235,6 +260,7 @@ class PresentModal extends Component{
                             checked={this.state.miss === 'is-present'}
                             onChange={e => this.changeHandler(e)}
                             name='miss'
+                            disabled={user.role === 'admin'}
                         />
                         <Radio
                             value='valid-miss'
@@ -242,6 +268,7 @@ class PresentModal extends Component{
                             checked={this.state.miss === 'valid-miss'}
                             onChange={e => this.changeHandler(e)}
                             name='miss'
+                            disabled={user.role === 'admin'}
                         />
                         <Radio
                             value='miss'
@@ -249,9 +276,10 @@ class PresentModal extends Component{
                             checked={this.state.miss === 'miss'}
                             onChange={e => this.changeHandler(e)}
                             name='miss'
+                            disabled={user.role === 'admin'}
                         />
                     </div>
-                    <MainButton className='PresentModal__btn' type='submit' disabled={typeof this.state.grade === 'string'}>Сохранить</MainButton>
+                    {user.role !== 'admin' && <MainButton className='PresentModal__btn' type='submit' disabled={typeof this.state.grade === 'string'}>Сохранить</MainButton>}
                 </form>
             </Modal>
         )
@@ -262,7 +290,8 @@ function mapStateToProps(state) {
     return {
         journalStudents: state.journal.journalStudents,
         journalDate: state.journal.journalDate,
-        journalParameters: state.journal.journalParameters
+        journalParameters: state.journal.journalParameters,
+        user: state.auth.user
     }
 }
 

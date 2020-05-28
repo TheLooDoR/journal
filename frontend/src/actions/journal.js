@@ -5,7 +5,7 @@ import {
     REQUEST_JOURNAL_DATA,
     REQUEST_JOURNAL_DATA_FINISHED,
     SET_JOURNAL_DATE,
-    SET_JOURNAL_STUDENTS
+    SET_JOURNAL_STUDENTS, SET_JOURNAL_USER, SET_LATEST_JOURNALS
 } from "./types";
 import Axios from "axios";
 import { store } from 'react-notifications-component';
@@ -38,14 +38,28 @@ const journalStudents = journalStudents => {
     }
 }
 
-const requestJournalData = () => {
+const journalUser = journalUser => {
+    return {
+        type: SET_JOURNAL_USER,
+        payload: journalUser
+    }
+}
+
+const latestJournal = latestJournal => {
+    return {
+        type: SET_LATEST_JOURNALS,
+        payload: latestJournal
+    }
+}
+
+export const requestJournalData = () => {
     return {
         type: REQUEST_JOURNAL_DATA,
         payload: true
     }
 }
 
-const requestJournalDataFinished = () => {
+export const requestJournalDataFinished = () => {
     return {
         type: REQUEST_JOURNAL_DATA_FINISHED,
         payload: false
@@ -57,12 +71,14 @@ export const setJournalData = (journalParameters) => dispatch => {
     const user_id = journalParameters.user_id
     const subject_id = journalParameters.subject_id
     const type_id = journalParameters.type_id
+    const isAdmin = journalParameters.isAdmin
     dispatch(requestJournalData())
-    Axios.post('api/journal', { group_id, user_id, subject_id, type_id })
+    Axios.post('api/journal', { group_id, user_id, subject_id, type_id, isAdmin })
         .then(res => {
             dispatch(journalData(res.data.journal))
             dispatch(journalDate(res.data.dates))
             dispatch(journalStudents(res.data.students))
+            dispatch(journalUser(res.data.user.name))
             dispatch(requestJournalDataFinished())
         })
         .catch(err => {
@@ -77,31 +93,20 @@ export const setJournalData = (journalParameters) => dispatch => {
 }
 
 
-
-export const updateStudentData = (studentData) => {
-    Axios.post('api/journal/update-student-data', studentData)
-        .then(() => {
-            console.log('UPDATED')
-        })
-        .catch(err => {
-            console.log(err.message)
-        })
-}
-
 export const addTaskByDate = taskData => dispatch => {
-    const {user_id, subject_id, type_id, group_id, time_id, corps_id, hall} = taskData
+    const {user_id, subject_id, type_id, group_id, time_id} = taskData
     const journalParameters = {
         user_id,
         subject_id,
         type_id,
         group_id,
-        time_id,
-        corps_id,
-        hall
+        time_id
     }
+    dispatch(requestJournalData())
     Axios.post('api/journal/create-task-by-date', taskData)
         .then(() => dispatch(setJournalData(journalParameters)))
         .catch(err => {
+            dispatch(requestJournalDataFinished())
             store.addNotification({
                 title: 'Ошибка',
                 message: err.response.data,
@@ -117,5 +122,18 @@ export const addTaskByDate = taskData => dispatch => {
                     showIcon: true
                 }
             });
+        })
+}
+
+export const setLatestJournal = () => dispatch => {
+    dispatch(requestJournalData())
+    Axios.get('api/journal/latest')
+        .then( res => {
+            dispatch(latestJournal(res.data))
+            dispatch(requestJournalDataFinished())
+        })
+        .catch( err => {
+            dispatch(requestJournalDataFinished())
+            console.log(err.response.data)
         })
 }

@@ -4,6 +4,10 @@
   padding: 10px 15px;
   width: 100%;
   outline: none;
+  height: 45px;
+  &:focus {
+    border: 2px solid #2B9CFF;
+  }
 }
 
 .admin-post {
@@ -26,14 +30,30 @@
   }
   &__input {
     margin: 10px 0;
-    select {
+  }
+  &__select {
+    .react-select__control {
       width: 100%;
-      padding: 10px 15px;
+      height: 45px;
     }
   }
   &__submit {
     padding: 15px 90px;
     margin-top: 20px;
+  }
+  &__combined-input {
+    display: flex;
+    justify-content: space-between;
+    flex-flow: column;
+  }
+  @media (min-width: 480px) {
+    &__combined-input {
+      flex-flow: row;
+      .admin-post__input {
+        max-width: 49%;
+        width: 100%;
+      }
+    }
   }
 }
 
@@ -73,5 +93,10 @@
     &:hover {
       border: 1px solid #2B9CFF;
     }
+  }
+  &__warning {
+    font-size: 14px;
+    color: #d73038;
+    font-style: normal !important;
   }
 }

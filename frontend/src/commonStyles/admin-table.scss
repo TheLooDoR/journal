@@ -93,10 +93,23 @@ $scrollbarPadding: 2px;
   &__edit-btn {
     border: none;
     background: transparent;
+    &:focus {
+      outline: none;
+    }
   }
   &__delete-btn {
     border: none;
     background: transparent;
+    &:focus {
+      outline: none;
+    }
+  }
+  &__open-btn {
+    button {
+      font-size: 10px;
+      width: 80%;
+      padding: 5px 0;
+    }
   }
   &__number {
     width: 40px;

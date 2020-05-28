@@ -3,11 +3,12 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import { registerUser } from '../../actions/authentication';
-import Select from "../../components/UI/Select/Select";
+import CustomSelect from "../../components/UI/Select/CustomSelect";
 import {getPositionsData, getDepartmentsData, setError} from "../../actions";
 import InputMask from 'react-input-mask';
-import './Register.scss'
 import Loader from "../../components/UI/Loader/Loader";
+import './Register.scss'
+import isEmpty from "../../common-js/isEmpty";
 
 class Register extends Component {
 
@@ -78,30 +79,39 @@ class Register extends Component {
 
     changeHandler (e) {
         if (e.target.value !== '') {
-            if (e.target.name === 'phone_number') {
-                console.log('number')
-            }
             this.setState({
                 [e.target.name]: JSON.parse(e.target.value)
             })
         }
     }
 
-    selectDepartmentOptions(entity) {
-        return entity.map((el) => {
-            return (
-                <option key={el.id} value={JSON.stringify(el)}>{el.full_name}</option>
-            )
+    departmentChangeHandler(value) {
+        this.setState({
+            department: value
         })
     }
 
-    selectPositionOptions(entity) {
-        return entity.map((el) => {
-            return (
-                <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-            )
+    positionChangeHandler(value) {
+        this.setState({
+            position: value
         })
     }
+
+    // selectDepartmentOptions(entity) {
+    //     return entity.map((el) => {
+    //         return (
+    //             <option key={el.id} value={JSON.stringify(el)}>{el.full_name}</option>
+    //         )
+    //     })
+    // }
+    //
+    // selectPositionOptions(entity) {
+    //     return entity.map((el) => {
+    //         return (
+    //             <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
+    //         )
+    //     })
+    // }
 
     render() {
         const { departments, positions, auth } = this.props
@@ -159,23 +169,29 @@ class Register extends Component {
                         {errors.patronymic && (<div className="feedback">{errors.patronymic}</div>)}
                     </div>
                     <div className="form-group">
-                        <label htmlFor="Position">Должность*</label>
-                        <Select
+                        <label htmlFor="position">Должность*</label>
+                        <CustomSelect
                             className='register-select'
+                            label={el => `${el.name}`}
+                            value={el => el}
+                            options={positions}
+                            isSearchable
+                            changeHandler={(value) => this.positionChangeHandler(value)}
+                            placeholder='Должность'
                             name='position'
-                            defaultValue='Выберите должность'
-                            options={this.selectPositionOptions(positions)}
-                            changeHandler={(e) => this.changeHandler(e)}
                         />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="Position">Кафедра*</label>
-                        <Select
+                        <label htmlFor="department">Кафедра*</label>
+                        <CustomSelect
                             className='register-select'
+                            label={el => `${el.full_name}`}
+                            value={el => el}
+                            options={departments}
+                            isSearchable
+                            changeHandler={(value) => this.departmentChangeHandler(value)}
+                            placeholder='Кафедра'
                             name='department'
-                            defaultValue='Выберите кафедру'
-                            options={this.selectDepartmentOptions(departments)}
-                            changeHandler={(e) => this.changeHandler(e)}
                         />
                     </div>
                     <div className="form-group">
@@ -217,7 +233,7 @@ class Register extends Component {
                     </div>
                     <div className="form-group" style={{ alignItems: 'center' }}>
                         {auth.isSigningUp ? <Loader/> :
-                            <button type="submit" className="submit-btn">
+                            <button type="submit" className="submit-btn" disabled={isEmpty(this.state.department) || isEmpty(this.state.position)}>
                                 Зарегестрироваться
                             </button>
                         }

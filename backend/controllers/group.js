@@ -71,6 +71,10 @@ module.exports.getByDepartment = async (req, res) => {
             where: {
                 department_id: req.query.department_id
             },
+            include: [{
+                model: Department,
+                required: true
+            }],
             order: [
                 ['name', 'ASC']
             ]

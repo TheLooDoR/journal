@@ -1,0 +1,12 @@
+.react-select {
+  position: relative;
+  &__control {
+    border-radius: 10px!important;
+    border-color: #2B9CFF!important;
+    border-width: 1px!important;
+    border-style: solid!important;
+  }
+  &__indicator-separator {
+    display: none;
+  }
+}

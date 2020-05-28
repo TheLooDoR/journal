@@ -8,15 +8,15 @@ import {
     getSubjectsData,
     getSubjectTypesData, setJournalData,
     setJournalParameters,
-    getUserScheduleData, GET_GROUPS
+    getUserScheduleData, GET_GROUPS, setLatestJournal
 } from "../../actions";
 import MainButton from '../../components/UI/MainButton/MainButton'
 import Journal from "../../components/Journal/Journal";
-import formatDate from "../../common-js/formatDate";
-import Select from "../../components/UI/Select/Select";
+import CustomSelect from "../../components/UI/Select/CustomSelect";
 import isEmpty from "../../common-js/isEmpty";
 import ScoreDoughnut from "../../components/Statistic/ScoreDoughnut/ScoreDoughnut";
 import AttendanceDoughnut from "../../components/Statistic/AttendanceDoughnut/AttendanceDoughnut";
+import UserSchedule from "../../components/UserSchedule/UserSchedule";
 import './Home.scss'
 
 class Home extends Component {
@@ -42,7 +42,8 @@ class Home extends Component {
         dispatch(getSubjectTypesData())
         dispatch(getSubjectsData())
         if (this.props.user.role === 'admin') {
-            Axios.get('api/statistics/faculty')
+            dispatch(setLatestJournal())
+             Axios.get('api/statistics/faculty')
                 .then(res => {
                     const { present, miss, unsatisfactory, satisfactory, good, excellent} = res.data
                     this.setState({
@@ -77,20 +78,50 @@ class Home extends Component {
     }
 
     componentWillUnmount() {
-        const { dispatch } = this.props
-        dispatch({
+        this.props.dispatch({
             type: GET_GROUPS,
             payload: []
         })
     }
 
-    changeHandler (e) {
-        if (e.target.value !== '') {
-            let journalData = this.state.journalData
-            this.setState({
-                journalData: {...journalData, [e.target.name]: JSON.parse(e.target.value)}
-            })
-        }
+    departmentChangeHandler(value) {
+        const { journalData } = this.state
+        this.setState({
+            journalData: {
+                ...journalData,
+                department: value
+            }
+        })
+    }
+
+    groupChangeHandler(value) {
+        const { journalData } = this.state
+        this.setState({
+            journalData: {
+                ...journalData,
+                group: value
+            }
+        })
+    }
+
+    subjectChangeHandler(value) {
+        const { journalData } = this.state
+        this.setState({
+            journalData: {
+                ...journalData,
+                subject: value
+            }
+        })
+    }
+
+    subjectTypeChangeHandler(value) {
+        const { journalData } = this.state
+        this.setState({
+            journalData: {
+                ...journalData,
+                subjectType: value
+            }
+        })
     }
 
     clickHandler = () => {
@@ -98,11 +129,42 @@ class Home extends Component {
         const { user } = this.props
         const {journalData} = this.state
         dispatch(setJournalParameters(this.state.journalData))
+        const isAdmin = user.role === 'admin'
         const journalParameters = {
             group_id: journalData.group.id,
             subject_id: journalData.subject.id,
             type_id: journalData.subjectType.id,
-            user_id: user.userId
+            user_id: user.userId,
+            isAdmin
+        }
+        dispatch(setJournalData(journalParameters))
+        this.setShowModal()
+    }
+
+    latestJournalClickHandler(params) {
+        const { dispatch } = this.props
+        const { user } = this.props
+        dispatch(setJournalParameters({
+            group: {
+                name: params.group
+            },
+            department: {
+                name: params.department
+            },
+            subject: {
+                name: params.subject
+            },
+            subjectType: {
+                name: params.subject_type
+            }
+        }))
+        const isAdmin = user.role === 'admin'
+        const journalParameters = {
+            group_id: params.group_id,
+            subject_id: params.subject_id,
+            type_id: params.type_id,
+            user_id: user.userId,
+            isAdmin
         }
         dispatch(setJournalData(journalParameters))
         this.setShowModal()
@@ -126,123 +188,78 @@ class Home extends Component {
                 journalData={this.props.journalData}
                 journalDate={this.props.journalDate}
                 journalStudents={this.props.journalStudents}
+                journalUser={this.props.journalUser}
                 errors={this.props.errors}
                 isLoading={this.props.isLoading}
             />
         )
     }
 
-    renderTimeTable() {
-        const { schedule } = this.props
-        //get dates for table titles
-        const todayDate = new Date()
-        let tomorrowDate = new Date()
-        tomorrowDate.setDate(new Date().getDate() + 1)
-        //empty rows if amount is less then 5
-        let emptyRows = {
-            today: [],
-            tomorrow: []
-        }
-        if (schedule.todaySchedule.length < 5) {
-            let missAmount = 5 - schedule.todaySchedule.length
-            for (let i = 0; i < missAmount; i++) {
-                emptyRows.today.push(
-                    <tr key={i}>
-                        <td className='time-table__empty-row'/>
-                        <td className='time-table__empty-row'/>
-                        <td className='time-table__empty-row'/>
-                        <td className='time-table__empty-row'/>
-                        <td className='time-table__empty-row'/>
-                    </tr>
-                )
-            }
-        }
-        if (schedule.tomorrowSchedule.length < 5) {
-            let missAmount = 5 - schedule.tomorrowSchedule.length
-            for (let i = 0; i < missAmount; i++) {
-                emptyRows.tomorrow.push(
-                    <tr key={i}>
-                        <td className='time-table__empty-row'/>
-                        <td className='time-table__empty-row'/>
-                        <td className='time-table__empty-row'/>
-                        <td className='time-table__empty-row'/>
-                        <td className='time-table__empty-row'/>
-                    </tr>
-                )
-            }
-        }
-        return (
-            <div className="Home__time-table-wrap">
-                <div className="Home__time-table time-table">
-                    <h2 className="time-table__title">Рассписание на сегодня ({formatDate(todayDate)})</h2>
-                    <div className="time-table__border">
-                        <table>
-                            <thead>
-                            <tr>
-                                <th>Время</th>
-                                <th>Группа</th>
-                                <th>Дисциплина</th>
-                                <th>Тип занятия</th>
-                                <th>Аудит.</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {
-                                schedule.todaySchedule.map((el, index) => {
+    renderLatestJournals() {
+        const { latestJournals } = this.props
+        if ( latestJournals.length !== 0) {
+            return (
+                <div className='Home__latest-journals-table admin-table__wrap'>
+                    <div className="admin-table">
+                        <div className="admin-table__head">
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th style={{ fontSize: 24 }} className='admin-table__number'>№</th>
+                                    <th className='admin-table__department-cell'>Кафедра</th>
+                                    <th>Группа</th>
+                                    <th>Дисциплина</th>
+                                    <th>Преподаватель</th>
+                                    <th width={100}>Вид занятия</th>
+                                    <th className='admin-table__open-btn'/>
+                                </tr>
+                                </thead>
+                            </table>
+                        </div>
+                        <div className="admin-table__body" ref={this.tableRef} onScroll={this.scrollHandler}>
+                            <table>
+                                <tbody>
+                                { latestJournals.map((el, index) => {
                                     return (
                                         <tr key={index}>
-                                            <td>{el.time}</td>
-                                            <td>{el.group}</td>
-                                            <td>{el.subject}</td>
-                                            <td>{el.subject_type}</td>
-                                            <td>{`${el.hall}, ${el.corp}`}</td>
+                                            <td className='admin-table__number'>{ index + 1 }</td>
+                                            <td>{ el.department }</td>
+                                            <td>{ el.group }</td>
+                                            <td>{ el.subject }</td>
+                                            <td>{ el.user }</td>
+                                            <td width={100}>{ el.subject_type.substr(0, 1) }.</td>
+                                            <td className='admin-table__open-btn'>
+                                                <MainButton
+                                                    onClick={ () => this.latestJournalClickHandler(el) }
+                                                >
+                                                    Открыть
+                                                </MainButton>
+                                            </td>
                                         </tr>
                                     )
-                                })
-                            }
-                            {emptyRows.today.length === 0 ? null : emptyRows.today.map((el) => {
-                                return el
-                            })}
-                            </tbody>
-                        </table>
+                                })}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div className="admin-table__footer">
+                            <table>
+                                <tbody>
+                                <tr>
+                                    <td className='admin-table__number'/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td/>
+                                    <td width={100}/>
+                                    <td className='admin-table__open-btn'/>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-                <div className="Home__time-table time-table">
-                    <h2 className="time-table__title">Рассписание на завтра ({formatDate(tomorrowDate)})</h2>
-                    <div className="time-table__border">
-                        <table>
-                            <thead>
-                            <tr>
-                                <th>Время</th>
-                                <th>Группа</th>
-                                <th>Дисциплина</th>
-                                <th>Тип занятия</th>
-                                <th>Аудит.</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {
-                                schedule.tomorrowSchedule.map((el, index) => {
-                                    return (
-                                        <tr key={index}>
-                                            <td>{el.time}</td>
-                                            <td>{el.group}</td>
-                                            <td>{el.subject}</td>
-                                            <td>{el.subject_type}</td>
-                                            <td>{`${el.hall}, ${el.corp}`}</td>
-                                        </tr>
-                                    )
-                                })
-                            }
-                            {emptyRows.tomorrow.length === 0 ? null : emptyRows.tomorrow.map((el) => {
-                                return el
-                            })}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        )
+            )
+        }
     }
 
     renderHomeFooter() {
@@ -275,7 +292,7 @@ class Home extends Component {
                                 width={300}
                             />
                         </div>
-                        <p className='home-footer__statistics-title'>Успеваемость факультета за неделю</p>
+                        <p className='home-footer__statistics-title'>Посещаемость факультета за неделю</p>
                     </div>
                     <div className="home-footer__diagram-wrap">
                         <div className="home-footer__score-statistics">
@@ -285,60 +302,63 @@ class Home extends Component {
                                 height={200}
                             />
                         </div>
-                        <p className='home-footer__statistics-title'>Посещаемость факультета за неделю</p>
+                        <p className='home-footer__statistics-title'>Успеваемость факультета за неделю</p>
                     </div>
                 </div>
             </div>
         )
     }
 
-    selectOptions(entity) {
-        return entity.map((el) => {
-            return (
-                <option key={el.id} value={JSON.stringify(el)}>{el.name}</option>
-            )
-        })
-    }
-
     render() {
-        console.log(this.state)
-        const {entities, user} = this.props
+        const {entities, user, scheduleLoading, journalLoading} = this.props
         const {journalData} = this.state
-        if (!entities.subjectTypes || !entities.groups || !entities.subjects || !entities.departments || (user.role === 'admin' && (isEmpty(this.state.statisticsData || this.state.randomUsers.length === 0))) ) {
+        if ((!entities.subjectTypes || !entities.groups || !entities.subjects || !entities.departments) || scheduleLoading || journalLoading ) {
+            return (<Loader/>)
+        }
+        if (user.role === 'admin' && (this.state.randomUsers.length === 0 || isEmpty(this.state.statisticsData ))) {
             return (<Loader/>)
         }
         return (
             <div className='Home'>
                 <div className="container">
                     <div className="Home__categories">
-                        <Select
+                        <CustomSelect
                             className='Home__departments Home__select'
-                            name='department'
-                            changeHandler={(e) => this.changeHandler(e)}
-                            defaultValue='Кафедра'
-                            options={this.selectOptions(entities.departments)}
+                            label={el => `${el.name}`}
+                            value={el => el}
+                            options={entities.departments}
+                            isSearchable
+                            changeHandler={(value) => this.departmentChangeHandler(value)}
+                            placeholder='Кафедра'
                         />
-                        <Select
+                        <CustomSelect
                             className='Home__groups Home__select'
-                            name='group'
-                            changeHandler={(e) => this.changeHandler(e)}
-                            defaultValue={this.props.groupsLoading ? 'Загрузка...' : 'Группа'}
-                            disabled={entities.groups.length === 0 || this.props.groupsLoading}
-                            options={this.selectOptions(entities.groups)}
+                            label={el => `${el.name}`}
+                            value={el => el}
+                            options={entities.groups}
+                            isSearchable
+                            changeHandler={(value) => this.groupChangeHandler(value)}
+                            isLoading={this.props.groupsLoading}
+                            disabled={this.props.groupsLoading}
+                            placeholder='Группа'
                         />
-                        <Select
+                        <CustomSelect
                             className='Home__subjects Home__select'
-                            name='subject'
-                            changeHandler={(e) => this.changeHandler(e)}
-                            defaultValue='Дисциплина'
-                            options={this.selectOptions(entities.subjects)}
+                            label={el => `${el.full_name}`}
+                            value={el => el}
+                            options={entities.subjects}
+                            isSearchable
+                            changeHandler={(value) => this.subjectChangeHandler(value)}
+                            placeholder='Дисциплина'
                         />
-                        <Select
+                        <CustomSelect
                             className='Home__subject-types Home__select'
-                            name='subjectType'
-                            changeHandler={(e) => this.changeHandler(e)}
-                            defaultValue='Вид занятия'
-                            options={this.selectOptions(entities.subjectTypes)}
+                            label={el => `${el.name}`}
+                            value={el => el}
+                            options={entities.subjectTypes}
+                            isSearchable
+                            changeHandler={(value) => this.subjectTypeChangeHandler(value)}
+                            placeholder='Тип занятия'
                         />
                         <MainButton
                             className='Home__btn'
@@ -348,7 +368,8 @@ class Home extends Component {
                             Найти
                         </MainButton>
                     </div>
-                    { this.props.user.role === 'admin' ? this.renderHomeFooter() : this.renderTimeTable() }
+                    { this.props.user.role === 'admin' && this.renderLatestJournals() }
+                    { this.props.user.role === 'admin' ? this.renderHomeFooter() : <UserSchedule schedule={this.props.schedule}/> }
                     {this.renderModal()}
                 </div>
             </div>
@@ -363,11 +384,15 @@ function mapStateToProps(state) {
         journalData: state.journal.journalData,
         journalDate: state.journal.journalDate,
         journalStudents: state.journal.journalStudents,
+        journalUser: state.journal.journalUser,
+        journalLoading: state.journal.journalLoading,
         user: state.auth.user,
         errors: state.errors,
         isLoading: state.journal.isLoading,
         groupsLoading: state.entities.groupsLoading,
-        schedule: state.schedule
+        schedule: state.schedule,
+        scheduleLoading: state.schedule.scheduleLoading,
+        latestJournals: state.journal.latestJournals
     }
 }
 

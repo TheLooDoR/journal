@@ -68,19 +68,9 @@ const Journal = db.define('journal', {
             key: 'id'
         },
         primaryKey: true
-    },
-    corps_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-            model: 'corps',
-            key: 'id'
-        }
-    },
-    hall: {
-        type: Sequelize.TEXT,
-        allowNull: false
     }
+}, {
+    timestamps: false
 })
 
 

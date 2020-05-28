@@ -19,7 +19,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-         align-items: center;
+        align-items: center;
         img {
             padding: 0 10px;
             float:left;
@@ -49,14 +49,15 @@
                 color: #dcdcdc;
                 text-decoration: none;
             }
-        } 
-        
-        
-    
-    &__link {
-        font-size: 14px;
+        }
+        &:last-child {
+            border:none;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+        }
     }
-}
     &__logout-btn {
         border: none;
         background-color: transparent;
@@ -68,8 +69,8 @@
 
 
         &-icon{
-        visibility: hidden; 
-        display: none;    
+        visibility: hidden;
+        display: none;
         }
     }
     &__square {
@@ -77,10 +78,38 @@
         width: 75px;
         background: #0064FB;
     }
+    &__dropdown {
+        button {
+            padding: 0;
+            display: flex;
+            margin-right: 35px;
+            background: transparent;
+            border: none;
+            &:after {
+                display: none;
+            }
+            &:hover {
+                background: transparent;
+            }
+            &:focus {
+                outline: none;
+                box-shadow: none;
+            }
+            &:active {
+                background: transparent !important;
+            }
+        }
+    }
+    .show>.btn-primary.dropdown-toggle {
+        background-color: transparent !important;
+    }
+    .show>.btn-primary.dropdown-toggle {
+        box-shadow: none !important;
+    }
 
     // Edits
     @media (max-width : 480px) {
-     
+
         height: 61px;
         // Burger
         .Navbar__guest-link{
@@ -88,7 +117,7 @@
             & p{
            display: none;
         }
-             &-icon{ 
+             &-icon{
             color: #40ffff;
             visibility: visible;
             display:inline-block;
@@ -105,7 +134,7 @@ $opening-angle:$pi*2;
 
 %goo{
   filter:url('#shadowed-goo');
-  // debug 
+  // debug
   //background:rgba(255,0,0,0.2);
 }
 %ball{
@@ -158,13 +187,13 @@ $hamburger-spacing:6px;
 }
 .menu-open:checked+.menu-open-button{
   .hamburger-1{
-    transform:translate3d(0,0,0) rotate(45deg); 
+    transform:translate3d(0,0,0) rotate(45deg);
   }
   .hamburger-2{
     transform:translate3d(0,0,0) scale(0.1,1);
   }
   .hamburger-3{
-    transform:translate3d(0,0,0) rotate(-45deg); 
+    transform:translate3d(0,0,0) rotate(-45deg);
   }
 }
 // .menu{
@@ -246,10 +275,10 @@ $hamburger-spacing:6px;
             padding-right: 35px;
             border:none;
         }
-    
-       
 
-        
+
+
+
     }
 }
 
@@ -333,5 +362,4 @@ Note: Beware of modifying this element as it can break the animations - you shou
 /* Styling of overlay */
 .bm-overlay {
     background: rgba(0, 0, 0, 0.3);
-    }
-
+}

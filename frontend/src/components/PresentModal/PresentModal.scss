@@ -14,7 +14,15 @@
   &__date-wrap {
     font-weight: 500;
   }
-  &__date,  &__student {
+  &__time-wrap {
+    font-weight: 500;
+    margin-left: 20px;
+  }
+  &__date {
+    font-weight: bold;
+    color: #8823FF;
+  }
+  &__time {
     font-weight: bold;
     color: #8823FF;
   }
@@ -46,7 +54,6 @@
     padding: 12px 60px;
     text-align: center;
     align-self: center;
-    
   }
 }
 
@@ -60,7 +67,7 @@
   padding-left: 15px;
   @media (max-width: 420px) {
     justify-content: space-around;
-}
+  }
   &__inputs {
     display: flex;
     flex-flow: column;
@@ -71,7 +78,7 @@
     vertical-align: middle;
     @media (max-width: 420px) {
         display:none;
-  
+
     }
     th {
       font-size: 12px;
@@ -100,15 +107,15 @@
         border-bottom: 1px solid ;
         height: 37px;
       }
-     }
+    }
   }
   &__grade-wrap {
-    padding: 23px 0 30px 0; 
-    @media (min-width: 420px) {  
+    padding: 23px 0 30px 0;
+    @media (min-width: 420px) {
       & br{
         display: none;
       }}
-    
+
   }
   &__comment-wrap {
     display: flex;

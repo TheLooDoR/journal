@@ -18,7 +18,7 @@ const Schedule = db.define('schedule', {
             model: 'subjects',
             key: 'id'
         },
-        primaryKey: true
+        foreignKey: true
     },
     group_id: {
         type: Sequelize.INTEGER,
@@ -36,7 +36,7 @@ const Schedule = db.define('schedule', {
             model: 'types',
             key: 'id'
         },
-        primaryKey: true
+        foreignKey: true
     },
     week_day_id: {
         type: Sequelize.INTEGER,
@@ -62,11 +62,20 @@ const Schedule = db.define('schedule', {
         references: {
             model: 'corps',
             key: 'id'
-        }
+        },
+        foreignKey: true
     },
     hall: {
         type: Sequelize.TEXT,
         allowNull: false
+    },
+    first_week: {
+        type: Sequelize.BOOLEAN,
+        primaryKey: true
+    },
+    second_week: {
+        type: Sequelize.BOOLEAN,
+        primaryKey: true
     }
 })
 
