@@ -24,7 +24,40 @@ import AttendanceDoughnut from "../Statistic/AttendanceDoughnut/AttendanceDoughn
 import ScoreDoughnut from "../Statistic/ScoreDoughnut/ScoreDoughnut";
 import formatTime from "../../common-js/formatTime";
 import Axios from "axios";
+import ReactHTMLTableToExcel from 'react-html-table-to-excel';
 import './Journal.scss'
+
+ReactHTMLTableToExcel.format = (s, c) => {
+    // If there is a table in the data object
+    if (c && c['table']) {
+        // Get the table HTML
+        const html = c.table;
+
+        // Create a DOMParser object
+        const parser = new DOMParser();
+
+        // Parse the table HTML and create a text/html document
+        const doc = parser.parseFromString(html, 'text/html');
+
+        // Get all table rows
+        const rows = doc.querySelectorAll('tr');
+        // For each table row remove the first child (th or td)
+        for (const row of rows) {
+            const columns = row.querySelectorAll('th, td')
+            for (const column of columns) {
+                if (column.hasAttribute('not_to_excel')) {
+                    column.remove()
+                }
+            }
+            row.removeChild(row.firstChild);
+        }
+
+        // Save the manipulated HTML table code
+        c.table = doc.querySelector('table').outerHTML;
+    }
+
+    return s.replace(/{(\w+)}/g, (m, p) => c[p]);
+};
 
 class Journal extends Component {
 
@@ -116,42 +149,44 @@ class Journal extends Component {
     }
 
     hideStatisticModal(type) {
-        let totalMiss = 0, totalPresent = 0, unsatisfactory = 0, satisfactory = 0, good = 0, excellent = 0
-        const {journalStudents, journalData} = this.props
-        journalStudents.map(student => {
-            journalData.map(el => {
-                if (el.student_id === student.id) {
-                    el.present ? totalPresent++ : totalMiss++
-                    if (el.score) {
-                        if (el.score >= 0 && el.score <= 59) {
-                            unsatisfactory++
-                        } else if (el.score >= 60 && el.score <= 74) {
-                            satisfactory++
-                        } else if (el.score >= 75 && el.score <= 89) {
-                            good++
-                        } else {
-                            excellent++
+        if (type !== 'export') {
+            let totalMiss = 0, totalPresent = 0, unsatisfactory = 0, satisfactory = 0, good = 0, excellent = 0
+            const {journalStudents, journalData} = this.props
+            journalStudents.map(student => {
+                journalData.map(el => {
+                    if (el.student_id === student.id) {
+                        el.present ? totalPresent++ : totalMiss++
+                        if (el.score) {
+                            if (el.score >= 0 && el.score <= 59) {
+                                unsatisfactory++
+                            } else if (el.score >= 60 && el.score <= 74) {
+                                satisfactory++
+                            } else if (el.score >= 75 && el.score <= 89) {
+                                good++
+                            } else {
+                                excellent++
+                            }
                         }
                     }
-                }
+                    return null
+                })
                 return null
             })
-            return null
-        })
-        let {statisticData} = this.state
-        this.setState({
-            showStatisticModal: !this.state.showStatisticModal,
-            statisticType: type,
-            statisticData: {
-                ...statisticData,
-                totalMiss,
-                totalPresent,
-                unsatisfactory,
-                satisfactory,
-                good,
-                excellent
-            }
-        })
+            let {statisticData} = this.state
+            this.setState({
+                showStatisticModal: !this.state.showStatisticModal,
+                statisticType: type,
+                statisticData: {
+                    ...statisticData,
+                    totalMiss,
+                    totalPresent,
+                    unsatisfactory,
+                    satisfactory,
+                    good,
+                    excellent
+                }
+            })
+        }
     }
 
     dateChangeHandler = date => {
@@ -254,6 +289,7 @@ class Journal extends Component {
                         height={98}
                         style={{top: 56, borderBottom: 'none'}}
                         className='fixed-row budget-row'
+                        not_to_excel='true'
                     >
                         Б/К
                     </th>
@@ -261,6 +297,7 @@ class Journal extends Component {
                         height={98}
                         style={{borderBottom: 'none', top: 56}}
                         className='fixed-row add-row'
+                        not_to_excel='true'
                     >
                         {this.props.user.role !== 'admin' && <div className="journal-content__add-btn" onClick={() => this.hideDateModal()}>Добавить</div>}
                     </th>
@@ -340,9 +377,9 @@ class Journal extends Component {
                                 return null
                             })}
                             {/*budget column*/}
-                            <td className='journal-content__budget fixed-row budget-row'>{student.budget ? 'Б': 'К'}</td>
+                            <td className='journal-content__budget fixed-row budget-row' not_to_excel='true'>{student.budget ? 'Б': 'К'}</td>
                             {/*empty column for add btn*/}
-                            <td className='journal-content__add fixed-row add-row'/>
+                            <td className='journal-content__add fixed-row add-row' not_to_excel='true'/>
                             {/*miss amount*/}
                             <td id={`amount-${student.id}`} className='fixed-row miss-row'>{missAmount}</td>
                             {/*valid miss amount*/}
@@ -432,10 +469,26 @@ class Journal extends Component {
                                 >
                                     <Dropdown.Item eventKey={'score'}>Статистика успеваемости студентов</Dropdown.Item>
                                     <Dropdown.Item eventKey={'attendance'}>Статистика посещаемости студентов</Dropdown.Item>
+                                    <Dropdown.Item eventKey='export'>
+
+                                        {/*<ReactExport.ExcelFile>*/}
+
+                                        {/*        <ReactExport.ExcelColumn label='ФИО' value='name'/>*/}
+                                        {/*        <ReactExport.ExcelColumn label='ФИО' value='surname'/>*/}
+
+                                        {/*</ReactExport.ExcelFile>*/}
+                                        <ReactHTMLTableToExcel
+                                            table='journal-table'
+                                            id='journal-table-export-btn'
+                                            filename={`${group.name}, ${subjectType.name}, ${subject.name}`}
+                                            sheet={`${group.name}, ${subjectType.name}, ${subject.name}`}
+                                            buttonText='Экспорт в Excel'
+                                        />
+                                    </Dropdown.Item>
                                 </DropdownButton>
                             </div>
                             <div ref={this.tableRef} className="Journal__content journal-content" style={{marginLeft: ml, marginRight: mr}} onScroll={this.scrollHandler}>
-                                <Table bordered className='journal-content__table'>
+                                <Table bordered className='journal-content__table' id='journal-table'>
                                     {this.renderTableHead()}
                                     {this.renderTableBody()}
                                 </Table>
